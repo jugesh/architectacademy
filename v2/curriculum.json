@@ -130,6 +130,33 @@
       "prerequisites": [],
       "related": [],
       "status": "draft"
+    },
+    {
+      "id": "jvm-memory-gc",
+      "title": "JVM Memory, Garbage Collection and Performance",
+      "part": "05-java",
+      "path": "chapters/05-java/jvm-memory-gc/",
+      "prerequisites": [],
+      "related": [],
+      "status": "draft"
+    },
+    {
+      "id": "transactions-proxies",
+      "title": "Spring Transactions, Proxies and Consistency Boundaries",
+      "part": "06-spring",
+      "path": "chapters/06-spring/transactions-proxies/",
+      "prerequisites": [],
+      "related": [],
+      "status": "draft"
+    },
+    {
+      "id": "indexes-isolation-locking",
+      "title": "SQL Indexes, Isolation and Locking",
+      "part": "07-relational-data",
+      "path": "chapters/07-relational-data/indexes-isolation-locking/",
+      "prerequisites": [],
+      "related": [],
+      "status": "draft"
     }
   ]
 }
