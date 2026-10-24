@@ -15,6 +15,7 @@ jobs:
           node-version: '22'
       - run: python3 scripts/build-chapter-one.py --check
       - run: java v2/examples/ch01/PaymentIntent.java
+      - run: java --add-modules jdk.httpserver v2/examples/ch02/TimeoutLab.java
       - run: python3 tests/chapter-structure.py
       - run: node --check v2/assets/book.js
       - run: npm install --no-save @playwright/test@1.58.2

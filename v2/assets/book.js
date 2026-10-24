@@ -1,6 +1,18 @@
 (() => {
 'use strict';
 const definitions = {
+'DNS':'Domain Name System: resolves names to records such as candidate IP addresses; it does not migrate existing connections.',
+'TCP':'Transmission Control Protocol: reliable ordered byte-stream transport with flow and congestion control.',
+'TLS':'Transport Layer Security: protects transport confidentiality and integrity, with peer authentication when properly verified.',
+'QUIC':'Secure transport over UDP with multiplexed streams, used by HTTP/3.',
+'ALPN':'Application-Layer Protocol Negotiation: TLS extension used to negotiate an application protocol.',
+'SNI':'Server Name Indication: TLS extension identifying the requested hostname for server configuration selection.',
+'ETag':'Entity tag: opaque representation validator used for cache validation and conditional requests.',
+'If-Match':'HTTP precondition requiring a matching current representation validator before applying the method.',
+'CORS':'Cross-Origin Resource Sharing: browser rules governing cross-origin script access; not API authorization.',
+'CDN':'Content Delivery Network: distributed intermediaries for content delivery and, where configured, caching.',
+'head-of-line blocking':'Waiting caused when earlier unavailable work prevents later otherwise-ready work from progressing.',
+
 'p99':'99th-percentile latency: 99% of requests complete at or below this duration.',
 'p95':'95th-percentile latency: 95% of requests complete at or below this duration.',
 'RPS':'Requests per second: a measure of request arrival or completion rate.',
