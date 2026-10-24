@@ -16,7 +16,7 @@ section counts and a successful deployment do not establish textbook completenes
 | Edition consistency | Complete edition generated from canonical sources and checked in CI |
 | Sources | Primary Spring and PostgreSQL references added beside adapter discussion |
 
-**Chapter 1: quality gate passed for the foundations scope on 24 October 2026. Chapter 2: next in sequence.**
+**Chapter 1: quality gate passed for the foundations scope on 24 October 2026. Chapter 2: expanded draft undergoing browser/print review.**
 Chapters 3–20 have not been audited in this pass and must not be inferred complete.
 
 ## Reproduce
@@ -41,7 +41,7 @@ edition after changing core, exercises or review-kit content.
 | Part | Title | Status in this pass |
 |---|---|---|
 | 01 | Architecture Foundations | Quality gate passed |
-| 02 | Networking and HTTP | Next: inspect and expand |
+| 02 | Networking and HTTP | Expanded draft; validation in progress |
 | 03 | Scalability and Capacity | Waiting for previous chapter quality gate |
 | 04 | API Architecture | Waiting for previous chapter quality gate |
 | 05 | Java and JVM | Waiting for previous chapter quality gate |
@@ -64,3 +64,7 @@ edition after changing core, exercises or review-kit content.
 Evidence: https://github.com/jugesh/architectacademy/actions/runs/40096727368
 
 Validation is Chromium/A4 only. The Java example verifies domain transitions, not a live database/provider integration. Full production correctness is not claimed.
+
+## Chapter 2 evidence
+
+Restored eight core teaching sections from misplaced cues/summary text; expanded connection setup, HTTP semantics, protocols, load balancing, timeout budgets, cache privacy and diagnostics. Added responsive cold/warm connection diagram, 12 answered interview follow-ups and a loopback Java timeout lab. Java lab passes locally. Six browser/print tests added; final visual review pending. This chapter is not marked complete.
