@@ -49,3 +49,5 @@ figure svg{max-width:540px;margin-inline:auto}
 @media print{.cue{break-after:avoid}}
 
 @media print{.interview-unit{break-inside:avoid}}
+@media print{body.cornell .cornell-summary .lines{height:40px!important}}
+body.cornell .chapter-section>h3{grid-column:1/-1}
