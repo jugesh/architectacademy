@@ -14,7 +14,7 @@ class Page(HTMLParser):
         if tag=='a' and 'href' in a:self.links.append(a['href'])
         if 'data-mode' in a:self.modes.append(a['data-mode'])
         if tag=='details':self.details+=1
-for path in [*BASE.glob('*.html'), ROOT/'v2/chapters/02-networking/http-tls-load-balancing/index.html', *list((ROOT/'v2/chapters/03-scalability/horizontal-scaling').glob('*.html')), *list((ROOT/'v2/chapters/04-apis/idempotency-safe-retries').glob('*.html')), *list((ROOT/'v2/chapters/05-java/jvm-memory-gc').glob('*.html')), *list((ROOT/'v2/chapters/06-spring/transactions-proxies').glob('*.html'))]:
+for path in [*BASE.glob('*.html'), ROOT/'v2/chapters/02-networking/http-tls-load-balancing/index.html', *list((ROOT/'v2/chapters/03-scalability/horizontal-scaling').glob('*.html')), *list((ROOT/'v2/chapters/04-apis/idempotency-safe-retries').glob('*.html')), *list((ROOT/'v2/chapters/05-java/jvm-memory-gc').glob('*.html')), *list((ROOT/'v2/chapters/06-spring/transactions-proxies').glob('*.html')), *list((ROOT/'v2/chapters/07-relational-data/indexes-isolation-locking').glob('*.html'))]:
     p=Page(path)
     assert len(p.ids)==len(set(p.ids)),f'{path}: duplicate IDs'
     assert set(p.modes)=={'textbook','cornell','revision'},f'{path}: missing mode'

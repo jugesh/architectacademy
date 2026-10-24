@@ -170,7 +170,7 @@
       "path": "chapters/07-relational-data/indexes-isolation-locking/",
       "prerequisites": [],
       "related": [],
-      "status": "draft"
+      "status": "quality-gate-passed"
     },
     {
       "id": "http-tls-load-balancing",

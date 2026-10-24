@@ -17,7 +17,7 @@ section counts and a successful deployment do not establish textbook completenes
 | Sources | Primary Spring and PostgreSQL references added beside adapter discussion |
 
 **Chapter 1: quality gate passed for the foundations scope on 24 October 2026. Chapter 2: networking foundations quality gate passed on 24 October 2026.**
-Chapters 7–20 have not been audited in this pass and must not be inferred complete.
+Chapters 8–20 have not been audited in this pass and must not be inferred complete.
 
 ## Reproduce
 
@@ -46,7 +46,7 @@ edition after changing core, exercises or review-kit content.
 | 04 | API Architecture | Quality gate passed |
 | 05 | Java and JVM | Quality gate passed |
 | 06 | Spring Boot | Quality gate passed |
-| 07 | Relational Data | Waiting for previous chapter quality gate |
+| 07 | Relational Data | Quality gate passed |
 | 08 | NoSQL and Storage | Waiting for previous chapter quality gate |
 | 09 | Caching | Waiting for previous chapter quality gate |
 | 10 | Messaging and Event-Driven Systems | Waiting for previous chapter quality gate |
@@ -100,3 +100,13 @@ Expanded the Spring chapter across container conditions and configuration, reque
 The Maven lab uses Spring Framework 6.2, Spring JDBC/AOP and H2 to verify external proxy rollback, the self-invocation boundary, checked-exception rollback policy, and atomic order/outbox writes. Three JUnit tests pass. The lab is explicitly a mechanism demonstration: it does not substitute for PostgreSQL isolation tests, Kafka delivery tests or production security configuration.
 
 Twenty-one chapter browser checks pass across four viewport widths. All four editions expose Textbook/Cornell/Revision and generated-reader parity is checked in CI. All 17 integrated Textbook, 19 Cornell and one Revision PDF pages were visually reviewed, including the mobile SVG and final-page completeness. Local links, fragments, duplicate IDs, structural checks and the real Spring/H2 lab pass.
+
+Evidence: https://github.com/jugesh/architectacademy/actions/runs/40109416762
+
+## Chapter 7 evidence
+
+Expanded the relational-data chapter with PostgreSQL B-tree/heap/visibility-map mechanics, MVCC and vacuum consequences, cardinality and join diagnosis, engine-specific isolation and whole-transaction retries, lock-wait/deadlock analysis, enforceable invariants, safe migrations, replica freshness and recovery operations. Added a responsive wait-for graph and primary PostgreSQL references. All 12 interview follow-ups now include worked solutions.
+
+The executable H2/JDBC lab passes three tests: 20 concurrent conditional decrements accept exactly the available stock, a stale optimistic version is rejected, and two concurrent retries with one request ID create one reservation and one decrement. H2 verifies these SQL mechanisms only; the chapter explicitly requires PostgreSQL concurrency tests for PostgreSQL isolation claims.
+
+Twenty-one browser/print checks pass across four widths and all four editions. Generated-reader parity and structural checks pass. All integrated 16 Textbook, 17 Cornell and one Revision PDF pages were visually reviewed after the worked-answer pagination correction, including the mobile deadlock diagram and final pages.
