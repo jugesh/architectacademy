@@ -16,7 +16,7 @@ section counts and a successful deployment do not establish textbook completenes
 | Edition consistency | Complete edition generated from canonical sources and checked in CI |
 | Sources | Primary Spring and PostgreSQL references added beside adapter discussion |
 
-**Chapter 1: quality gate passed for the foundations scope on 24 October 2026. Chapter 2: expanded draft; browser/print checks passed, deeper coverage still in progress.**
+**Chapter 1: quality gate passed for the foundations scope on 24 October 2026. Chapter 2: networking foundations quality gate passed on 24 October 2026.**
 Chapters 3–20 have not been audited in this pass and must not be inferred complete.
 
 ## Reproduce
@@ -41,7 +41,7 @@ edition after changing core, exercises or review-kit content.
 | Part | Title | Status in this pass |
 |---|---|---|
 | 01 | Architecture Foundations | Quality gate passed |
-| 02 | Networking and HTTP | Expanded and validated; depth work remains |
+| 02 | Networking and HTTP | Quality gate passed |
 | 03 | Scalability and Capacity | Waiting for previous chapter quality gate |
 | 04 | API Architecture | Waiting for previous chapter quality gate |
 | 05 | Java and JVM | Waiting for previous chapter quality gate |
@@ -71,4 +71,6 @@ Restored eight core teaching sections from misplaced cues/summary text; expanded
 
 Evidence: https://github.com/jugesh/architectacademy/actions/runs/40101424976
 
-Remaining Chapter 2 depth gates: IP routing/CIDR and NAT resource exhaustion; DNS caching/failover internals; certificate lifecycle and rotation drill; a fuller AWS request-path case study and additional worked fault exercises. Complete these before Chapter 3.
+Chapter 2 completion pass (PR #17): added longest-prefix routing/CIDR, security group/ACL and NAT boundaries, egress exhaustion and MTU diagnosis; positive/negative DNS caching and cutover clocks; certificate trust overlap/rotation and fresh-handshake drill; a worked AWS checkout request path with responsive SVG, failure recovery and four answered fault exercises. Navigation and shared terminology updated. Six local networking browser tests pass at 360/390/768/1440 px using Chromium 153. The 22 Chapter 1 regression tests passed in the same local pass. All 22 Textbook and 24 Cornell PDF pages were visually reviewed; a surplus Revision notes page was removed and its final one-page output rechecked. Structural checks and the Java timeout lab pass. CI also runs its pinned Chromium version; local evidence is not a live AWS deployment claim.
+
+Primary references are linked beside the relevant mechanisms. AWS examples are illustrative and the certificate/network drills require a controlled environment. Remaining book-wide verification includes additional browser engines.
