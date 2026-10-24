@@ -10,13 +10,13 @@ section counts and a successful deployment do not establish textbook completenes
 | Executable code | Java payment-state example: six invariant checks pass; explicitly scoped as domain policy, not a production payment implementation |
 | Diagrams | Responsive accessible payment-state SVG; text flow diagrams retained and visually checked in the complete print edition |
 | Navigation | Local link targets, fragments and duplicate IDs checked across all four editions |
-| Browser and mobile | 22 Chromium checks passed at 360/390/768/1440 px; evidence run 40096516928 |
+| Browser and mobile | 22 Chromium checks passed at 360/390/768/1440 px; evidence run 40096727368 |
 | Modes and tooltips | Four editions expose Textbook/Cornell/Revision; bounded glossary, Escape dismissal, ambiguous auto-matches removed |
-| Printing | All 12 PDFs generated; complete Textbook (40 pages), Cornell (44 pages) and Revision (2 pages) visually reviewed. Split code/tables and surplus revision page corrected; final cue-to-answer pagination adjustment pending validation |
+| Printing | All 12 PDFs generated; complete Textbook (40 pages), Cornell (45 pages) and Revision (2 pages) visually reviewed. Split code/tables and surplus revision page corrected; final cue-to-answer pagination adjustment visually verified |
 | Edition consistency | Complete edition generated from canonical sources and checked in CI |
 | Sources | Primary Spring and PostgreSQL references added beside adapter discussion |
 
-**Chapter 1: IN REVIEW, not complete. Chapter 2: blocked by Chapter 1 sign-off.**
+**Chapter 1: quality gate passed for the foundations scope on 24 October 2026. Chapter 2: next in sequence.**
 Chapters 3–20 have not been audited in this pass and must not be inferred complete.
 
 ## Reproduce
@@ -40,8 +40,8 @@ edition after changing core, exercises or review-kit content.
 
 | Part | Title | Status in this pass |
 |---|---|---|
-| 01 | Architecture Foundations | In review |
-| 02 | Networking and HTTP | Waiting for previous chapter quality gate |
+| 01 | Architecture Foundations | Quality gate passed |
+| 02 | Networking and HTTP | Next: inspect and expand |
 | 03 | Scalability and Capacity | Waiting for previous chapter quality gate |
 | 04 | API Architecture | Waiting for previous chapter quality gate |
 | 05 | Java and JVM | Waiting for previous chapter quality gate |
@@ -61,6 +61,6 @@ edition after changing core, exercises or review-kit content.
 | 19 | Architecture Evolution | Waiting for previous chapter quality gate |
 | 20 | End-to-End Case Studies | Waiting for previous chapter quality gate |
 
-Evidence: https://github.com/jugesh/architectacademy/actions/runs/40096516928
+Evidence: https://github.com/jugesh/architectacademy/actions/runs/40096727368
 
 Validation is Chromium/A4 only. The Java example verifies domain transitions, not a live database/provider integration. Full production correctness is not claimed.
