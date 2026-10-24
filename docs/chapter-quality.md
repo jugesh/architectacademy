@@ -17,7 +17,7 @@ section counts and a successful deployment do not establish textbook completenes
 | Sources | Primary Spring and PostgreSQL references added beside adapter discussion |
 
 **Chapter 1: quality gate passed for the foundations scope on 24 October 2026. Chapter 2: networking foundations quality gate passed on 24 October 2026.**
-Chapters 8–20 have not been audited in this pass and must not be inferred complete.
+Chapters 9–20 have not been audited in this pass and must not be inferred complete.
 
 ## Reproduce
 
@@ -47,7 +47,7 @@ edition after changing core, exercises or review-kit content.
 | 05 | Java and JVM | Quality gate passed |
 | 06 | Spring Boot | Quality gate passed |
 | 07 | Relational Data | Quality gate passed |
-| 08 | NoSQL and Storage | Waiting for previous chapter quality gate |
+| 08 | NoSQL and Storage | Quality gate passed |
 | 09 | Caching | Waiting for previous chapter quality gate |
 | 10 | Messaging and Event-Driven Systems | Waiting for previous chapter quality gate |
 | 11 | Distributed Systems | Waiting for previous chapter quality gate |
@@ -110,3 +110,13 @@ Expanded the relational-data chapter with PostgreSQL B-tree/heap/visibility-map 
 The executable H2/JDBC lab passes three tests: 20 concurrent conditional decrements accept exactly the available stock, a stale optimistic version is rejected, and two concurrent retries with one request ID create one reservation and one decrement. H2 verifies these SQL mechanisms only; the chapter explicitly requires PostgreSQL concurrency tests for PostgreSQL isolation claims.
 
 Twenty-one browser/print checks pass across four widths and all four editions. Generated-reader parity and structural checks pass. All integrated 16 Textbook, 17 Cornell and one Revision PDF pages were visually reviewed after the worked-answer pagination correction, including the mobile deadlock diagram and final pages.
+
+Evidence: https://github.com/jugesh/architectacademy/actions/runs/40109894218
+
+## Chapter 8 evidence
+
+Expanded MongoDB coverage with storage/cache/durability boundaries, read concern versus write concern versus routing, transaction error handling, and a baseline/change-stream migration protocol with durable checkpoints, fencing, reconciliation and explicit failback limits. Added a responsive cutover state diagram, primary MongoDB references and worked solutions to all 18 follow-ups.
+
+The standalone Java migration lab verifies idempotent duplicate replay, change-token gap detection, baseline-plus-delta convergence, old-writer fencing and deterministic reconciliation checksums. It is a protocol model, not a live MongoDB replica-set, election or transaction test; those remain required for a real deployment.
+
+Six browser/print checks pass across four widths and three modes. Structural checks and the Java lab pass. All 13 Textbook, 15 Cornell and two Revision PDF pages were visually reviewed. The review found and fixed a surplus Cornell page and a clipped grid heading; the final pagination, mobile SVG and last pages were rechecked.
