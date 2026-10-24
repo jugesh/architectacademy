@@ -13,3 +13,25 @@
   .toc { font-size:14px; }
   .toc a { padding:7px 0; line-height:1.45; }
 }
+
+/* Shared quality corrections: anchor visibility, bounded content and accessible glossary. */
+html{scroll-padding-top:90px}
+main,.chapter-section,.chapter-section>div{min-width:0}
+header nav{display:flex;flex-wrap:wrap;gap:6px}
+th,td{overflow-wrap:anywhere}
+.term::after,.term:hover::after,.term:focus::after,.term[aria-expanded=true]::after{display:none!important}
+.book-tooltip{position:fixed;z-index:20;width:min(300px,calc(100vw - 16px));max-height:calc(100vh - 16px);overflow:auto;padding:10px 12px;background:#283b4c;color:#fff;border-radius:4px;font:13px/1.5 system-ui;box-shadow:0 3px 12px #0002}
+.book-tooltip[hidden]{display:none}
+figure{margin:22px 0}figure svg{display:block;width:100%;height:auto}figcaption{font:13px/1.5 system-ui;margin-top:8px}
+@media(max-width:650px){html{scroll-padding-top:12px}h1{font-size:27px}td,th{padding:6px}}
+@media print{
+ .book-tooltip{display:none!important}
+ header,button{display:none!important}
+ h2,h3{break-after:avoid}
+ pre,details{break-inside:auto}
+ pre{overflow:visible;white-space:pre-wrap;overflow-wrap:anywhere}
+ figure{break-inside:avoid}
+ body.cornell .chapter-section{display:block}
+ body.cornell .cue{display:block;border:0;border-left:2px solid #777;padding-left:8px;margin:8px 0;font-style:italic}
+ a{color:inherit}
+}
