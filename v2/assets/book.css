@@ -38,3 +38,11 @@ figure{margin:22px 0}figure svg{display:block;width:100%;height:auto}figcaption{
 
 @media print{pre.diagram-text{break-inside:avoid}}
 @media screen and (max-width:650px){figure{overflow-x:auto}figure svg{min-width:540px}}
+/* Keep short teaching units intact; browsers may still split oversized blocks. */
+@media print{
+ table,pre,details,.lines{break-inside:avoid}
+ summary{break-after:avoid}
+ .revision-only .lines{height:60px!important}
+ th,td{overflow-wrap:normal;hyphens:auto}
+}
+@page{@bottom-center{content:counter(page);font:9pt sans-serif;color:#64717d}}
