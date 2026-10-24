@@ -3,3 +3,13 @@
 .term{display:inline;overflow-wrap:normal;text-decoration:underline dotted #61798d;text-underline-offset:3px}
 .term[aria-expanded=true]::after{content:attr(data-definition);position:absolute;bottom:calc(100% + 6px);left:0;width:min(300px,75vw);padding:9px 11px;color:#fff;background:#283b4c;font:12px/1.5 system-ui;box-shadow:0 3px 12px #0002;z-index:10;border-radius:4px;white-space:normal}
 @media print{.term::after,.term[aria-expanded=true]::after{display:none!important}.term{text-decoration:none}}
+
+/* Readable, compact textbook table of contents: one section link per row. */
+.toc { display:block; padding:12px 0; line-height:1.45; }
+.toc a { display:block; margin:0; padding:5px 0; width:fit-content; max-width:100%; overflow-wrap:anywhere; text-decoration:none; }
+.toc a:hover,.toc a:focus-visible { text-decoration:underline; text-underline-offset:3px; }
+.toc a:focus-visible { outline:2px solid #6e94af; outline-offset:2px; }
+@media (max-width:650px) {
+  .toc { font-size:14px; }
+  .toc a { padding:7px 0; line-height:1.45; }
+}
