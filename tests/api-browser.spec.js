@@ -29,6 +29,12 @@ test('api navigation and diagram',async({page})=>{
  for(const a of await page.locator('.toc a').all()){
   const target=await a.getAttribute('href');await a.click();await expect(page.locator(target)).toBeInViewport();
  }
- await page.locator('figure').scrollIntoViewIfNeeded();await expect(page.locator('svg')).toBeVisible();
+ await page.locator('figure').first().scrollIntoViewIfNeeded();await expect(page.locator('svg').first()).toBeVisible();
  await page.screenshot({path:'test-results/api-mobile.png'});
+});
+test('idempotency sizing calculator',async({page})=>{
+ await page.goto(base+'index.html');
+ await expect(page.locator('#idem-output')).toHaveText('140,000,000 records · 117.3 GiB');
+ await page.locator('#idem-days').fill('30');
+ await expect(page.locator('#idem-output')).toHaveText('600,000,000 records · 502.9 GiB');
 });
