@@ -21,6 +21,7 @@ jobs:
       - run: java v2/examples/ch05/PublicationLab.java
       - run: mvn -B -f v2/examples/ch06/pom.xml test
       - run: mvn -B -f v2/examples/ch07/pom.xml test
+      - run: java v2/examples/ch08/MigrationLab.java
       - run: python3 scripts/build-chapter-readers.py --check
       - run: python3 tests/chapter-structure.py
       - run: node --check v2/assets/book.js
