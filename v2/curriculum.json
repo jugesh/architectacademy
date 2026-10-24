@@ -95,7 +95,7 @@
         "transactions-proxies",
         "timeouts-retries-failure"
       ],
-      "status": "expanded-reference"
+      "status": "quality-gate-passed"
     },
     {
       "id": "horizontal-scaling",
@@ -107,7 +107,7 @@
         "load-balancing",
         "capacity-planning"
       ],
-      "status": "sample"
+      "status": "quality-gate-passed"
     },
     {
       "id": "idempotency-safe-retries",
@@ -179,7 +179,7 @@
       "path": "chapters/02-networking/http-tls-load-balancing/",
       "prerequisites": [],
       "related": [],
-      "status": "draft"
+      "status": "quality-gate-passed"
     },
     {
       "id": "mongodb-migration",
