@@ -84,6 +84,20 @@
   ],
   "chapters": [
     {
+      "id": "software-architecture",
+      "title": "Software Architecture Foundations",
+      "part": "01-foundations",
+      "path": "chapters/01-foundations/software-architecture/",
+      "prerequisites": [],
+      "related": [
+        "horizontal-scaling",
+        "idempotency-safe-retries",
+        "transactions-proxies",
+        "timeouts-retries-failure"
+      ],
+      "status": "expanded-reference"
+    },
+    {
       "id": "horizontal-scaling",
       "title": "Vertical and Horizontal Scaling",
       "part": "03-scalability",
