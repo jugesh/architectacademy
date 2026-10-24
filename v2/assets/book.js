@@ -136,6 +136,16 @@ function decorate(root){
  }
 }
 document.querySelectorAll('main').forEach(decorate);
+const idemInputs=['idem-daily','idem-days','idem-bytes'].map(id=>document.getElementById(id));
+const idemOutput=document.getElementById('idem-output');
+function updateIdempotencySizing(){
+ if(!idemOutput||idemInputs.some(input=>!input))return;
+ const [daily,days,bytes]=idemInputs.map(input=>Math.max(0,Number(input.value)||0));
+ const records=daily*days,gib=records*bytes/(1024**3);
+ idemOutput.textContent=records.toLocaleString('en-US')+' records · '+gib.toFixed(1)+' GiB';
+}
+idemInputs.forEach(input=>input?.addEventListener('input',updateIdempotencySizing));
+updateIdempotencySizing();
 document.querySelectorAll('[data-term]').forEach(el=>{
  const key=el.dataset.term;el.classList.add('term');el.tabIndex=0;el.setAttribute('role','button');el.dataset.definition=definitions[key]||el.dataset.definition||key;
  el.setAttribute('aria-label',el.textContent);

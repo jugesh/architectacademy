@@ -51,3 +51,4 @@ figure svg{max-width:540px;margin-inline:auto}
 @media print{.interview-unit{break-inside:avoid}}
 @media print{body.cornell .cornell-summary .lines{height:40px!important}}
 body.cornell .chapter-section>h3{grid-column:1/-1}
+.calculator{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:16px;margin:18px 0;background:#f5f6f7;border:1px solid #dde1e4}.calculator h3,.calculator p{grid-column:1/-1;margin:0}.calculator label{font:12px/1.4 system-ui}.calculator input{display:block;width:100%;margin-top:5px;padding:7px;border:1px solid #bfc5ca;border-radius:3px;background:#fff}@media(max-width:650px){.calculator{grid-template-columns:1fr}}
