@@ -188,7 +188,7 @@
       "path": "chapters/08-nosql-storage/mongodb-migration/",
       "prerequisites": [],
       "related": [],
-      "status": "draft"
+      "status": "quality-gate-passed"
     },
     {
       "id": "slo-disaster-recovery",
