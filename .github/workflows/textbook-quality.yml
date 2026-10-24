@@ -16,6 +16,8 @@ jobs:
       - run: python3 scripts/build-chapter-one.py --check
       - run: java v2/examples/ch01/PaymentIntent.java
       - run: java --add-modules jdk.httpserver v2/examples/ch02/TimeoutLab.java
+      - run: java v2/examples/ch03/AdmissionLab.java
+      - run: python3 scripts/build-chapter-readers.py --check
       - run: python3 tests/chapter-structure.py
       - run: node --check v2/assets/book.js
       - run: npm install --no-save @playwright/test@1.58.2
