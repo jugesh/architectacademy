@@ -17,7 +17,7 @@ section counts and a successful deployment do not establish textbook completenes
 | Sources | Primary Spring and PostgreSQL references added beside adapter discussion |
 
 **Chapter 1: quality gate passed for the foundations scope on 24 October 2026. Chapter 2: networking foundations quality gate passed on 24 October 2026.**
-Chapters 3–20 have not been audited in this pass and must not be inferred complete.
+Chapters 4–20 have not been audited in this pass and must not be inferred complete.
 
 ## Reproduce
 
@@ -42,7 +42,7 @@ edition after changing core, exercises or review-kit content.
 |---|---|---|
 | 01 | Architecture Foundations | Quality gate passed |
 | 02 | Networking and HTTP | Quality gate passed |
-| 03 | Scalability and Capacity | Waiting for previous chapter quality gate |
+| 03 | Scalability and Capacity | Quality gate passed |
 | 04 | API Architecture | Waiting for previous chapter quality gate |
 | 05 | Java and JVM | Waiting for previous chapter quality gate |
 | 06 | Spring Boot | Waiting for previous chapter quality gate |
@@ -74,3 +74,9 @@ Evidence: https://github.com/jugesh/architectacademy/actions/runs/40101424976
 Chapter 2 completion pass (PR #17): added longest-prefix routing/CIDR, security group/ACL and NAT boundaries, egress exhaustion and MTU diagnosis; positive/negative DNS caching and cutover clocks; certificate trust overlap/rotation and fresh-handshake drill; a worked AWS checkout request path with responsive SVG, failure recovery and four answered fault exercises. Navigation and shared terminology updated. Six local networking browser tests pass at 360/390/768/1440 px using Chromium 153. The 22 Chapter 1 regression tests passed in the same local pass. All 22 Textbook and 24 Cornell PDF pages were visually reviewed; a surplus Revision notes page was removed and its final one-page output rechecked. Structural checks and the Java timeout lab pass. CI also runs its pinned Chromium version; local evidence is not a live AWS deployment claim.
 
 Primary references are linked beside the relevant mechanisms. AWS examples are illustrative and the certificate/network drills require a controlled environment. Remaining book-wide verification includes additional browser engines.
+
+## Chapter 3 evidence
+
+Expanded capacity engineering from a specimen to resource-demand and queueing models, serial/partition limits, hot-key failure analysis, admission/fairness, delayed autoscaling, connection surge budgeting and a checkout acceptance case. Replaced repeated short sections with six substantial teaching units. All 12 interview follow-up exercises have worked answers. The deterministic Java AdmissionLab verifies active-work bounds, rejection before effect, and permit recovery on success/failure; it does not claim distributed quota enforcement.
+
+The integrated edition is generated from canonical core, lab and interview pages; CI checks parity. All four editions support Textbook/Cornell/Revision. Twenty-one chapter browser checks pass across four widths in local Chromium 153. All 19 integrated Textbook, 20 Cornell and one Revision PDF pages were visually reviewed, plus the mobile SVG. All local links, fragments and duplicate IDs pass. Sources for HPA and AWS queue scaling are linked beside their mechanisms. The scope is capacity foundations and a local concurrency lab; load targets and AWS topology are explicitly illustrative, not measured production claims.
