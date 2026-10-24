@@ -16,7 +16,7 @@ section counts and a successful deployment do not establish textbook completenes
 | Edition consistency | Complete edition generated from canonical sources and checked in CI |
 | Sources | Primary Spring and PostgreSQL references added beside adapter discussion |
 
-**Chapter 1: quality gate passed for the foundations scope on 24 October 2026. Chapter 2: expanded draft undergoing browser/print review.**
+**Chapter 1: quality gate passed for the foundations scope on 24 October 2026. Chapter 2: expanded draft; browser/print checks passed, deeper coverage still in progress.**
 Chapters 3–20 have not been audited in this pass and must not be inferred complete.
 
 ## Reproduce
@@ -41,7 +41,7 @@ edition after changing core, exercises or review-kit content.
 | Part | Title | Status in this pass |
 |---|---|---|
 | 01 | Architecture Foundations | Quality gate passed |
-| 02 | Networking and HTTP | Expanded draft; validation in progress |
+| 02 | Networking and HTTP | Expanded and validated; depth work remains |
 | 03 | Scalability and Capacity | Waiting for previous chapter quality gate |
 | 04 | API Architecture | Waiting for previous chapter quality gate |
 | 05 | Java and JVM | Waiting for previous chapter quality gate |
@@ -67,4 +67,8 @@ Validation is Chromium/A4 only. The Java example verifies domain transitions, no
 
 ## Chapter 2 evidence
 
-Restored eight core teaching sections from misplaced cues/summary text; expanded connection setup, HTTP semantics, protocols, load balancing, timeout budgets, cache privacy and diagnostics. Added responsive cold/warm connection diagram, 12 answered interview follow-ups and a loopback Java timeout lab. Java lab passes locally. Six browser/print tests added; final visual review pending. This chapter is not marked complete.
+Restored eight core teaching sections from misplaced cues/summary text; expanded connection setup, HTTP semantics, protocols, load balancing, timeout budgets, cache privacy and diagnostics. Added responsive cold/warm connection diagram, 12 answered interview follow-ups and a loopback Java timeout lab. Java lab passes locally. Six browser/print tests pass alongside all 22 Chapter 1 checks (28 total). Textbook and Cornell PDFs are 15 pages each; Revision is one page. All pages and the mobile diagram were visually reviewed, and PDF text remains within page bounds. This chapter is not marked complete.
+
+Evidence: https://github.com/jugesh/architectacademy/actions/runs/40101424976
+
+Remaining Chapter 2 depth gates: IP routing/CIDR and NAT resource exhaustion; DNS caching/failover internals; certificate lifecycle and rotation drill; a fuller AWS request-path case study and additional worked fault exercises. Complete these before Chapter 3.
