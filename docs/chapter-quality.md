@@ -17,7 +17,7 @@ section counts and a successful deployment do not establish textbook completenes
 | Sources | Primary Spring and PostgreSQL references added beside adapter discussion |
 
 **Chapter 1: quality gate passed for the foundations scope on 24 October 2026. Chapter 2: networking foundations quality gate passed on 24 October 2026.**
-Chapters 6–20 have not been audited in this pass and must not be inferred complete.
+Chapters 7–20 have not been audited in this pass and must not be inferred complete.
 
 ## Reproduce
 
@@ -45,7 +45,7 @@ edition after changing core, exercises or review-kit content.
 | 03 | Scalability and Capacity | Quality gate passed |
 | 04 | API Architecture | Quality gate passed |
 | 05 | Java and JVM | Quality gate passed |
-| 06 | Spring Boot | Waiting for previous chapter quality gate |
+| 06 | Spring Boot | Quality gate passed |
 | 07 | Relational Data | Waiting for previous chapter quality gate |
 | 08 | NoSQL and Storage | Waiting for previous chapter quality gate |
 | 09 | Caching | Waiting for previous chapter quality gate |
@@ -92,3 +92,11 @@ All four editions expose Textbook/Cornell/Revision and the integrated reader is 
 Expanded JVM runtime/JIT/classloader lifecycles, allocation versus retention, charged-container/native memory accounting, GC mechanisms/experiments, publication and multi-field invariants, virtual-thread version boundaries, cancellation, context and executor failure analysis. Added worked diagnosis, responsive diagnostic SVG, all 12 worked interview follow-ups and a Java publication lab. The lab checks coherent immutable snapshots and exact atomic counts; its stress run is explicitly not a proof of arbitrary data-race safety.
 
 Twenty-one chapter browser checks pass at four widths in local Chromium 153; all four reader editions expose three modes and generated complete-reader parity is enforced. All integrated 19 Textbook, 20 Cornell and one Revision PDF pages visually reviewed, with local links/fragments and Java checks passing. JDK 21 versus JDK 24 monitor pinning is distinguished using JEP 444/491; Oracle GC/NMT and JLS references are linked. Scope: Java/JVM architecture foundations and local publication policy, not a collector performance claim or production diagnostic execution.
+
+## Chapter 6 evidence
+
+Expanded the Spring chapter across container conditions and configuration, request and serialization boundaries, proxy interception, logical versus physical transactions, propagation, rollback and flush behavior, locking anomalies, durable event relay, and operational diagnosis. Added a responsive transaction/outbox lifecycle diagram and worked answers to all 12 interview follow-ups.
+
+The Maven lab uses Spring Framework 6.2, Spring JDBC/AOP and H2 to verify external proxy rollback, the self-invocation boundary, checked-exception rollback policy, and atomic order/outbox writes. Three JUnit tests pass. The lab is explicitly a mechanism demonstration: it does not substitute for PostgreSQL isolation tests, Kafka delivery tests or production security configuration.
+
+Twenty-one chapter browser checks pass across four viewport widths. All four editions expose Textbook/Cornell/Revision and generated-reader parity is checked in CI. All 17 integrated Textbook, 19 Cornell and one Revision PDF pages were visually reviewed, including the mobile SVG and final-page completeness. Local links, fragments, duplicate IDs, structural checks and the real Spring/H2 lab pass.
