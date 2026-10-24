@@ -1,0 +1,99 @@
+{
+  "version": 2,
+  "parts": [
+    {
+      "id": "01-foundations",
+      "title": "Architecture Foundations"
+    },
+    {
+      "id": "02-networking",
+      "title": "Networking and HTTP"
+    },
+    {
+      "id": "03-scalability",
+      "title": "Scalability and Capacity"
+    },
+    {
+      "id": "04-apis",
+      "title": "API Architecture"
+    },
+    {
+      "id": "05-java",
+      "title": "Java and JVM"
+    },
+    {
+      "id": "06-spring",
+      "title": "Spring Boot"
+    },
+    {
+      "id": "07-relational-data",
+      "title": "Relational Data"
+    },
+    {
+      "id": "08-nosql-storage",
+      "title": "NoSQL and Storage"
+    },
+    {
+      "id": "09-caching",
+      "title": "Caching"
+    },
+    {
+      "id": "10-messaging",
+      "title": "Messaging and Event-Driven Systems"
+    },
+    {
+      "id": "11-distributed-systems",
+      "title": "Distributed Systems"
+    },
+    {
+      "id": "12-reliability",
+      "title": "Reliability and Recovery"
+    },
+    {
+      "id": "13-deployment",
+      "title": "Delivery and Deployment"
+    },
+    {
+      "id": "14-kubernetes",
+      "title": "Containers and Kubernetes"
+    },
+    {
+      "id": "15-aws",
+      "title": "AWS Architecture"
+    },
+    {
+      "id": "16-security",
+      "title": "Security and Identity"
+    },
+    {
+      "id": "17-observability",
+      "title": "Observability and Performance"
+    },
+    {
+      "id": "18-ai-systems",
+      "title": "AI Systems"
+    },
+    {
+      "id": "19-evolution",
+      "title": "Architecture Evolution"
+    },
+    {
+      "id": "20-case-studies",
+      "title": "End-to-End Case Studies"
+    }
+  ],
+  "chapters": [
+    {
+      "id": "horizontal-scaling",
+      "title": "Vertical and Horizontal Scaling",
+      "part": "03-scalability",
+      "path": "chapters/03-scalability/horizontal-scaling/",
+      "prerequisites": [],
+      "related": [
+        "load-balancing",
+        "capacity-planning"
+      ],
+      "status": "sample"
+    }
+  ]
+}
