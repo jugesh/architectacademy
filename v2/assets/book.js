@@ -77,15 +77,32 @@ const definitions = {
 'p50':'Median or 50th percentile: half of observations are at or below this value.',
 'CAP':'Consistency, Availability and Partition tolerance: formal trade-off framing for behavior during a network partition.'
 };
-const keys=Object.keys(definitions).sort((a,b)=>b.length-a.length);
+// Ambiguous everyday words require explicit data-term markup.
+const explicitOnly=new Set(['partition','offset','aggregate','isolation']);
+const keys=Object.keys(definitions).filter(k=>!explicitOnly.has(k)).sort((a,b)=>b.length-a.length);
 const escapeRe=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
 const pattern=new RegExp('(?<![\\p{L}\\p{N}_])('+keys.map(escapeRe).join('|')+')(?![\\p{L}\\p{N}_])','giu');
 const canonical=new Map(keys.map(k=>[k.toLocaleLowerCase(),k]));
 let active=null;
-function close(){if(active){active.setAttribute('aria-expanded','false');active=null;}}
+const tooltip=document.createElement('div');
+tooltip.id='book-tooltip';tooltip.className='book-tooltip';tooltip.role='tooltip';tooltip.hidden=true;
+document.body.append(tooltip);
+function close(){
+ if(active){active.setAttribute('aria-expanded','false');active.removeAttribute('aria-describedby');active=null;}
+ tooltip.hidden=true;
+}
+function show(el){
+ close();active=el;el.setAttribute('aria-expanded','true');el.setAttribute('aria-describedby',tooltip.id);
+ tooltip.textContent=el.dataset.definition;tooltip.hidden=false;
+ const rect=el.getBoundingClientRect(),box=tooltip.getBoundingClientRect();
+ tooltip.style.left=Math.max(8,Math.min(rect.left,window.innerWidth-box.width-8))+'px';
+ tooltip.style.top=Math.max(8,Math.min(rect.bottom+8,window.innerHeight-box.height-8))+'px';
+}
+window.addEventListener('resize',close);
+window.addEventListener('scroll',close,true);
 function decorate(root){
  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode(n){
-  const p=n.parentElement;if(!p||!n.nodeValue.trim()||p.closest('a,button,summary,code,pre,script,style,textarea,.term,[data-no-tooltips]'))return NodeFilter.FILTER_REJECT;
+  const p=n.parentElement;if(!p||!n.nodeValue.trim()||p.closest('a,button,summary,code,pre,script,style,textarea,svg,h1,h2,h3,.term,[data-no-tooltips]'))return NodeFilter.FILTER_REJECT;
   return NodeFilter.FILTER_ACCEPT;
  }});
  const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
@@ -100,13 +117,30 @@ function decorate(root){
 document.querySelectorAll('main').forEach(decorate);
 document.querySelectorAll('[data-term]').forEach(el=>{
  const key=el.dataset.term;el.classList.add('term');el.tabIndex=0;el.setAttribute('role','button');el.dataset.definition=definitions[key]||el.dataset.definition||key;
- el.setAttribute('aria-label',key+': '+el.dataset.definition);
- el.addEventListener('click',e=>{e.stopPropagation();const isOpen=active===el;close();if(!isOpen){active=el;el.setAttribute('aria-expanded','true');el.focus();}});
+ el.setAttribute('aria-label',el.textContent);
+ el.setAttribute('aria-expanded','false');
+ el.addEventListener('mouseenter',()=>show(el));
+ el.addEventListener('mouseleave',close);
+ el.addEventListener('focus',()=>show(el));
+ el.addEventListener('blur',close);
+ el.addEventListener('click',e=>{e.stopPropagation();show(el);});
  el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();el.click();}if(e.key==='Escape')close();});
 });
 document.addEventListener('click',e=>{if(!e.target.closest('.term'))close();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
 window.setBookMode=function(mode){close();document.body.classList.remove('cornell','revision');if(mode!=='textbook')document.body.classList.add(mode);document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));};
-window.printBook=function(){close();const entries=[...document.querySelectorAll('details')],state=entries.map(e=>e.open);entries.forEach(e=>e.open=true);const restore=()=>{entries.forEach((e,i)=>e.open=state[i]);window.removeEventListener('afterprint',restore);};window.addEventListener('afterprint',restore);window.print();};
+let printState=null;
+function preparePrint(){
+ close();if(printState)return;
+ printState=[...document.querySelectorAll('details')].map(el=>[el,el.open]);
+ printState.forEach(([el])=>el.open=true);
+}
+function restorePrint(){
+ if(!printState)return;
+ printState.forEach(([el,open])=>el.open=open);printState=null;
+}
+window.addEventListener('beforeprint',preparePrint);
+window.addEventListener('afterprint',restorePrint);
+window.printBook=function(){preparePrint();window.print();};
 window.setBookMode('textbook');
 })();

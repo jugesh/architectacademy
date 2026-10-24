@@ -1,0 +1,29 @@
+name: Textbook quality
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  chapter-one:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: python3 scripts/build-chapter-one.py --check
+      - run: java v2/examples/ch01/PaymentIntent.java
+      - run: python3 tests/chapter-structure.py
+      - run: node --check v2/assets/book.js
+      - run: npm install --no-save @playwright/test@1.58.2
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: chapter-one-browser-and-print
+          path: |
+            test-results/
+            playwright-report/
