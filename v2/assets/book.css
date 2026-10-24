@@ -37,3 +37,4 @@ figure{margin:22px 0}figure svg{display:block;width:100%;height:auto}figcaption{
 }
 
 @media print{pre.diagram-text{break-inside:avoid}}
+@media screen and (max-width:650px){figure{overflow-x:auto}figure svg{min-width:540px}}

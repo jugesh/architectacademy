@@ -11,6 +11,7 @@ for(const pageName of ['index','complete','exercises','review-kit']){
     await expect(page.locator(`[data-mode="${mode}"]`)).toHaveAttribute('aria-pressed','true');
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBeTruthy();
     if(mode==='revision')await expect(page.locator('.revision-only')).toBeVisible();
+    await page.screenshot({path:`test-results/${pageName}-${width}-${mode}.png`});
    }
    expect(errors).toEqual([]);
    await page.screenshot({path:`test-results/${pageName}-${width}.png`});
@@ -44,4 +45,12 @@ test('TOC targets and tooltip dismissal',async({page})=>{
  await expect(page.locator('#book-tooltip')).toBeVisible();
  const b=await page.locator('#book-tooltip').boundingBox();expect(b.x).toBeGreaterThanOrEqual(0);expect(b.x+b.width).toBeLessThanOrEqual(360);
  await term.press('Escape');await expect(page.locator('#book-tooltip')).toBeHidden();
+});
+
+test('checkout diagram and code remain readable on mobile',async({page})=>{
+ await page.setViewportSize({width:360,height:900});await page.goto(base+'index.html#s16');
+ await page.locator('figure').scrollIntoViewIfNeeded();
+ await expect(page.locator('figure svg')).toBeVisible();
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBeTruthy();
+ await page.screenshot({path:'test-results/checkout-diagram-mobile.png'});
 });
