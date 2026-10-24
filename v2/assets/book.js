@@ -1,6 +1,10 @@
 (() => {
 'use strict';
 const definitions = {
+'DTO':'Data Transfer Object: an explicit boundary model for accepted or returned data, independent of persistence entities.',
+'keyset pagination':'Page traversal using the last stable ordered key rather than counting an offset; not automatically a snapshot.',
+'fencing':'Rejecting stale owners using a monotonically ordered token enforced by the protected resource.',
+'fingerprint':'Canonical comparison of operation parameters, used to detect conflicting reuse of an identity.',
 'CIDR':'Classless Inter-Domain Routing: a prefix notation describing an IP address block, such as /24 for 24 fixed IPv4 bits.',
 'NAT':'Network Address Translation: maps source or destination addresses and often ports between network boundaries.',
 'MTU':'Maximum Transmission Unit: largest packet size a link can carry without fragmentation at that layer.',
