@@ -161,7 +161,7 @@
       "path": "chapters/06-spring/transactions-proxies/",
       "prerequisites": [],
       "related": [],
-      "status": "draft"
+      "status": "quality-gate-passed"
     },
     {
       "id": "indexes-isolation-locking",

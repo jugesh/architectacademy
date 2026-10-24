@@ -5,7 +5,7 @@ Only chapters explicitly listed in COMPLETED are included in this audited builde
 from pathlib import Path
 import re,sys
 ROOT=Path(__file__).resolve().parents[1]
-COMPLETED=['03-scalability/horizontal-scaling','04-apis/idempotency-safe-retries','05-java/jvm-memory-gc']
+COMPLETED=['03-scalability/horizontal-scaling','04-apis/idempotency-safe-retries','05-java/jvm-memory-gc','06-spring/transactions-proxies']
 def sections(text):return re.findall(r'<section\b.*?</section>',text,re.S)
 def revision(text):return text[text.index('<div class="revision-only">'):text.index('</main>')]
 for chapter in COMPLETED:
