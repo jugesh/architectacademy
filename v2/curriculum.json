@@ -193,6 +193,42 @@
       "prerequisites": [],
       "related": [],
       "status": "draft"
+    },
+    {
+      "id": "safe-delivery",
+      "title": "CI/CD, Release Engineering and Safe Deployments",
+      "part": "13-deployment",
+      "path": "chapters/13-deployment/safe-delivery/",
+      "prerequisites": [],
+      "related": [],
+      "status": "draft"
+    },
+    {
+      "id": "aws-reference-architecture",
+      "title": "AWS Architecture: Networks, Compute, Data and Resilience",
+      "part": "15-aws",
+      "path": "chapters/15-aws/aws-reference-architecture/",
+      "prerequisites": [],
+      "related": [],
+      "status": "draft"
+    },
+    {
+      "id": "identity-threat-modeling",
+      "title": "Security Architecture: Identity, Authorization and Threat Modeling",
+      "part": "16-security",
+      "path": "chapters/16-security/identity-threat-modeling/",
+      "prerequisites": [],
+      "related": [],
+      "status": "draft"
+    },
+    {
+      "id": "tracing-slos-performance",
+      "title": "Observability: Logs, Metrics, Traces and Performance Engineering",
+      "part": "17-observability",
+      "path": "chapters/17-observability/tracing-slos-performance/",
+      "prerequisites": [],
+      "related": [],
+      "status": "draft"
     }
   ]
 }
