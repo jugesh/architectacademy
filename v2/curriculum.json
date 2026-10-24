@@ -94,6 +94,42 @@
         "capacity-planning"
       ],
       "status": "sample"
+    },
+    {
+      "id": "idempotency-safe-retries",
+      "title": "Idempotency and Safe Retries",
+      "part": "04-apis",
+      "path": "chapters/04-apis/idempotency-safe-retries/",
+      "prerequisites": [],
+      "related": [],
+      "status": "draft"
+    },
+    {
+      "id": "cache-consistency-invalidation",
+      "title": "Caching, Consistency and Invalidation",
+      "part": "09-caching",
+      "path": "chapters/09-caching/cache-consistency-invalidation/",
+      "prerequisites": [],
+      "related": [],
+      "status": "draft"
+    },
+    {
+      "id": "kafka-consumer-groups",
+      "title": "Kafka Consumer Groups and Rebalancing",
+      "part": "10-messaging",
+      "path": "chapters/10-messaging/kafka-consumer-groups/",
+      "prerequisites": [],
+      "related": [],
+      "status": "draft"
+    },
+    {
+      "id": "timeouts-retries-failure",
+      "title": "Timeouts, Retries and Partial Failure",
+      "part": "11-distributed-systems",
+      "path": "chapters/11-distributed-systems/timeouts-retries-failure/",
+      "prerequisites": [],
+      "related": [],
+      "status": "draft"
     }
   ]
 }
