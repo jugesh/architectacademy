@@ -17,7 +17,7 @@ section counts and a successful deployment do not establish textbook completenes
 | Sources | Primary Spring and PostgreSQL references added beside adapter discussion |
 
 **Chapter 1: quality gate passed for the foundations scope on 24 October 2026. Chapter 2: networking foundations quality gate passed on 24 October 2026.**
-Chapters 5–20 have not been audited in this pass and must not be inferred complete.
+Chapters 6–20 have not been audited in this pass and must not be inferred complete.
 
 ## Reproduce
 
@@ -44,7 +44,7 @@ edition after changing core, exercises or review-kit content.
 | 02 | Networking and HTTP | Quality gate passed |
 | 03 | Scalability and Capacity | Quality gate passed |
 | 04 | API Architecture | Quality gate passed |
-| 05 | Java and JVM | Waiting for previous chapter quality gate |
+| 05 | Java and JVM | Quality gate passed |
 | 06 | Spring Boot | Waiting for previous chapter quality gate |
 | 07 | Relational Data | Waiting for previous chapter quality gate |
 | 08 | NoSQL and Storage | Waiting for previous chapter quality gate |
@@ -86,3 +86,9 @@ The integrated edition is generated from canonical core, lab and interview pages
 Expanded API contracts beyond idempotency: resource/protocol boundaries, validation and object authorization, problem details, PostgreSQL conflict/snapshot behavior, local transaction branches, remote recovery and fencing limits, pagination/snapshots, compatibility and async completion/cancellation. Added worked fault exercises, a responsive recovery-state SVG and worked answers to all 12 interview follow-ups. The local Java policy lab passes concurrent duplicate, conflict, tenant separation, equal-value distinct intents and stable replay checks. It intentionally does not verify SQL persistence or provider integration; SQL shown is explicitly conditional design pseudocode, with required database/session tests documented.
 
 All four editions expose Textbook/Cornell/Revision and the integrated reader is generated with CI parity checks. Twenty-one local Chromium 153 browser checks pass across four widths. Integrated PDFs: 19 Textbook, 20 Cornell, one Revision page. All pages visually reviewed across the initial and final pagination pass; a one-line interview spill was corrected by keeping short interview units together. Mobile layout, local links/fragments and Java checks pass. RFC 9457, Spring MVC and PostgreSQL references are linked beside mechanisms. Scope: API architecture foundations and local policy correctness, not a production payment implementation.
+
+## Chapter 5 evidence
+
+Expanded JVM runtime/JIT/classloader lifecycles, allocation versus retention, charged-container/native memory accounting, GC mechanisms/experiments, publication and multi-field invariants, virtual-thread version boundaries, cancellation, context and executor failure analysis. Added worked diagnosis, responsive diagnostic SVG, all 12 worked interview follow-ups and a Java publication lab. The lab checks coherent immutable snapshots and exact atomic counts; its stress run is explicitly not a proof of arbitrary data-race safety.
+
+Twenty-one chapter browser checks pass at four widths in local Chromium 153; all four reader editions expose three modes and generated complete-reader parity is enforced. All integrated 19 Textbook, 20 Cornell and one Revision PDF pages visually reviewed, with local links/fragments and Java checks passing. JDK 21 versus JDK 24 monitor pinning is distinguished using JEP 444/491; Oracle GC/NMT and JLS references are linked. Scope: Java/JVM architecture foundations and local publication policy, not a collector performance claim or production diagnostic execution.
