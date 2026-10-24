@@ -35,3 +35,5 @@ figure{margin:22px 0}figure svg{display:block;width:100%;height:auto}figcaption{
  body.cornell .cue{display:block;border:0;border-left:2px solid #777;padding-left:8px;margin:8px 0;font-style:italic}
  a{color:inherit}
 }
+
+@media print{pre.diagram-text{break-inside:avoid}}
