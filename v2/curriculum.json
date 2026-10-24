@@ -111,12 +111,12 @@
     },
     {
       "id": "idempotency-safe-retries",
-      "title": "Idempotency and Safe Retries",
+      "title": "API Contracts, Idempotency and Safe Retries",
       "part": "04-apis",
       "path": "chapters/04-apis/idempotency-safe-retries/",
       "prerequisites": [],
       "related": [],
-      "status": "draft"
+      "status": "quality-gate-passed"
     },
     {
       "id": "cache-consistency-invalidation",
