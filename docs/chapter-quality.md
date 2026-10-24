@@ -17,7 +17,7 @@ section counts and a successful deployment do not establish textbook completenes
 | Sources | Primary Spring and PostgreSQL references added beside adapter discussion |
 
 **Chapter 1: quality gate passed for the foundations scope on 24 October 2026. Chapter 2: networking foundations quality gate passed on 24 October 2026.**
-Chapters 4–20 have not been audited in this pass and must not be inferred complete.
+Chapters 5–20 have not been audited in this pass and must not be inferred complete.
 
 ## Reproduce
 
@@ -43,7 +43,7 @@ edition after changing core, exercises or review-kit content.
 | 01 | Architecture Foundations | Quality gate passed |
 | 02 | Networking and HTTP | Quality gate passed |
 | 03 | Scalability and Capacity | Quality gate passed |
-| 04 | API Architecture | Waiting for previous chapter quality gate |
+| 04 | API Architecture | Quality gate passed |
 | 05 | Java and JVM | Waiting for previous chapter quality gate |
 | 06 | Spring Boot | Waiting for previous chapter quality gate |
 | 07 | Relational Data | Waiting for previous chapter quality gate |
@@ -80,3 +80,9 @@ Primary references are linked beside the relevant mechanisms. AWS examples are i
 Expanded capacity engineering from a specimen to resource-demand and queueing models, serial/partition limits, hot-key failure analysis, admission/fairness, delayed autoscaling, connection surge budgeting and a checkout acceptance case. Replaced repeated short sections with six substantial teaching units. All 12 interview follow-up exercises have worked answers. The deterministic Java AdmissionLab verifies active-work bounds, rejection before effect, and permit recovery on success/failure; it does not claim distributed quota enforcement.
 
 The integrated edition is generated from canonical core, lab and interview pages; CI checks parity. All four editions support Textbook/Cornell/Revision. Twenty-one chapter browser checks pass across four widths in local Chromium 153. All 19 integrated Textbook, 20 Cornell and one Revision PDF pages were visually reviewed, plus the mobile SVG. All local links, fragments and duplicate IDs pass. Sources for HPA and AWS queue scaling are linked beside their mechanisms. The scope is capacity foundations and a local concurrency lab; load targets and AWS topology are explicitly illustrative, not measured production claims.
+
+## Chapter 4 evidence
+
+Expanded API contracts beyond idempotency: resource/protocol boundaries, validation and object authorization, problem details, PostgreSQL conflict/snapshot behavior, local transaction branches, remote recovery and fencing limits, pagination/snapshots, compatibility and async completion/cancellation. Added worked fault exercises, a responsive recovery-state SVG and worked answers to all 12 interview follow-ups. The local Java policy lab passes concurrent duplicate, conflict, tenant separation, equal-value distinct intents and stable replay checks. It intentionally does not verify SQL persistence or provider integration; SQL shown is explicitly conditional design pseudocode, with required database/session tests documented.
+
+All four editions expose Textbook/Cornell/Revision and the integrated reader is generated with CI parity checks. Twenty-one local Chromium 153 browser checks pass across four widths. Integrated PDFs: 19 Textbook, 20 Cornell, one Revision page. All pages visually reviewed across the initial and final pagination pass; a one-line interview spill was corrected by keeping short interview units together. Mobile layout, local links/fragments and Java checks pass. RFC 9457, Spring MVC and PostgreSQL references are linked beside mechanisms. Scope: API architecture foundations and local policy correctness, not a production payment implementation.
