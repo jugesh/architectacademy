@@ -47,3 +47,5 @@ figure svg{max-width:540px;margin-inline:auto}
 }
 @page{@bottom-center{content:counter(page);font:9pt sans-serif;color:#64717d}}
 @media print{.cue{break-after:avoid}}
+
+@media print{.interview-unit{break-inside:avoid}}
