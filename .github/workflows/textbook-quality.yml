@@ -17,6 +17,7 @@ jobs:
       - run: java v2/examples/ch01/PaymentIntent.java
       - run: java --add-modules jdk.httpserver v2/examples/ch02/TimeoutLab.java
       - run: java v2/examples/ch03/AdmissionLab.java
+      - run: java v2/examples/ch04/IdempotencyLab.java
       - run: python3 scripts/build-chapter-readers.py --check
       - run: python3 tests/chapter-structure.py
       - run: node --check v2/assets/book.js
