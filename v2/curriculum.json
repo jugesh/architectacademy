@@ -152,7 +152,7 @@
       "path": "chapters/05-java/jvm-memory-gc/",
       "prerequisites": [],
       "related": [],
-      "status": "draft"
+      "status": "quality-gate-passed"
     },
     {
       "id": "transactions-proxies",

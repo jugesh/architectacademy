@@ -18,6 +18,7 @@ jobs:
       - run: java --add-modules jdk.httpserver v2/examples/ch02/TimeoutLab.java
       - run: java v2/examples/ch03/AdmissionLab.java
       - run: java v2/examples/ch04/IdempotencyLab.java
+      - run: java v2/examples/ch05/PublicationLab.java
       - run: python3 scripts/build-chapter-readers.py --check
       - run: python3 tests/chapter-structure.py
       - run: node --check v2/assets/book.js
