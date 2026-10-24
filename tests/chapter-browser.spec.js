@@ -23,6 +23,12 @@ for(const pageName of ['index','complete','exercises','review-kit']){
   await page.emulateMedia({media:'print'});
   await expect(page.locator('header')).toBeHidden();
   await page.pdf({path:`test-results/${pageName}.pdf`,format:'A4',printBackground:true});
+  for(const mode of ['cornell','revision']){
+   await page.emulateMedia({media:'screen'});
+   await page.locator(`[data-mode="${mode}"]`).click();
+   await page.emulateMedia({media:'print'});
+   await page.pdf({path:`test-results/${pageName}-${mode}.pdf`,format:'A4',printBackground:true});
+  }
   await page.evaluate(()=>dispatchEvent(new Event('afterprint')));
   if(await page.locator('details').count())expect(await page.locator('details:not([open])').count()).toBeGreaterThan(0);
  });
