@@ -16,7 +16,10 @@ test('network anchors and mobile diagram',async({page})=>{
  for(const a of await page.locator('.toc a').all()){
   const href=await a.getAttribute('href');await a.click();await expect(page.locator(href)).toBeInViewport();
  }
- await page.locator('figure').scrollIntoViewIfNeeded();await page.screenshot({path:'test-results/network-diagram-mobile.png'});
+ await page.locator('figure').first().scrollIntoViewIfNeeded();await page.screenshot({path:'test-results/network-diagram-mobile.png'});
+ await page.locator('#aws-path figure').scrollIntoViewIfNeeded();
+ await expect(page.locator('#aws-path svg')).toBeVisible();
+ await page.screenshot({path:'test-results/network-aws-mobile.png'});
 });
 test('network prints all modes with answers',async({page})=>{
  await page.goto(url);
