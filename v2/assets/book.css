@@ -46,3 +46,4 @@ figure svg{max-width:540px;margin-inline:auto}
  th,td{overflow-wrap:normal;hyphens:auto}
 }
 @page{@bottom-center{content:counter(page);font:9pt sans-serif;color:#64717d}}
+@media print{.cue{break-after:avoid}}
