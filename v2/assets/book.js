@@ -1,6 +1,11 @@
 (() => {
 'use strict';
 const definitions = {
+'CIDR':'Classless Inter-Domain Routing: a prefix notation describing an IP address block, such as /24 for 24 fixed IPv4 bits.',
+'NAT':'Network Address Translation: maps source or destination addresses and often ports between network boundaries.',
+'MTU':'Maximum Transmission Unit: largest packet size a link can carry without fragmentation at that layer.',
+'NXDOMAIN':'DNS response indicating that the queried domain name does not exist; the negative answer may be cached.',
+'SERVFAIL':'DNS response indicating resolution failed, distinct from a confirmed nonexistent name.',
 'DNS':'Domain Name System: resolves names to records such as candidate IP addresses; it does not migrate existing connections.',
 'TCP':'Transmission Control Protocol: reliable ordered byte-stream transport with flow and congestion control.',
 'TLS':'Transport Layer Security: protects transport confidentiality and integrity, with peer authentication when properly verified.',
