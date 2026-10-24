@@ -157,6 +157,42 @@
       "prerequisites": [],
       "related": [],
       "status": "draft"
+    },
+    {
+      "id": "http-tls-load-balancing",
+      "title": "HTTP, TLS and Load Balancing",
+      "part": "02-networking",
+      "path": "chapters/02-networking/http-tls-load-balancing/",
+      "prerequisites": [],
+      "related": [],
+      "status": "draft"
+    },
+    {
+      "id": "mongodb-migration",
+      "title": "MongoDB Architecture, Consistency and Migration",
+      "part": "08-nosql-storage",
+      "path": "chapters/08-nosql-storage/mongodb-migration/",
+      "prerequisites": [],
+      "related": [],
+      "status": "draft"
+    },
+    {
+      "id": "slo-disaster-recovery",
+      "title": "SLOs, Resilience and Disaster Recovery",
+      "part": "12-reliability",
+      "path": "chapters/12-reliability/slo-disaster-recovery/",
+      "prerequisites": [],
+      "related": [],
+      "status": "draft"
+    },
+    {
+      "id": "operations-workloads",
+      "title": "Kubernetes Workloads and Operations",
+      "part": "14-kubernetes",
+      "path": "chapters/14-kubernetes/operations-workloads/",
+      "prerequisites": [],
+      "related": [],
+      "status": "draft"
     }
   ]
 }
