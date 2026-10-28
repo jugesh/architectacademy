@@ -4,6 +4,8 @@ Open `/v3/` through any static HTTP server. No build step or external JavaScript
 
 V3 follows the public System Design School navigation exactly: **7 sections, 23 subsections and 121 topics**, with the same topic labels, hierarchy and order captured on 2026-10-28. No topic is silently omitted, merged, renamed or added. The layout and original notes belong to Architect Academy; the reference lesson bodies are not copied.
 
+Every topic starts with its own formal technical definition, an explanatory introduction and a concise interview answer with an explicit qualification. Problem scenarios, mechanisms, diagrams and worked examples follow that opening. Revision mode retains the definition and explanation. `introductions.js` contains all 121 authored openings; curriculum checks reject missing or additional topic introductions.
+
 All 121 topics have original content. Depth is visible on each page: 99 topic briefs, 21 longer concise notes and one guided idempotency lesson. A topic brief is not represented as a full course chapter or executed lab. Exercise topics contain original practice instructions; they do not claim the reference provider's labs were reproduced or run.
 
 Every subsection also includes an original worked scenario, architectural consequences and failure drill. Twelve topics have additional implementation-level explanations, code or calculations and targeted exercises. These additions preserve the exact curriculum and are labeled as shared subsection context where appropriate.
