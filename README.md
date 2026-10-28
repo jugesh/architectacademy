@@ -1,5 +1,7 @@
 # Architect Academy
 
+[V3 system design notes](https://jugesh.github.io/architectacademy/v3/) — 25 original lessons, nested navigation, personal notes and a guided idempotency walkthrough. [V3 details](v3/README.md).
+
 **A free, interactive architecture textbook and practice environment.**
 
 [Open the textbook](https://jugesh.github.io/architectacademy/) · [All 120 lessons](https://jugesh.github.io/architectacademy/lesson-index.html) · [12 engineering labs](https://jugesh.github.io/architectacademy/labs.html) · [36 architecture challenges](https://jugesh.github.io/architectacademy/challenges.html)
