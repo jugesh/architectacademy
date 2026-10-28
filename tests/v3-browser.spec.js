@@ -37,7 +37,7 @@ for(const width of [360,768,1440])test(`V3 layout and navigation ${width}`,async
 test('V3 every lesson renders and textbook links resolve',async({page})=>{
  await page.goto('/v3/');const topics=await page.evaluate(()=>ACADEMY_LESSONS.map(l=>({id:l.id,title:l.title})));
  expect(topics).toHaveLength(121);
- for(const {id,title} of topics){await page.goto('/v3/#'+id);await expect(page.locator('h1')).toHaveText(title);await expect(page.locator('#personal-notes')).toBeVisible();}
+ for(const {id,title} of topics){await page.goto('/v3/#'+id);await expect(page.locator('h1')).toHaveText(title);await expect(page.locator('#personal-notes')).toBeVisible();await expect(page.locator('.full-content > section').first()).toHaveAttribute('id','technical-introduction');await expect(page.locator('#interview-answer')).toContainText('Important qualification:');const definition=await page.evaluate(id=>ACADEMY_INTRODUCTIONS[id][0],id);await expect(page.locator('.intro')).toHaveText(definition);}
  const paths=await page.evaluate(()=>ACADEMY_LESSONS.filter(l=>l.deep).map(l=>'/v2/chapters/'+l.deep+'/index.html'));
  for(const path of paths)expect((await page.request.get(path)).status()).toBe(200);
  await page.goto('/v3/#idempotency');await page.emulateMedia({media:'print'});await page.evaluate(()=>dispatchEvent(new Event('beforeprint')));
@@ -98,4 +98,12 @@ test('V3 deeper examples and colors preserve every reference topic',async({page}
  await page.screenshot({path:'test-results/v3-enriched-desktop.png',fullPage:true});
  await page.setViewportSize({width:390,height:900});await page.screenshot({path:'test-results/v3-enriched-mobile.png',fullPage:true});
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
+});
+test('V3 definitions precede examples and remain available for revision',async({page})=>{
+ await page.goto('/v3/#idempotency');await expect(page.locator('.intro')).toHaveText('Idempotency is the property that repeating an operation has the same intended effect as performing it once.');
+ await expect(page.locator('#technical-introduction')).toContainText('Identical response replay is an additional contract');
+ const order=await page.locator('.full-content > section').evaluateAll(nodes=>nodes.map(n=>n.id));expect(order.indexOf('technical-introduction')).toBeLessThan(order.indexOf('timeout'));expect(order.indexOf('interview-answer')).toBeLessThan(order.indexOf('timeout'));
+ await page.screenshot({path:'test-results/v3-definition-first-desktop.png',fullPage:true});
+ await page.getByRole('button',{name:'Revision',exact:true}).click();await expect(page.locator('.revision-definition')).toContainText('same intended effect');
+ await page.getByRole('button',{name:'Notes',exact:true}).click();await page.setViewportSize({width:390,height:900});await page.screenshot({path:'test-results/v3-definition-first-mobile.png',fullPage:true});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
 });
