@@ -77,6 +77,7 @@ COMMIT;</code></pre><p>If the transaction rolls back, neither the ledger entry n
   const l=current,[group,sub]=locationOf(l.id),index=lessons.indexOf(l);
   if(window.closeAcademyTooltip)window.closeAcademyTooltip();
   document.body.dataset.area=String(groups.findIndex(([title])=>title===group));
+  document.body.dataset.lesson=l.id;
   document.title=`${l.title} — Architect Academy V3`;
   document.body.classList.toggle('cornell',state.mode==='cornell');document.body.classList.toggle('revision',state.mode==='revision');
   const body=technicalIntroduction(l)+(l.id==='idempotency'?idempotency():section('problem','The problem',`<p>${escape(l.problem)}</p>`, 'What breaks without this concept?')+section('mental-model','How it works',`<p>${escape(l.model)}</p>${diagrams[l.diagram]?diagrams[l.diagram]():''}`,'Explain the idea without naming a product.')+section('approach','Work through the design',`<ol class="section-list">${l.steps.map(s=>`<li>${escape(s)}</li>`).join('')}</ol>`,'Which decision comes first?')+section('tradeoffs','Trade-offs & failure modes',`<p>${escape(l.tradeoff)}</p>`,'What does this design cost?'));
