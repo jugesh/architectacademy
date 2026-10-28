@@ -74,3 +74,28 @@ test('V3 migrates earlier browser notes and progress without duplication',async(
  await expect(page.locator('#personal-notes')).toHaveValue('Keep the outcome unresolved. Query by stable intent.');
  await page.goto('/v3/#what-is-system-design-interview');await expect(page.locator('#save')).toHaveAttribute('aria-pressed','true');
 });
+test('V3 definitions support hover, keyboard, tap and escape',async({page})=>{
+ await page.goto('/v3/#idempotency');const term=page.locator('.term').first();
+ await term.hover();await expect(page.locator('#academy-tooltip')).toBeVisible();
+ await expect(term).toHaveAttribute('aria-describedby','academy-tooltip');
+ await page.keyboard.press('Escape');await expect(page.locator('#academy-tooltip')).toBeHidden();
+ await term.focus();await expect(page.locator('#academy-tooltip')).toBeVisible();
+ await page.keyboard.press('Enter');await expect(page.locator('#academy-tooltip')).toBeVisible();
+ await page.keyboard.press('Escape');await expect(page.locator('#academy-tooltip')).toBeHidden();
+ await page.setViewportSize({width:360,height:800});await term.click();await expect(page.locator('#academy-tooltip')).toBeVisible();
+ const box=await page.locator('#academy-tooltip').boundingBox();expect(box.x).toBeGreaterThanOrEqual(0);expect(box.x+box.width).toBeLessThanOrEqual(360);
+ await page.locator('h1').click();await expect(page.locator('#academy-tooltip')).toBeHidden();
+ await page.getByRole('button',{name:'Revision',exact:true}).click();await expect(page.locator('.revision-content .term').first()).toBeVisible();
+ await page.locator('.revision-content .term').first().focus();await expect(page.locator('#academy-tooltip')).toBeVisible();
+ await page.emulateMedia({media:'print'});await expect(page.locator('#academy-tooltip')).toBeHidden();
+});
+test('V3 deeper examples and colors preserve every reference topic',async({page})=>{
+ await page.goto('/v3/#api-design-pagination');await expect(page.locator('#implementation-detail')).toContainText('SELECT');
+ await expect(page.locator('#worked-example')).toContainText('Worked context · API Design');
+ const blue=await page.evaluate(()=>getComputedStyle(document.body).getPropertyValue('--green'));
+ await page.goto('/v3/#timeout');await expect(page.locator('#implementation-detail')).toContainText('remaining');
+ const purple=await page.evaluate(()=>getComputedStyle(document.body).getPropertyValue('--green'));expect(purple).not.toBe(blue);
+ await page.screenshot({path:'test-results/v3-enriched-desktop.png',fullPage:true});
+ await page.setViewportSize({width:390,height:900});await page.screenshot({path:'test-results/v3-enriched-mobile.png',fullPage:true});
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
+});
