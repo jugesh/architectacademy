@@ -1,6 +1,6 @@
 # Architect Academy
 
-[V3 system design notes](https://jugesh.github.io/architectacademy/v3/) — 25 original lessons, nested navigation, personal notes and a guided idempotency walkthrough. [V3 details](v3/README.md).
+[V3 system design notes](https://jugesh.github.io/architectacademy/v3/) — the exact 7-section, 23-subsection, 121-topic System Design School navigation, with original notes, personal study tools and a guided idempotency walkthrough. [V3 details](v3/README.md).
 
 **A free, interactive architecture textbook and practice environment.**
 
