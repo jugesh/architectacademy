@@ -1,4 +1,5 @@
 /* Topic-area colors keep the reader quiet while making teaching roles distinct. */
+.interview-answer{border:1px solid #c7d6eb;border-left:4px solid #3d68a0;border-radius:0 8px 8px 0;background:#f0f5fc;padding:18px 22px;font-size:14px}.interview-answer p:last-child{margin-bottom:0}.interview-answer strong{color:#2d517c}.revision-definition{padding:14px 17px;border-left:3px solid var(--green);background:var(--mint)}@media print{.interview-answer{break-inside:avoid;background:#f7f7f7;border-color:#999}.interview-answer strong{color:inherit}}
 body[data-area="0"]{--green:#285a9f;--mint:#edf4ff}
 body[data-area="1"]{--green:#7045a2;--mint:#f4effb}
 body[data-area="2"]{--green:#146b65;--mint:#eaf6f2}
