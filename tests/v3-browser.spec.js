@@ -41,7 +41,7 @@ test('V3 every lesson renders and textbook links resolve',async({page})=>{
  const paths=await page.evaluate(()=>ACADEMY_LESSONS.filter(l=>l.deep).map(l=>'/v2/chapters/'+l.deep+'/index.html'));
  for(const path of paths)expect((await page.request.get(path)).status()).toBe(200);
  await page.goto('/v3/#idempotency');await page.emulateMedia({media:'print'});await page.evaluate(()=>dispatchEvent(new Event('beforeprint')));
- await expect(page.locator('.topbar')).toBeHidden();await expect(page.locator('details.question')).toHaveAttribute('open','');
+ await expect(page.locator('.topbar')).toBeHidden();await expect(page.locator('details.question:not([open])')).toHaveCount(0);
  await page.pdf({path:'test-results/v3-idempotency.pdf',format:'A4',printBackground:true});
 });
 test('V3 handles unavailable storage and unknown lessons',async({page})=>{
@@ -106,4 +106,18 @@ test('V3 definitions precede examples and remain available for revision',async({
  await page.screenshot({path:'test-results/v3-definition-first-desktop.png',fullPage:true});
  await page.getByRole('button',{name:'Revision',exact:true}).click();await expect(page.locator('.revision-definition')).toContainText('same intended effect');
  await page.getByRole('button',{name:'Notes',exact:true}).click();await page.setViewportSize({width:390,height:900});await page.screenshot({path:'test-results/v3-definition-first-mobile.png',fullPage:true});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
+});
+test('idempotency pilot explains solution selection, libraries and design trade-offs',async({page})=>{
+ await page.goto('/v3/#idempotency');
+ await expect(page.locator('#idem-origins')).toContainText('Consumer crash');
+ for(const [value,text] of [['local','one relational database'],['remote','External payment'],['lambda','AWS Lambda'],['queue','SQS or Kafka'],['identity','caller does not supply']]){await page.locator('#idem-workload').selectOption(value);await expect(page.locator('#idem-recommendation h3')).toContainText(text);await expect(page.locator('#idem-recommendation')).toContainText('Boundary / pitfall:');}
+ await expect(page.locator('#idem-library-map')).toContainText('Resilience4j');
+ await expect(page.locator('#idem-spring')).toContainText('ON CONFLICT');
+ await expect(page.locator('#idem-aws')).toContainText('10-minute');await expect(page.locator('#idem-aws')).toContainText('5-minute');
+ await expect(page.locator('#idem-design-problems .design-case')).toHaveCount(3);await expect(page.locator('#idem-interview-deep-dive details')).toHaveCount(10);
+ await page.locator('#idem-interview-deep-dive summary').nth(4).click();await expect(page.locator('#idem-interview-deep-dive details').nth(4)).toContainText('five-minute');
+ await expect(page.locator('#idem-reading a')).toHaveCount(19);
+ await page.setViewportSize({width:360,height:900});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
+ await page.locator('#idem-selection').scrollIntoViewIfNeeded();await page.screenshot({path:'test-results/v3-idempotency-selector-mobile.png'});
+ await page.goto('/v3/#timeout');await expect(page.locator('#idem-workload')).toHaveCount(0);await expect(page.locator('#idem-reading')).toHaveCount(0);
 });

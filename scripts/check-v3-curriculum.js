@@ -7,6 +7,10 @@ global.window={};
 for(const file of ['curriculum','lessons','topic-notes','curriculum-adapter'])require(path.join(root,'v3',file+'.js'));
 require(path.join(root,'v3/depth.js'));
 require(path.join(root,'v3/introductions.js'));
+require(path.join(root,'v3/idempotency-practice.js'));
+assert.equal(Object.keys(window.ACADEMY_IDEMPOTENCY_CHOICES).length,5);
+assert.ok(window.ACADEMY_IDEMPOTENCY_REFERENCES.length>=15);
+for(const [title,url,why] of window.ACADEMY_IDEMPOTENCY_REFERENCES){assert.ok(title&&why&&url.startsWith('https://'));}
 const reference=JSON.parse(fs.readFileSync(path.join(root,'v3/curriculum.json'),'utf8'));
 assert.deepEqual(window.ACADEMY_CURRICULUM,reference.groups);
 const expected=reference.groups.flatMap(g=>g.sections.flatMap(s=>s.lessons));

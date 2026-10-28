@@ -6,6 +6,8 @@ V3 follows the public System Design School navigation exactly: **7 sections, 23 
 
 Every topic starts with its own formal technical definition, an explanatory introduction and a concise interview answer with an explicit qualification. Problem scenarios, mechanisms, diagrams and worked examples follow that opening. Revision mode retains the definition and explanation. `introductions.js` contains all 121 authored openings; curriculum checks reject missing or additional topic introductions.
 
+The idempotency pilot adds a problem-origin matrix, a five-scenario solution selector, library/service selection criteria, REST contract, Spring/PostgreSQL and AWS SDK teaching fragments, AWS guarantee boundaries, three worked design problems, ten interview follow-ups, pitfalls and nineteen annotated primary references. These are in `idempotency-practice.js` and are rendered only for idempotency. Code fragments are explicitly scoped examples, not a complete runnable or deployed payment service. Other topics retain their existing content.
+
 All 121 topics have original content. Depth is visible on each page: 99 topic briefs, 21 longer concise notes and one guided idempotency lesson. A topic brief is not represented as a full course chapter or executed lab. Exercise topics contain original practice instructions; they do not claim the reference provider's labs were reproduced or run.
 
 Every subsection also includes an original worked scenario, architectural consequences and failure drill. Twelve topics have additional implementation-level explanations, code or calculations and targeted exercises. These additions preserve the exact curriculum and are labeled as shared subsection context where appropriate.
