@@ -6,11 +6,14 @@ const root=path.resolve(__dirname,'..');
 global.window={};
 for(const file of ['curriculum','lessons','topic-notes','curriculum-adapter'])require(path.join(root,'v3',file+'.js'));
 require(path.join(root,'v3/depth.js'));
+require(path.join(root,'v3/introductions.js'));
 const reference=JSON.parse(fs.readFileSync(path.join(root,'v3/curriculum.json'),'utf8'));
 assert.deepEqual(window.ACADEMY_CURRICULUM,reference.groups);
 const expected=reference.groups.flatMap(g=>g.sections.flatMap(s=>s.lessons));
 assert.equal(reference.groups.length,7);assert.equal(reference.groups.flatMap(g=>g.sections).length,23);assert.equal(expected.length,121);
 assert.equal(new Set(expected.map(l=>l.id)).size,121);
+assert.deepEqual(Object.keys(window.ACADEMY_INTRODUCTIONS).sort(),expected.map(l=>l.id).sort());
+for(const topic of expected){const intro=window.ACADEMY_INTRODUCTIONS[topic.id];assert.ok(intro.length===2&&intro[0].length>60&&intro[1].length>120,'Technical definition and explanation: '+topic.id);}
 assert.deepEqual(window.ACADEMY_LESSONS.map(({id,title})=>({id,title})),expected);
 assert.deepEqual(window.ACADEMY_GROUPS,reference.groups.map(g=>[g.title,g.sections.map(s=>[s.title,s.lessons.map(l=>l.id)])]));
 for(const group of reference.groups)for(const section of group.sections){const guide=window.ACADEMY_SECTION_GUIDES[section.title];assert.ok(guide&&guide.length===4,section.title);for(const p of guide)assert.ok(p.length>20,section.title);}
