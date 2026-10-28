@@ -12,7 +12,7 @@
   const query=$('search').value.trim().toLowerCase(); let count=0;
   $('curriculum').innerHTML=groups.map(([group,subs],i)=>{
    const sections=subs.map(([sub,ids])=>{
-    const matches=ids.map(id=>lessons.find(l=>l.id===id)).filter(l=>l&&(filter!=='saved'||state.saved.includes(l.id))&&(!query||[l.title,l.kicker,group,sub].join(' ').toLowerCase().includes(query)));
+    const matches=ids.map(id=>lessons.find(l=>l.id===id)).filter(l=>l&&(filter!=='saved'||state.saved.includes(l.id))&&(!query||[l.id,l.title,l.kicker,l.model,l.problem,group,sub].join(' ').toLowerCase().includes(query)));
     count+=matches.length;
     return matches.length?`<div class="subgroup"><h3>${escape(sub)}</h3>${matches.map(l=>`<a class="lesson-link" href="#${l.id}" ${l.id===current?.id?'aria-current="page"':''}><span class="dot" aria-hidden="true">${state.completed.includes(l.id)?'✓':'○'}</span>${escape(l.title)}</a>`).join('')}</div>`:'';
    }).join('');
@@ -71,6 +71,7 @@ COMMIT;</code></pre><p>If the transaction rolls back, neither the ledger entry n
  }
  function toggle(field,id){state[field]=state[field].includes(id)?state[field].filter(x=>x!==id):[...state[field],id];persist();}
  function simulate(strategy){document.querySelectorAll('[data-strategy]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.strategy===strategy)));$('attempts').innerHTML=[0,1,2].map(i=>`<div class="sim-attempt">Attempt ${i+1} · ${strategy==='none'?'no key':strategy==='stable'?'pay_7f3c':`pay_${i+1}`} · ${strategy==='stable'&&i?'replay original result':'charge $49.99'}</div>`).join('');$('sim-total').textContent=strategy==='stable'?'$49.99':'$149.97';$('sim-verdict').textContent=strategy==='stable'?'3 deliveries · 1 protected business effect':'3 deliveries · 3 charges for the same purchase intent';}
+ document.querySelector('.skip').onclick=e=>{e.preventDefault();$('lesson').focus();$('lesson').scrollIntoView();};
  $('search').oninput=nav;document.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{filter=b.dataset.filter;document.querySelectorAll('[data-filter]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));nav();});
  $('menu').onclick=()=>{const open=$('sidebar').classList.toggle('open');$('menu').setAttribute('aria-expanded',String(open));};
  document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('sidebar').classList.remove('open');$('menu').setAttribute('aria-expanded','false');$('menu').focus();}});
