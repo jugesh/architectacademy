@@ -115,13 +115,154 @@ ResponseEntity&lt;OrderResponse&gt; create(
 <details class="qa"><summary><span class="level hard">Advanced</span>What would you measure for an API?</summary><div class="answer">Traffic, error rate by route and cause, p50/p95/p99 latency, saturation, throttles, dependency latency, queue age, retry count, idempotency replays/conflicts, and business outcomes such as duplicate prevention. Correlate logs and traces with a request ID while redacting sensitive values.</div></details>
 </section>
 
-<section id="references"><h2>9. Further reading and implementation references</h2>
+<section id="hypermedia"><h2>9. HATEOAS: make the next action discoverable</h2>
+<div class="definition"><strong>Definition</strong>Hypermedia as the Engine of Application State means a client follows links and action metadata supplied by a resource representation to discover the next permitted interaction. The client still needs to understand link relations and media-type semantics.</div>
+<p>Why it arises: a checkout workflow changes as an order moves from awaiting payment to shipped. Clients that construct every action URL and duplicate every transition rule become coupled to server internals. Hypermedia can expose the actions currently available.</p>
+<pre><code>GET /orders/ord_123
+Content-Type: application/hal+json
+
+{
+  "id": "ord_123", "status": "AWAITING_PAYMENT",
+  "_links": {
+    "self": { "href": "/orders/ord_123" },
+    "payment": { "href": "/orders/ord_123/payment" },
+    "cancel": { "href": "/orders/ord_123/cancellation" }
+  }
+}</code></pre>
+<p>A HAL link identifies a related target; it does not by itself define the HTTP method or request schema. Document the relation, or use an action-capable format such as HAL-FORMS. After shipment the cancellation action may disappear, but the server must still enforce authorization and legal transitions when a stale client submits a command.</p>
+<p class="code-label">Spring HATEOAS · representation assembly fragment</p>
+<pre><code>EntityModel&lt;OrderView&gt; model = EntityModel.of(view);
+model.add(Link.of("/orders/" + view.id()).withSelfRel());
+if (policy.mayCancel(principal, order)) {
+  model.add(Link.of("/orders/" + view.id() + "/cancellation")
+                .withRel("cancel"));
+}
+return model;</code></pre>
+<table><tr><th>Choose it when</th><th>Cost / pitfall</th></tr><tr><td>Several clients navigate changing business workflows; relations have durable meaning.</td><td>Clients must actually follow relations. Adding unused links gives little benefit.</td></tr><tr><td>Discovery and evolving resource relationships are valuable.</td><td>More payload and media-type tooling; it does not eliminate semantic versioning.</td></tr></table>
+<div class="callout warn">Personalized action links affect caching. A shared cached representation must not expose another user's available actions. Generate external links using a configured public base URL or trusted proxy information, never arbitrary forwarded headers.</div>
+</section>
+
+<section id="pagination"><h2>10. Pagination, filtering, and stable ordering</h2>
+<div class="definition"><strong>Definition</strong>Pagination bounds a collection response. Offset pagination addresses a position; cursor pagination carries continuation state. Keyset pagination implements continuation using ordered field values.</div>
+<p>Offset works well for small administrative tables with page-number navigation. Deep offsets become expensive and concurrent inserts can shift page boundaries. Keyset pagination is a better fit for feeds and large tables, but arbitrary page jumps and snapshot consistency require additional design.</p>
+<pre><code>GET /orders?status=PAID&amp;limit=25&amp;cursor=opaque-token
+
+SELECT id, created_at, status FROM orders
+WHERE tenant_id = :tenant AND status = :status
+  AND (created_at, id) &lt; (:last_created_at, :last_id)
+ORDER BY created_at DESC, id DESC
+LIMIT :limit_plus_one;</code></pre>
+<p>Use a supporting index such as <code>(tenant_id, status, created_at DESC, id DESC)</code> after validating the actual query plan. Fetch one extra row to determine whether another page exists. The unique ID breaks timestamp ties; timestamp alone can skip records.</p>
+<pre><code>{ "items": [{ "id": "ord_123" }],
+  "nextCursor": "opaque-token", "hasMore": true }
+Link: &lt;/orders?status=PAID&amp;limit=25&amp;cursor=opaque-token&gt;; rel="next"</code></pre>
+<ul><li>Bind the token to tenant, filters, sort order, and token version; reject incompatible or expired tokens. Base64 encoding provides neither integrity nor confidentiality. Sign the token or keep server-side state when appropriate.</li><li>Allowlist filter operators and sort fields. Cap page size and query complexity. Parameterize values and never concatenate raw user sort expressions into SQL.</li><li>Keyset traversal is not a frozen snapshot. Updating the sort field can still cause repeats or omissions. For exports, use immutable ordering plus a snapshot strategy, materialized result set, or explicit consistency contract.</li><li>Exact totals can be more expensive than the page itself. Make them optional, approximate, or omit them with a clear contract.</li></ul>
+<p><strong>Spring mapping:</strong> Spring Data <code>Page</code> commonly entails a count query; <code>Slice</code> exposes whether another slice exists without requiring a total. Verify repository behavior and use a custom keyset query or supported scrolling API when that is the required contract.</p>
+</section>
+
+<section id="caching"><h2>11. Caching: freshness, validation, and isolation</h2>
+<div class="definition"><strong>Definition</strong>HTTP caching reuses stored responses according to freshness and validation rules. A fresh response can be reused directly; a stale response may be revalidated against the origin using a validator.</div>
+<table><tr><th>Directive / header</th><th>Meaning and use</th></tr><tr><td><code>Cache-Control: public, max-age=60</code></td><td>A public catalog may be reused for 60 seconds, subject to other cache rules.</td></tr><tr><td><code>private, max-age=30</code></td><td>Permit private client caching; shared caches must not store the response.</td></tr><tr><td><code>no-cache</code></td><td>Storage is allowed, but reuse requires successful validation.</td></tr><tr><td><code>no-store</code></td><td>Instruct caches not to store this response. It does not erase previously stored copies.</td></tr><tr><td><code>ETag</code> + <code>If-None-Match</code></td><td>Validate a representation; an unchanged conditional GET can return <code>304</code> without a body.</td></tr><tr><td><code>Vary: Accept-Language</code></td><td>Separate representations selected using this request header. Configure the actual CDN cache policy too.</td></tr></table>
+<pre><code>GET /catalog/products/p7
+→ 200 OK
+  Cache-Control: public, max-age=60
+  ETag: "product-p7-v8"
+
+GET /catalog/products/p7
+If-None-Match: "product-p7-v8"
+→ 304 Not Modified  // no representation body</code></pre>
+<p>For writes, a strong ETag with <code>If-Match</code> can protect against stale updates. A weak ETag (<code>W/</code>) is unsuitable for strong <code>If-Match</code> comparison. The check and database update must be atomic; checking a version in Java and then issuing an unconditional update leaves a race.</p>
+<p><strong>Implementation choices:</strong> Spring <code>ResponseEntity</code> supports cache-control and ETag headers. Service-level <code>@Cacheable</code> caches method results and is a separate layer from HTTP caching. CloudFront can cache public reads, but TTLs, cache keys, authorization handling, and invalidation must match the contract.</p>
+<div class="callout warn"><strong>Tricky case:</strong> a product price changes while cached pages remain fresh. Decide whether bounded staleness is acceptable. Always revalidate authoritative price and inventory at checkout; a cache TTL is not a business invariant.</div>
+</section>
+
+<section id="headers"><h2>12. Headers are part of the contract</h2>
+<p>Headers carry representation metadata, control information, credentials, and request context. Prefer standard fields where their semantics fit. Document custom fields, their limits, and whether intermediaries must preserve them.</p>
+<table><tr><th>Field</th><th>Purpose</th><th>Nuance</th></tr><tr><td><code>Content-Type</code> / <code>Accept</code></td><td>Actual body format / acceptable response formats.</td><td>Unsupported request media type: <code>415</code>; no acceptable response representation: <code>406</code> when negotiation is enforced.</td></tr><tr><td><code>Authorization</code></td><td>Credentials such as a bearer token.</td><td>Redact from logs; never use an unverified token claim as authority.</td></tr><tr><td><code>Location</code></td><td>New resource URI after creation; also used for redirects.</td><td>For <code>202</code>, document how the status resource is exposed; it is not automatically standardized by choosing that status.</td></tr><tr><td><code>Retry-After</code></td><td>Suggested wait expressed as seconds or an HTTP date.</td><td>Useful with throttling/unavailability; respect an overall client deadline.</td></tr><tr><td><code>ETag</code>, <code>If-Match</code>, <code>If-None-Match</code></td><td>Representation validation and preconditions.</td><td>Distinct read validation and write concurrency behavior.</td></tr><tr><td><code>Idempotency-Key</code></td><td>Application retry identity.</td><td>Publish scope, required operations, retention, payload mismatch, and replay policy.</td></tr><tr><td><code>traceparent</code> / <code>tracestate</code></td><td>Distributed trace propagation.</td><td>Tracing context is untrusted metadata, never proof of identity.</td></tr><tr><td><code>Access-Control-Expose-Headers</code></td><td>Allows browser scripts to read selected non-safelisted response headers.</td><td>Expose ETag or Location when needed. CORS is a browser policy, not authorization.</td></tr></table>
+<p><strong>Proxy boundary:</strong> strip or validate incoming forwarding headers at the trusted edge. Otherwise generated links, redirect URLs, client IP controls, and audit records can be spoofed. Header names are case-insensitive; header values follow their own field-specific rules.</p>
+</section>
+
+<section id="traceability"><h2>13. Traceability from HTTP to background work</h2>
+<div class="definition"><strong>Definition</strong>Distributed tracing connects spans across service boundaries. A correlation/request ID helps search related records; a trace also records parent-child relationships, timings, and propagation context. An audit record captures a business or security action and has different retention and integrity needs.</div>
+<pre><code>traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
+
+Structured log:
+{ "route": "/orders/{id}", "method": "GET", "status": 200,
+  "traceId": "4bf92f3577b34da6a3ce929d0e0e4736", "durationMs": 42 }</code></pre>
+<p>Use OpenTelemetry instrumentation or Spring Boot's Micrometer Tracing integration to extract inbound context and inject outbound context. Configured framework HTTP client builders usually preserve instrumentation; manually constructed clients and thread/executor boundaries need verification. Propagate context through SQS message attributes using an agreed carrier rather than assuming HTTP headers travel with a message.</p>
+<ul><li>Validate incoming context; generate new context when invalid. A public caller must not control sampling cost or impersonate an internal actor through metadata.</li><li>Use route templates in metrics. Raw URLs, user IDs, request IDs, and trace IDs create unbounded metric cardinality.</li><li>Sampling means some requests have no retained trace. Keep essential outcome metrics and appropriate error/audit records independently.</li><li>Exclude tokens, card details, and personal data from headers, baggage, and log fields. Baggage can propagate far beyond the original service.</li></ul>
+<p><strong>AWS mapping:</strong> an OpenTelemetry collector/ADOT pipeline can export to AWS observability services. Verify propagation and identifier conversion across API Gateway, application instrumentation, and workers; do not assume every service uses one native trace format.</p>
+</section>
+
+<section id="versioning"><h2>14. Versioning and compatibility beyond URLs</h2>
+<p>A version identifies a contract boundary. Breaking changes include removing fields, changing types, tightening validation, changing defaults, or changing behavioral guarantees. Even adding an enum value can break a client that assumes an exhaustive set.</p>
+<table><tr><th>Strategy</th><th>When useful</th><th>Trade-off</th></tr><tr><td>Path: <code>/v1/orders</code></td><td>Public APIs needing visible routing and documentation.</td><td>Parallel surfaces and lifecycle ownership.</td></tr><tr><td>Header or media type</td><td>Clients explicitly negotiate a representation/contract.</td><td>Less visible in URLs; gateways, docs, and caches need correct handling.</td></tr><tr><td>Compatible evolution</td><td>Add optional data while preserving semantics.</td><td>Requires tolerant clients and automated compatibility checks.</td></tr></table>
+<p>Choose one primary mechanism and document what “v1” guarantees. Avoid a new major version for every additive release. For a breaking migration, publish both contracts, track usage by client/version, provide examples and a sunset plan, and retire the old contract only after the agreed migration process.</p>
+<div class="case"><h3>Tricky migration: integer money becomes decimal</h3><p>Changing <code>amount: 49900</code> from minor units to <code>499.00</code> silently changes meaning even if JSON parsers accept both. Introduce an explicitly named field or new contract, keep old semantics during migration, and test old clients against new server releases.</p></div>
+<p><strong>Implementation:</strong> OpenAPI diff checks identify many structural breaks; consumer/provider contract tests (for example Pact) exercise agreed interactions. Neither detects every semantic change. Include replay, authorization, pagination, and default-behavior examples in regression review.</p>
+</section>
+
+<section id="responses"><h2>15. Response mechanisms and error contracts</h2>
+<p>Choose response behavior from completion time, payload size, and interaction needs. Specify when work is committed, how the caller learns the final outcome, and what disconnecting means.</p>
+<table><tr><th>Mechanism</th><th>Suitable use</th><th>Failure contract</th></tr><tr><td>Synchronous JSON</td><td>Bounded reads and short writes.</td><td>Timeout can leave write outcome unknown; use identity/status lookup.</td></tr><tr><td><code>202</code> + job resource</td><td>Exports and long-running commands.</td><td>Persist acceptance before returning; expose queued/running/succeeded/failed states, expiry, and cancellation semantics.</td></tr><tr><td>Webhook</td><td>Server-to-server completion.</td><td>Sign events, retry with limits, deduplicate by event ID; tolerate reordering and provide recovery/replay.</td></tr><tr><td>SSE / WebSocket</td><td>Server event streams / bidirectional interaction.</td><td>Define reconnect, resume, heartbeat, buffering, and backpressure. Connection persistence is not durable delivery.</td></tr><tr><td>Bulk / batch</td><td>Many related actions.</td><td>Declare all-or-nothing or per-item outcomes. Define per-item identities and retry only failed items.</td></tr></table>
+<h3>Problem Details instead of ad hoc error strings</h3>
+<pre><code>HTTP/1.1 409 Conflict
+Content-Type: application/problem+json
+
+{ "type": "https://api.example.com/problems/order-state-conflict",
+  "title": "Order cannot be cancelled", "status": 409,
+  "detail": "The order has already shipped.",
+  "instance": "/problem-occurrences/err_91",
+  "code": "ORDER_ALREADY_SHIPPED", "requestId": "req_82" }</code></pre>
+<p>RFC 9457 defines the standard members; <code>code</code> and <code>requestId</code> above are application extensions. Clients should use stable type/code values rather than parsing human detail. Do not expose stack traces or database messages. Spring <code>ProblemDetail</code> and <code>@ControllerAdvice</code> can centralize this mapping; keep the actual HTTP status consistent with the body.</p>
+<h3>Job response example</h3><pre><code>POST /exports → 202 Accepted
+Location: /exports/exp_7
+
+{ "id": "exp_7", "status": "QUEUED", "statusUrl": "/exports/exp_7" }
+
+GET /exports/exp_7 → 200 OK
+{ "id": "exp_7", "status": "SUCCEEDED", "downloadUrl": "...",
+  "expiresAt": "2026-10-30T12:00:00Z" }</code></pre>
+<div class="callout warn">Once streaming response headers are sent, a later server failure generally cannot become a new HTTP status response. Define stream-level error framing and termination behavior. A <code>204</code> or <code>304</code> response must not carry a JSON body.</div>
+</section>
+
+<section id="documentation"><h2>16. Documentation is an executable contract</h2>
+<p>OpenAPI describes operations, schemas, security schemes, and responses. Readers also need the behavioral rules it cannot fully enforce: consistency, idempotency retention, ordering, pagination stability, and recovery from uncertainty.</p>
+<ol><li><strong>Start:</strong> a working authenticated request, required scopes, environment URLs, and sample credentials acquisition.</li><li><strong>Define:</strong> field units, null versus absent, time zones, defaults, limits, enum extensibility, and money precision.</li><li><strong>Demonstrate:</strong> success, validation failure, authorization denial, conflict, rate limiting, duplicate replay, and async completion.</li><li><strong>Explain recovery:</strong> timeout behavior, retryable errors, status lookup, support request ID, and webhook replay.</li><li><strong>Maintain:</strong> changelog, compatibility policy, deprecation schedule, and SDK version support.</li></ol>
+<p><strong>Practical toolchain:</strong> springdoc-openapi can generate a Spring API description; Swagger UI/Redoc renders it; OpenAPI Generator builds clients; Spectral lints conventions; Pact checks selected consumer interactions; Karate/REST Assured exercise runtime behavior. Use framework-compatible library versions and review generated schemas—generation does not prove the running API matches the document.</p>
+<pre><code>paths:
+  /orders:
+    post:
+      summary: Create an order
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          required: true
+          schema: { type: string, maxLength: 128 }
+      responses:
+        '201': { description: Created; Location identifies the order }
+        '409': { description: Key reused with a different request }
+# Teaching excerpt: add requestBody, response schemas, security and errors.</code></pre>
+<p><strong>Completion gate:</strong> validate the specification, compare contract changes, run real database/API integration tests, verify auth and error examples, and exercise a generated client. For AWS API Gateway, distinguish importing an OpenAPI definition from proving that backend behavior and gateway policies agree.</p>
+<h3>Additional interview questions</h3>
+<details class="qa"><summary><span class="level easy">Easy</span>Is no-cache the same as no-store?</summary><div class="answer">No-cache permits storage but requires validation before reuse. No-store instructs caches not to store the response. Use an explicit policy appropriate for the data and verify browser and shared-cache behavior.</div></details>
+<details class="qa"><summary><span class="level medium">Intermediate</span>Does HATEOAS replace documentation and authorization?</summary><div class="answer">No. Links expose relationships and potentially available transitions; clients still need relation and payload semantics. The server checks authorization and current state on every command because links can be cached or become stale.</div></details>
+<details class="qa"><summary><span class="level medium">Intermediate</span>How can pagination still duplicate records with a cursor?</summary><div class="answer">A cursor with mutable sort fields can cross changed ordering boundaries. A timestamp without a unique tie-breaker is also ambiguous. Use a deterministic tuple and specify whether traversal is live or snapshot-based.</div></details>
+<details class="qa"><summary><span class="level hard">Advanced</span>A CDN leaks one user's action links to another. What failed?</summary><div class="answer">A personalized representation was reused across security contexts. Stop shared storage of those responses, correct the cache policy/key and invalidate affected cached objects as needed. Verify authorization at the command endpoint; hidden links never enforce access.</div></details>
+<details class="qa"><summary><span class="level hard">Advanced</span>How do you trace a retried command through SQS without double-counting business outcomes?</summary><div class="answer">Propagate tracing context through message metadata and record attempt-level spans. Separately use a stable business command/event ID for deduplication and outcome accounting. Trace IDs identify observations; they are not durable idempotency keys. Count the committed business transition once and retries separately.</div></details>
+</section>
+
+<section id="references"><h2>17. Further reading and implementation references</h2>
+<ul class="reference-list"><li><a href="https://docs.spring.io/spring-hateoas/docs/current/reference/html/">Spring HATEOAS</a>: representation models, relations, HAL and affordances.</li><li><a href="https://www.rfc-editor.org/rfc/rfc9111">RFC 9111 — HTTP Caching</a>: freshness, validation, private and shared caches.</li><li><a href="https://www.rfc-editor.org/rfc/rfc9457">RFC 9457 — Problem Details</a>: standard error representation and extension fields.</li><li><a href="https://www.w3.org/TR/trace-context/">W3C Trace Context</a>: traceparent, tracestate, and trust boundaries.</li><li><a href="https://opentelemetry.io/docs/concepts/context-propagation/">OpenTelemetry context propagation</a>: carriers and cross-service context.</li><li><a href="https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-caching.html">Spring MVC HTTP caching</a>: validators and cache-control integration.</li><li><a href="https://springdoc.org/">springdoc-openapi</a>: Spring contract generation and compatibility guidance.</li></ul>
 <ul class="reference-list"><li><a href="https://www.rfc-editor.org/rfc/rfc9110" target="_blank" rel="noreferrer">RFC 9110 — HTTP Semantics</a>: method safety, idempotency, status codes, conditional requests.</li><li><a href="https://spec.openapis.org/oas/latest.html" target="_blank" rel="noreferrer">OpenAPI Specification</a>: machine-readable contract and tooling boundary.</li><li><a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/" target="_blank" rel="noreferrer">AWS Builders’ Library — Making retries safe</a>: intent, tokens, and ambiguous outcomes.</li><li><a href="https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller/ann-validation.html" target="_blank" rel="noreferrer">Spring MVC validation</a> and <a href="https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/annotations.html" target="_blank" rel="noreferrer">Spring transactions</a>: implementation boundaries.</li><li><a href="https://docs.aws.amazon.com/amazonsqs/latest/SQSDeveloperGuide/sqs-fifo-queue-message-dedup.html" target="_blank" rel="noreferrer">Amazon SQS FIFO deduplication</a>: queue-level deduplication versus consumer effect safety.</li><li><a href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ConditionExpressions.html" target="_blank" rel="noreferrer">DynamoDB condition expressions</a>: atomic conditional state changes.</li></ul>
 <div class="callout"><strong>Revision prompt.</strong> Pick one API you have built. Write its functional requirements, three non-functional targets, one invariant, one failure timeline, one compatibility rule, and the metric that would tell you the design is failing.</div>
 </section>
 <footer class="footer">Architect Academy V4 · API Design single lesson · Last reviewed 29 October 2026</footer>
 </main></div>
 <script>
+const side=document.querySelector('.side'); side.querySelector('a[href="#references"]').remove();
+['hypermedia','pagination','caching','headers','traceability','versioning','responses','documentation','references'].forEach(id=>{const a=document.createElement('a');a.href='#'+id;a.textContent=document.querySelector('#'+id+' h2').textContent;side.append(a)});
+let closedForPrint=[];window.addEventListener('beforeprint',()=>{closedForPrint=[...document.querySelectorAll('details:not([open])')];closedForPrint.forEach(d=>d.open=true)});window.addEventListener('afterprint',()=>closedForPrint.forEach(d=>d.open=false));
 document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.setAttribute('aria-selected',x===b));document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('show',p.id===b.dataset.tab))}));
 const links=[...document.querySelectorAll('.side a')];const sections=links.map(a=>document.querySelector(a.getAttribute('href')));const observer=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id))}}),{rootMargin:'-20% 0px -70% 0px'});sections.forEach(s=>s&&observer.observe(s));
 </script>
