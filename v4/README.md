@@ -13,7 +13,7 @@ The existing API lesson remains independently authored at its original URL. New 
 
 ## Teaching and architecture practice expansion
 
-`teaching-depth.mjs` adds an authored reasoning path and two answered checkpoints to each of the sixteen generated lessons. API Design has a corresponding independently authored order walkthrough. This is an initial teaching-depth pass, not a claim that every existing section is now exhaustive.
+`teaching-depth.mjs` adds an authored reasoning path, a stepwise explanation at a core mechanism, and two answered checkpoints to each of the sixteen generated lessons. API Design has a corresponding independently authored order walkthrough. This is an initial teaching-depth pass, not a claim that every existing section is now exhaustive.
 
 `architecture-practice.mjs` contains seven companion guides, ordered after the existing lesson explanations: decision guides; fictional production failure case studies; capacity/cost estimation; Java/Spring internals; a tiered interview workbook; migration/modernization; and revision tools. The original 17-lesson learning path remains intact and the V3 reference curriculum is untouched. Generated guide HTML is committed alongside lesson HTML.
 

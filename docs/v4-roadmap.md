@@ -4,7 +4,7 @@ Updated 31 October 2026. No new labs.
 
 | Priority | Delivered in this update | Remaining depth |
 |---|---|---|
-| 1 Teaching | Authored reasoning paths for all 17 lessons; 32 answered checkpoints in generated lessons; API order walkthrough | Review and expand individual advanced sections over subsequent revisions; this is not an exhaustive rewrite |
+| 1 Teaching | Authored reasoning paths for all 17 lessons; 32 answered checkpoints and 16 mechanism derivations in generated lessons; API order walkthrough | Review and expand individual advanced sections over subsequent revisions; this is not an exhaustive rewrite |
 | 2 Decisions | Storage, communication and coordination selection plus a complete decision record | More workload-specific alternatives |
 | 3 Failures | Four fictional incidents with hypotheses, mitigation, repair and recovery proof | More cross-region and security incidents |
 | 4 Capacity/cost | Workload, concurrency, headroom, storage, cache, queue and price-unit examples | Measurements from a real workload; current region-specific quotes |
