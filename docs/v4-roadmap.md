@@ -14,3 +14,11 @@ Updated 31 October 2026. No new labs.
 | 8 Revision | 18-term searchable glossary, prerequisite map, comparisons and local recall checklist | Broader glossary and additional recall scenarios |
 
 The first pass establishes usable material at every requested priority, in order. It does not equate initial coverage with textbook completeness. All existing core lessons and V3 labels/order remain intact.
+
+
+## Foundation explanation pass — 31 October 2026
+
+- Networking: section-level explanations for destination/authority, measured deadlines, DNS/TCP/TLS/HTTP boundaries, pool waiting, stream concurrency, trust, diagnostics and safe retries. Added an evidence/unknowns table and two interview follow-ups.
+- Security: section-level explanations for credential/protocol/policy distinctions, tenant/resource rules, token-validation sequence, browser and callback threats, permission freshness and key rotation. Added an authorization variation matrix and two interview follow-ups.
+- API Design: expanded 27 existing sections after their definition/introduction, using the same order journey and explicit transitions into mechanisms and worked designs. Existing section IDs, definitions, examples and curriculum remain intact.
+- No new topics or labs. Other lessons still need the same section-level treatment; the next pair is Scalability and Databases, followed by Caching and Messaging.

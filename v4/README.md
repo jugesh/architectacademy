@@ -20,3 +20,6 @@ The existing API lesson remains independently authored at its original URL. New 
 Revision uses the browser-local key `aa-v4-review-v1`. It reports unavailable storage, supports filtering with an empty-result count, and resets only its own marks. All 17 core lessons are included. These marks are self-reported recall, not exam scores or synced learning records. Printing shows all glossary entries, even with a filter active, and expands interview answers while preserving original disclosure state after repeated print events.
 
 Numeric examples use explicit illustrative assumptions. AWS pricing is a unit model with a link to current quotes, not an assertion of current prices. Code fragments are explanatory; no runnable labs were added. Primary references should be checked against the actual deployed product/version before applying implementation details.
+
+
+`foundation-explanations.mjs` provides section-level explanations and transitions for Networking and Security. It runs after the shared teaching-depth pass and replaces only a leading paragraph where appropriate, preserving the existing structured examples, tables, code and references. API Design's corresponding 27 section walkthroughs are authored directly in `index.html`, after each existing definition/introduction. Its original anchors and definitions are preserved.
