@@ -29,5 +29,10 @@ for(const topic of topics)test(`V4 ${topic}: navigation, answers, mobile and pri
  await page.pdf({path:`test-results/v4-${topic}.pdf`,format:'A4',printBackground:true});
  await page.evaluate(()=>dispatchEvent(new Event('afterprint')));
  await expect(page.locator('details.qa[open]')).toHaveCount(0);
+ // Repeated browser lifecycle notifications must preserve the initial state.
+ await page.emulateMedia({media:'screen'});
+ await page.locator('details.qa').first().locator('summary').click();
+ await page.evaluate(()=>{dispatchEvent(new Event('beforeprint'));dispatchEvent(new Event('beforeprint'));dispatchEvent(new Event('afterprint'));dispatchEvent(new Event('afterprint'));});
+ await expect(page.locator('details.qa[open]')).toHaveCount(1);
  expect(errors).toEqual([]);
 });
