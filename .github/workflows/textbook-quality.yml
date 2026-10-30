@@ -26,6 +26,7 @@ jobs:
       - run: python3 tests/chapter-structure.py
       - run: node --check v2/assets/book.js
       - run: node scripts/check-v3-curriculum.js
+      - run: node v4/build-lessons.mjs && git diff --exit-code -- v4/
       - run: npm install --no-save @playwright/test@1.58.2
       - run: npx playwright install --with-deps chromium
       - run: npx playwright test
