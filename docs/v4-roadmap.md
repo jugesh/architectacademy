@@ -22,3 +22,11 @@ The first pass establishes usable material at every requested priority, in order
 - Security: section-level explanations for credential/protocol/policy distinctions, tenant/resource rules, token-validation sequence, browser and callback threats, permission freshness and key rotation. Added an authorization variation matrix and two interview follow-ups.
 - API Design: expanded 27 existing sections after their definition/introduction, using the same order journey and explicit transitions into mechanisms and worked designs. Existing section IDs, definitions, examples and curriculum remain intact.
 - No new topics or labs. Other lessons still need the same section-level treatment; the next pair is Scalability and Databases, followed by Caching and Messaging.
+
+
+## Workload and storage explanation pass — 31 October 2026
+
+- Scalability: section-level derivations for workload shape, targets/invariants, Little’s Law assumptions, waiting versus execution, scaling dimensions, fleet connection budgets, autoscaling delay and failure/rollout headroom. Added average-work and transition-evidence tables plus two interview follow-ups.
+- Databases: section-level derivations for access patterns, business identity, model ownership, composite index access/plans, transaction properties, conditional mutations, storage model selection, replica freshness and projection backfill. Added a concurrent last-item timeline plus two interview follow-ups. Preserved the worked design’s existing verification checklist.
+- Existing lesson IDs, navigation, definitions, structured examples and V3 curriculum remain intact. No new topics or labs.
+- Next section-level pair: Caching and Messaging; then Consistency and Microservice Boundaries.

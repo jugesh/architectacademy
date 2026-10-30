@@ -23,3 +23,6 @@ Numeric examples use explicit illustrative assumptions. AWS pricing is a unit mo
 
 
 `foundation-explanations.mjs` provides section-level explanations and transitions for Networking and Security. It runs after the shared teaching-depth pass and replaces only a leading paragraph where appropriate, preserving the existing structured examples, tables, code and references. API Design's corresponding 27 section walkthroughs are authored directly in `index.html`, after each existing definition/introduction. Its original anchors and definitions are preserved.
+
+
+`workload-storage-explanations.mjs` deepens Scalability and Databases after the shared teaching pass. It replaces leading narrative with authored derivations while keeping structured examples, tables, code, later caveats and references. The database worked-design verification paragraph is explicitly retained. Added tables separate measurement assumptions, transition evidence and concurrent mutation outcomes.
