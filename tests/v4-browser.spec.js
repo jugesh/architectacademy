@@ -2,7 +2,7 @@ const {test,expect}=require('@playwright/test');
 const topics=['scalability','databases','caching','messaging','reliability','observability','networking','security','consistency','microservices','rate-limiting','replication-partitioning','deployment-runtime','disaster-recovery','search-pipelines','design-practice'];
 test('V4 library links to API design and every authored lesson',async({page})=>{
  await page.goto('/v4/lessons.html');
- await expect(page.locator('.card')).toHaveCount(17);
+ await expect(page.locator('.card:not(.practice-card)')).toHaveCount(17);
  for(const href of await page.locator('.card a').evaluateAll(as=>as.map(a=>a.href))){
   const response=await page.request.get(href);expect(response.status()).toBe(200);
  }
@@ -35,4 +35,39 @@ for(const topic of topics)test(`V4 ${topic}: navigation, answers, mobile and pri
  await page.evaluate(()=>{dispatchEvent(new Event('beforeprint'));dispatchEvent(new Event('beforeprint'));dispatchEvent(new Event('afterprint'));dispatchEvent(new Event('afterprint'));});
  await expect(page.locator('details.qa[open]')).toHaveCount(1);
  expect(errors).toEqual([]);
+});
+
+const guides=['decision-guides','failure-case-studies','capacity-cost','java-spring-internals','interview-workbook','migration-modernization','revision-toolkit'];
+for(const guide of guides)test(`V4 guide ${guide}: complete navigation and print lifecycle`,async({page})=>{
+ await page.goto(`/v4/${guide}.html`);
+ for(const href of await page.locator('.side a').evaluateAll(as=>as.map(a=>a.hash)))await expect(page.locator(href)).toHaveCount(1);
+ expect(await page.locator('main').innerText()).not.toContain('undefined');
+ await page.setViewportSize({width:390,height:844});
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
+ await page.locator('.mobile-map summary').click();
+ await page.locator('.mobile-map a[href="#worked"]').click();await expect(page).toHaveURL(/#worked$/);
+ await page.evaluate(()=>{dispatchEvent(new Event('beforeprint'));dispatchEvent(new Event('beforeprint'));});
+ await expect(page.locator('details.qa:not([open])')).toHaveCount(0);
+ await page.evaluate(()=>{dispatchEvent(new Event('afterprint'));dispatchEvent(new Event('afterprint'));});
+ await expect(page.locator('details.qa[open]')).toHaveCount(0);
+});
+test('V4 retrieval tools filter terms, preserve marks and reset only their own key',async({page})=>{
+ await page.goto('/v4/revision-toolkit.html');
+ await page.getByLabel('Find a term').fill('deadline');
+ await expect(page.locator('.glossary-entry:visible')).toHaveCount(1);
+ await page.getByLabel('Find a term').fill('nothing-matches-this-term');
+ await expect(page.locator('#glossary-count')).toContainText('0 of');
+ await page.getByLabel('Reviewed Databases',{exact:true}).check();
+ await page.evaluate(()=>localStorage.setItem('unrelated-setting','keep'));
+ await page.reload();await expect(page.getByLabel('Reviewed Databases',{exact:true})).toBeChecked();
+ await page.getByRole('button',{name:'Reset review marks'}).click();
+ await expect(page.getByLabel('Reviewed Databases',{exact:true})).not.toBeChecked();
+ expect(await page.evaluate(()=>localStorage.getItem('unrelated-setting'))).toBe('keep');
+});
+test('V4 tools remain usable when browser storage is blocked',async({page})=>{
+ await page.addInitScript(()=>{Object.defineProperty(window,'localStorage',{get(){throw new Error('blocked');}});});
+ await page.goto('/v4/revision-toolkit.html');
+ await page.getByLabel('Reviewed Databases',{exact:true}).check();
+ await expect(page.locator('#review-status')).toContainText('1 of 17');
+ await expect(page.locator('#review-status')).toContainText('unavailable');
 });
