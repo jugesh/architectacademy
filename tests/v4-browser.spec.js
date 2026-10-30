@@ -1,8 +1,8 @@
 const {test,expect}=require('@playwright/test');
-const topics=['scalability','databases','caching','messaging','reliability','observability'];
+const topics=['scalability','databases','caching','messaging','reliability','observability','networking','security','consistency','microservices','rate-limiting','replication-partitioning','deployment-runtime','disaster-recovery','search-pipelines','design-practice'];
 test('V4 library links to API design and every authored lesson',async({page})=>{
  await page.goto('/v4/lessons.html');
- await expect(page.locator('.card')).toHaveCount(7);
+ await expect(page.locator('.card')).toHaveCount(17);
  for(const href of await page.locator('.card a').evaluateAll(as=>as.map(a=>a.href))){
   const response=await page.request.get(href);expect(response.status()).toBe(200);
  }

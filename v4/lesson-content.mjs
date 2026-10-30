@@ -1,12 +1,6 @@
-const p=s=>`<p>${s}</p>`;
-const code=s=>`<pre><code>${s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')}</code></pre>`;
-const table=(headers,rows)=>`<table><thead><tr>${headers.map(x=>`<th>${x}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(x=>`<td>${x}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
-const req=(f,n)=>`<div class="req"><div class="func"><h3>Functional requirements</h3><ul>${f.map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="nonfunc"><h3>Targets and invariants</h3><ul>${n.map(x=>`<li>${x}</li>`).join('')}</ul></div></div>`;
-const diagram=(nodes,caption)=>`<figure class="diagram"><div class="flow">${nodes.map(x=>`<div class="node">${x}</div>`).join('<span class="arrow" aria-hidden="true">→</span>')}</div><figcaption>${caption}</figcaption></figure>`;
-const qa=items=>items.map(([level,q,a])=>`<details class="qa"><summary><span class="level ${level==='Foundational'?'easy':level==='Intermediate'?'medium':'hard'}">${level}</span>${q}</summary><div class="answer">${a}</div></details>`).join('');
-const refs=items=>`<ul class="reference-list">${items.map(([url,title,why])=>`<li><a href="${url}">${title}</a>: ${why}</li>`).join('')}</ul>`;
-const warn=s=>`<div class="callout warn">${s}</div>`;
-const section=(id,title,html,cue)=>({id,title,html,cue});
+import {p,code,table,req,diagram,qa,refs,warn,section} from './lesson-helpers.mjs';
+import {additionalLessons} from './lesson-expansion.mjs';
+import {deepenLessons} from './learning-bridges.mjs';
 export const lessons=[
 {
 slug:'scalability',title:'Scalability',heading:'Grow an application without moving the bottleneck blindly',
@@ -115,3 +109,5 @@ section('interview','Interview ladder',qa([['Foundational','Logs versus traces?'
 section('references','Further reading and practice',refs([['https://opentelemetry.io/docs/concepts/signals/','OpenTelemetry signals','metrics, logs, traces and their roles.'],['https://opentelemetry.io/docs/concepts/context-propagation/','OpenTelemetry propagation','context carriers and boundaries.'],['https://www.w3.org/TR/trace-context/','W3C Trace Context','interoperable headers and trust considerations.'],['https://docs.spring.io/spring-boot/reference/actuator/tracing.html','Spring Boot tracing','supported integration and client instrumentation.'],['https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/ScopedValue.html','Java ScopedValue','scope and inheritance rules for context.']])+p('<strong>Exercise:</strong> trace one asynchronous business outcome with IDs from HTTP acceptance through outbox, broker, inbox and final state. Identify what survives when traces are sampled out.'))
 ]}
 ];
+deepenLessons(lessons);
+lessons.push(...additionalLessons);
