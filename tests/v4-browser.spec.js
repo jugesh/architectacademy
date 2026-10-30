@@ -71,3 +71,29 @@ test('V4 tools remain usable when browser storage is blocked',async({page})=>{
  await expect(page.locator('#review-status')).toContainText('1 of 17');
  await expect(page.locator('#review-status')).toContainText('unavailable');
 });
+
+for(const width of [360,768,1440])test(`V4 API teaching progression at ${width}`,async({page})=>{
+ const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.setViewportSize({width,height:900});await page.goto('/v4/');
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
+ for(const id of ['hypermedia','pagination','caching']){
+  const section=page.locator('#'+id);
+  await expect(section.locator('.definition')).toBeVisible();
+  await expect(section.locator('.section-walkthrough')).toHaveCount(1);
+  expect(await section.evaluate(e=>!!(e.querySelector('.definition').compareDocumentPosition(e.querySelector('.section-walkthrough'))&Node.DOCUMENT_POSITION_FOLLOWING))).toBeTruthy();
+ }
+ await page.getByRole('tab',{name:'AWS',exact:true}).click();
+ await expect(page.locator('#aws')).toBeVisible();
+ expect(errors).toEqual([]);
+});
+
+test('V4 API printing expands tabs and answers and preserves original state',async({page})=>{
+ await page.goto('/v4/');await page.locator('details.qa').first().locator('summary').click();
+ await page.evaluate(()=>{dispatchEvent(new Event('beforeprint'));dispatchEvent(new Event('beforeprint'));});
+ await expect(page.locator('details.qa:not([open])')).toHaveCount(0);
+ await page.emulateMedia({media:'print'});
+ for(const panel of await page.locator('.tab-panel').all())await expect(panel).toBeVisible();
+ await page.pdf({path:'test-results/v4-api-foundation.pdf',format:'A4',printBackground:true});
+ await page.evaluate(()=>{dispatchEvent(new Event('afterprint'));dispatchEvent(new Event('afterprint'));});
+ await expect(page.locator('details.qa[open]')).toHaveCount(1);
+});
