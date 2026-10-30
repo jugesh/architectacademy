@@ -26,3 +26,6 @@ Numeric examples use explicit illustrative assumptions. AWS pricing is a unit mo
 
 
 `workload-storage-explanations.mjs` deepens Scalability and Databases after the shared teaching pass. It replaces leading narrative with authored derivations while keeping structured examples, tables, code, later caveats and references. The database worked-design verification paragraph is explicitly retained. Added tables separate measurement assumptions, transition evidence and concurrent mutation outcomes.
+
+
+The remaining section-level explanation modules are `copies-delivery-explanations.mjs` (Caching/Messaging), `distributed-explanations.mjs` (Consistency/Boundaries/Rate Limiting/Replication), `operations-explanations.mjs` (Reliability/Deployment/DR/Observability), and `projections-design-explanations.mjs` (Search/Pipelines and Design Practice). They retain the core lesson identities and structured examples while replacing terse leading narrative with authored reasoning. Interview follow-ups are topic-specific. Together with the earlier foundation and workload/storage modules, all 17 core lessons have a section-level explanation pass; this is not an assertion of exhaustive implementation depth.
