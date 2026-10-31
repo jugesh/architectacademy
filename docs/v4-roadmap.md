@@ -2,18 +2,18 @@
 
 Updated 31 October 2026. No new labs.
 
-| Priority | Delivered in this update | Remaining depth |
+| Priority | Delivered through the current depth round | Remaining review |
 |---|---|---|
-| 1 Teaching | Authored reasoning paths for all 17 lessons; 32 answered checkpoints and 16 mechanism derivations in generated lessons; API order walkthrough | Review and expand individual advanced sections over subsequent revisions; this is not an exhaustive rewrite |
-| 2 Decisions | Storage, communication and coordination selection plus a complete decision record | More workload-specific alternatives |
-| 3 Failures | Four fictional incidents with hypotheses, mitigation, repair and recovery proof | More cross-region and security incidents |
-| 4 Capacity/cost | Workload, concurrency, headroom, storage, cache, queue and price-unit examples | Measurements from a real workload; current region-specific quotes |
-| 5 Java/Spring | Pools, proxy transactions, virtual/reactive execution, memory/context and a diagnosis | More ORM and JVM worked examples |
-| 6 Interviews | 14 tiered answers with follow-ups and a scoring rubric in the workbook | More full mock prompts and evaluated candidate answers |
-| 7 Migration | Schema, Java/Spring, database, service extraction and cross-account cutover | Product/version-specific runbooks |
-| 8 Revision | 18-term searchable glossary, prerequisite map, comparisons and local recall checklist | Broader glossary and additional recall scenarios |
+| 1 Teaching | Section-level explanations across all 17 core lessons, connected examples, checkpoints and topic-specific interview follow-ups | Further editorial refinement and selected-version implementation validation |
+| 2 Decisions | Storage/communication/coordination selection, original inventory record and three fully evaluated decision records | More workload-specific evidence and alternatives |
+| 3 Failures | Six fictional incidents with hypotheses, mitigation, repair and recovery proof | Additional incident domains and deeper operational evidence |
+| 4 Capacity/cost | Workload, concurrency, storage, backlog and price-unit models plus cache/pool/rollout sensitivity review | Measurements from a real workload and current regional quotes |
+| 5 Java/Spring | Pools, proxy transactions, virtual/reactive execution, memory/context and flush/commit diagnosis | More ORM/JVM examples against a selected stack |
+| 6 Interviews | Tiered workbook, follow-ups, scoring rubric and three evaluated answers to one prompt | More complete mock prompts and assessed answers |
+| 7 Migration | Schema, runtime, database and service migration guidance plus evidence-gated bounded-pause cutover | Product/version-specific recovery runbooks |
+| 8 Revision | Searchable glossary, prerequisite/comparison maps, browser-local checklist and answered retrieval scenarios | Broader glossary and further transfer scenarios |
 
-The first pass establishes usable material at every requested priority, in order. It does not equate initial coverage with textbook completeness. All existing core lessons and V3 labels/order remain intact.
+The current round has advanced every requested priority in order. It does not equate a teaching-depth pass with exhaustive textbook or production implementation completeness. All existing core lessons and V3 labels/order remain intact.
 
 
 ## Foundation explanation pass — 31 October 2026
