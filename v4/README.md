@@ -29,3 +29,9 @@ Numeric examples use explicit illustrative assumptions. AWS pricing is a unit mo
 
 
 The remaining section-level explanation modules are `copies-delivery-explanations.mjs` (Caching/Messaging), `distributed-explanations.mjs` (Consistency/Boundaries/Rate Limiting/Replication), `operations-explanations.mjs` (Reliability/Deployment/DR/Observability), and `projections-design-explanations.mjs` (Search/Pipelines and Design Practice). They retain the core lesson identities and structured examples while replacing terse leading narrative with authored reasoning. Interview follow-ups are topic-specific. Together with the earlier foundation and workload/storage modules, all 17 core lessons have a section-level explanation pass; this is not an assertion of exhaustive implementation depth.
+
+
+`decision-case-depth.mjs` expands the existing decision and failure guides with evaluated alternatives and two additional fictional investigations. It runs on `practiceGuides` before rendering, preserving the original guide/core routes. These are teaching records and fictional incidents, not production incident reports.
+
+
+`guide-worked-depth.mjs` adds worked analysis to the remaining five practice guides: capacity sensitivity, Spring commit diagnosis, evaluated interview answers, cutover evidence gates and recall scenarios. Numbers are illustrative assumptions, and no runnable lab or current-price claim is introduced.
