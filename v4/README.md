@@ -40,3 +40,11 @@ The remaining section-level explanation modules are `copies-delivery-explanation
 ## Library navigation
 
 `library-categories.mjs` is the source for six core subject groups, three guide-purpose groups and the separate recommended first-read sequence. The build rejects omissions, duplicates or unknown pages. Category anchors are `category-*`; study-guide groups are `practice-*`, while the existing `#practice` entry point is retained. All lesson URLs remain unchanged. Every lesson/guide has a breadcrumb back to its library group, including independently authored API Design; the builder refreshes only its marked breadcrumb. The library’s subject order does not change the established previous/next reading path.
+
+## Search and browser-local study state
+
+`study-tools.js` and `study-tools.css` provide section search, explicit progress and resume for all 24 lesson/guide pages. `build-lessons.mjs` builds `search-index.json` from the final generated sections, including the independently authored API page. Search is case-insensitive and requires all query words within one section; title/heading matches rank first. Results link to the section and show a text excerpt. The index is loaded only when searching; failed loads can be retried by typing again. Serve over HTTP, as with GitHub Pages.
+
+The `aa-v4-study-v1` localStorage record contains only allowlisted lesson slugs, three progress states and the last reading section. Opening an unmarked page starts it; an explicitly chosen Not started or Reviewed state is retained. Scroll position is stored as a section anchor, not pixel coordinates. Progress filters affect browsing, while print includes all cards. State is specific to this browser/origin, does not sync between devices and is lost if browser site data is cleared. When storage is unavailable, controls work for the current page and report the limitation. Existing `aa-v4-review-v1` explanation checklist marks remain independent.
+
+`content-audit.mjs` holds the targeted improvements and related-reading links. See [CONTENT-AUDIT.md](CONTENT-AUDIT.md) for the reviewed gaps and the limits of that audit. Generated content and index must remain reproducible with `node v4/build-lessons.mjs`.

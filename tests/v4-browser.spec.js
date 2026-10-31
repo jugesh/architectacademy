@@ -132,3 +132,81 @@ test('V4 mobile category jumps, breadcrumbs and print retain discoverable lesson
  for(const card of await page.locator('.card').all())await expect(card).toBeVisible();
  await page.pdf({path:'test-results/v4-categorized-library.pdf',format:'A4',printBackground:true});
 });
+
+test('V4 search finds section text and opens the matching deep link',async({page})=>{
+ await page.goto('/v4/lessons.html');
+ await page.getByLabel('Search lessons and technical terms').fill('watermark');
+ await expect(page.locator('#search-results a[href="search-pipelines.html#time"]')).toBeVisible();
+ const result=page.locator('#search-results a[href="search-pipelines.html#time"]');
+ const href=await result.getAttribute('href');
+ expect(href).toMatch(/\.html#/);
+ await result.click();
+ await expect(page).toHaveURL(new RegExp(href.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'$'));
+ await expect(page.getByLabel('Lesson progress',{exact:true})).toHaveValue('in-progress');
+});
+test('V4 search handles empty results, fast queries and retry after a load failure',async({page})=>{
+ let fail=true;await page.route('**/search-index.json',route=>fail?route.abort():route.continue());
+ await page.goto('/v4/lessons.html');const input=page.getByLabel('Search lessons and technical terms');
+ await input.fill('cache');await expect(page.locator('#search-status')).toContainText('could not load');
+ fail=false;await input.fill('transaction');await input.fill('watermark');
+ await expect(page.locator('#search-results a[href="search-pipelines.html#time"]')).toBeVisible();
+ await input.fill('zzzznotawordzzzz');await expect(page.locator('#search-status')).toContainText('No matching');
+ await input.fill('');await expect(page.locator('#search-results li')).toHaveCount(0);
+ await expect(page.locator('.card')).toHaveCount(24);
+});
+test('V4 progress persists, filters cards and prints the complete library',async({page})=>{
+ await page.goto('/v4/caching.html');await page.getByLabel('Lesson progress',{exact:true}).selectOption('reviewed');
+ await page.reload();await expect(page.getByLabel('Lesson progress',{exact:true})).toHaveValue('reviewed');
+ await page.goto('/v4/lessons.html');await expect(page.locator('#study-summary')).toHaveText('1 reviewed · 0 in progress · 23 not started');
+ await page.getByLabel('Show',{exact:true}).selectOption('reviewed');
+ await expect(page.locator('.card:visible')).toHaveCount(1);await expect(page.locator('.card:visible')).toContainText('Caching');
+ await page.emulateMedia({media:'print'});await expect(page.locator('.card:visible')).toHaveCount(24);
+ await page.emulateMedia({media:'screen'});await page.getByLabel('Show',{exact:true}).selectOption('in-progress');await expect(page.locator('#progress-empty')).toBeVisible();
+ await page.goto('/v4/caching.html');await page.getByLabel('Lesson progress',{exact:true}).selectOption('not-started');await page.reload();await expect(page.getByLabel('Lesson progress',{exact:true})).toHaveValue('not-started');
+});
+test('V4 resume remembers the actual reading section across navigation',async({page})=>{
+ await page.goto('/v4/caching.html');
+ await page.locator('#write-pattern').evaluate(e=>e.scrollIntoView());
+ await expect.poll(()=>page.evaluate(()=>JSON.parse(localStorage.getItem('aa-v4-study-v1')).last.section)).toBe('write-pattern');
+ await page.goto('/v4/lessons.html');
+ await expect(page.locator('#resume-learning a')).toHaveAttribute('href','caching.html#write-pattern');
+ await page.locator('#resume-learning a').click();await expect(page).toHaveURL(/caching.html#write-pattern$/);
+ await page.goto('/v4/index.html#pagination');await page.goto('/v4/lessons.html');
+ await expect(page.locator('#resume-learning a')).toHaveAttribute('href','index.html#pagination');
+});
+test('V4 study tools tolerate blocked and malformed storage without breaking reading',async({page})=>{
+ const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.addInitScript(()=>Object.defineProperty(window,'localStorage',{get(){throw Error('blocked');}}));
+ await page.goto('/v4/caching.html');await page.getByLabel('Lesson progress',{exact:true}).selectOption('reviewed');
+ await expect(page.locator('[data-storage-note]')).toContainText('unavailable');
+ await expect(page.getByLabel('Lesson progress',{exact:true})).toHaveValue('reviewed');
+ await page.goto('/v4/lessons.html');await page.getByLabel('Search lessons and technical terms').fill('p99');await expect(page.locator('#search-results li').first()).toBeVisible();
+ expect(errors).toEqual([]);
+});
+test('V4 corrupt study state is discarded and unrelated settings are retained',async({page})=>{
+ await page.goto('/v4/lessons.html');await page.evaluate(()=>{localStorage.setItem('aa-v4-study-v1','broken-json');localStorage.setItem('unrelated-setting','keep');});
+ await page.reload();await expect(page.locator('#study-summary')).toContainText('24 not started');
+ await page.goto('/v4/security.html');await page.getByLabel('Lesson progress',{exact:true}).selectOption('reviewed');
+ expect(await page.evaluate(()=>localStorage.getItem('unrelated-setting'))).toBe('keep');
+ await page.goto('/v4/lessons.html');await expect(page.locator('#study-summary')).toContainText('1 reviewed');
+});
+test('V4 study controls fit mobile and related reading connects every page',async({page})=>{
+ await page.setViewportSize({width:360,height:800});await page.goto('/v4/lessons.html');
+ await page.getByLabel('Search lessons and technical terms').fill('idempotency');
+ await expect(page.locator('#search-results li').first()).toBeVisible();
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
+ await page.goto('/v4/design-practice.html');
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
+ await expect(page.locator('.audit-worked')).toHaveCount(4);
+ await expect(page.getByRole('complementary',{name:'Related reading'}).locator('a')).toHaveCount(2);
+});
+test('V4 search covers every page and related links resolve to existing sections',async({page})=>{
+ const index=await (await page.request.get('/v4/search-index.json')).json();
+ const urls=[...new Set(index.map(r=>r.url.split('#')[0]))];expect(urls).toHaveLength(24);
+ for(const url of urls){
+  const html=await (await page.request.get('/v4/'+url)).text();
+  const related=html.match(/<aside class="related-reading"[\s\S]*?<\/aside>/)[0];
+  const links=[...related.matchAll(/href="([^"]+)"/g)].map(m=>m[1]);expect(links).toHaveLength(2);
+  for(const href of links){const [target,fragment]=href.split('#');const response=await page.request.get('/v4/'+target);expect(response.status()).toBe(200);if(fragment)expect(await response.text()).toContain(`id="${fragment}"`);}
+ }
+});
