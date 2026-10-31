@@ -35,3 +35,8 @@ The remaining section-level explanation modules are `copies-delivery-explanation
 
 
 `guide-worked-depth.mjs` adds worked analysis to the remaining five practice guides: capacity sensitivity, Spring commit diagnosis, evaluated interview answers, cutover evidence gates and recall scenarios. Numbers are illustrative assumptions, and no runnable lab or current-price claim is introduced.
+
+
+## Library navigation
+
+`library-categories.mjs` is the source for six core subject groups, three guide-purpose groups and the separate recommended first-read sequence. The build rejects omissions, duplicates or unknown pages. Category anchors are `category-*`; study-guide groups are `practice-*`, while the existing `#practice` entry point is retained. All lesson URLs remain unchanged. Every lesson/guide has a breadcrumb back to its library group, including independently authored API Design; the builder refreshes only its marked breadcrumb. The library’s subject order does not change the established previous/next reading path.

@@ -97,3 +97,38 @@ test('V4 API printing expands tabs and answers and preserves original state',asy
  await page.evaluate(()=>{dispatchEvent(new Event('afterprint'));dispatchEvent(new Event('afterprint'));});
  await expect(page.locator('details.qa[open]')).toHaveCount(1);
 });
+
+test('V4 subject groups contain every lesson exactly once and keep the reading path',async({page})=>{
+ await page.goto('/v4/lessons.html');
+ const expected={
+  foundations:['networking','index','security'],
+  'scale-services':['scalability','microservices','rate-limiting'],
+  'data-consistency':['databases','caching','consistency','replication-partitioning'],
+  'messaging-pipelines':['messaging','search-pipelines'],
+  'reliability-operations':['reliability','observability','deployment-runtime','disaster-recovery'],
+  'design-practice':['design-practice']
+ };
+ await expect(page.locator('.core-group')).toHaveCount(6);
+ for(const [id,slugs] of Object.entries(expected))expect(await page.locator(`#category-${id} .card`).evaluateAll(cs=>cs.map(c=>c.dataset.lesson))).toEqual(slugs);
+ await expect(page.locator('.guide-group')).toHaveCount(3);
+ const core=await page.locator('.core-group .card').evaluateAll(cs=>cs.map(c=>c.dataset.lesson));expect(new Set(core).size).toBe(17);
+ const guides=await page.locator('.guide-group .card').evaluateAll(cs=>cs.map(c=>c.dataset.lesson));expect(new Set(guides).size).toBe(7);
+ await page.locator('.reading-order summary').click();
+ const path=await page.locator('.reading-order li a').evaluateAll(as=>as.map(a=>a.getAttribute('href')));
+ expect(path.slice(0,3)).toEqual(['networking.html','index.html','security.html']);expect(path).toHaveLength(17);
+ expect([...path].sort()).toEqual(core.map(s=>s+'.html').sort());
+});
+test('V4 mobile category jumps, breadcrumbs and print retain discoverable lessons',async({page})=>{
+ await page.setViewportSize({width:360,height:800});await page.goto('/v4/lessons.html');
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
+ await page.locator('.category-jumps a[href="#category-data-consistency"]').click();
+ await expect(page).toHaveURL(/#category-data-consistency$/);
+ await page.locator('#category-data-consistency a[href="caching.html"]').click();
+ await expect(page.locator('.lesson-breadcrumb')).toContainText('Data & Consistency');
+ await page.locator('.lesson-breadcrumb a[href="lessons.html#category-data-consistency"]').click();
+ await expect(page).toHaveURL(/lessons.html#category-data-consistency$/);
+ await page.goto('/v4/index.html');await expect(page.locator('.lesson-breadcrumb')).toContainText('Foundations');
+ await page.goto('/v4/lessons.html');await page.emulateMedia({media:'print'});
+ for(const card of await page.locator('.card').all())await expect(card).toBeVisible();
+ await page.pdf({path:'test-results/v4-categorized-library.pdf',format:'A4',printBackground:true});
+});
