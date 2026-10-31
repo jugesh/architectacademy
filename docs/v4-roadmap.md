@@ -46,3 +46,11 @@ Completed the section-level pass through all remaining core lessons, in roadmap 
 Added 24 topic-specific interview follow-ups, a cache-race table and a five-window message recovery table. Existing routes, formal definitions, structured examples and V3 curriculum remain intact. No new topics or labs.
 
 This completes an authored section-level teaching pass across all 17 V4 core lessons. It is not a claim that every implementation is exhaustive or production-ready. The next depth priority is to expand the decision guides and production cases with more fully evaluated alternatives, then estimation/runtime, interview, migration and revision material in the original priority order.
+
+
+## Decision and production-case depth — 31 October 2026
+
+Expanded the next priorities after the core lesson pass: three full decision records (cached view versus authoritative purchase, deferred receipt delivery, relational inventory authority), each with requirements, comparable alternatives, chosen boundaries, rejected shortcuts, evidence gates and revisit triggers. Added two fictional investigations (external payment after database restore; stale/cached authorization or previously issued capability after permission removal), bringing the case guide to six incidents. Added four answered follow-ups. Existing guide anchors and core curriculum remain intact.
+
+
+The same guide-depth round also adds a capacity sensitivity review with explicit request/database/concurrency budgets, a Spring flush/commit diagnosis, three evaluated answers to one interview prompt, an evidence-gated write-pause cutover plan, and five answered retrieval scenarios. This advances every original priority in order after the core lesson pass; actual workload measurements, selected-version integration validation and further editorial depth remain ongoing concerns rather than claimed guarantees.
