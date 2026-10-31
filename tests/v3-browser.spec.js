@@ -87,6 +87,10 @@ test('V3 definitions support hover, keyboard, tap and escape',async({page})=>{
  await page.locator('h1').click();await expect(page.locator('#academy-tooltip')).toBeHidden();
  await page.getByRole('button',{name:'Revision',exact:true}).click();await expect(page.locator('.revision-content .term').first()).toBeVisible();
  await page.locator('.revision-content .term').first().focus();await expect(page.locator('#academy-tooltip')).toBeVisible();
+ // Focus must survive scrolling away and back, including focus-induced scrolls.
+ await page.evaluate(()=>window.scrollTo({top:document.documentElement.scrollHeight,behavior:'instant'}));
+ await page.locator('.revision-content .term').first().scrollIntoViewIfNeeded();
+ await expect(page.locator('#academy-tooltip')).toBeVisible();
  await page.emulateMedia({media:'print'});await expect(page.locator('#academy-tooltip')).toBeHidden();
 });
 test('V3 deeper examples and colors preserve every reference topic',async({page})=>{

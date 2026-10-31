@@ -126,6 +126,11 @@ window.attachAcademyTooltips = root => {
  document.addEventListener('focusin',e=>{const term=e.target.closest('.term');if(term)open(term);else if(active)close();});
  document.addEventListener('click',e=>{const term=e.target.closest('.term');if(term){if(active===term&&term.dataset.pinned==='true'){term.dataset.pinned='false';close();}else{open(term);term.dataset.pinned='true';}}else if(!tooltip.contains(e.target))close();});
  document.addEventListener('keydown',e=>{if(e.key==='Escape'){close();return;}const term=e.target.closest('.term');if(term&&(e.key==='Enter'||e.key===' ')){e.preventDefault();term.click();}});
- addEventListener('scroll',()=>{if(!active)return;const r=active.getBoundingClientRect();if(r.bottom<0||r.top>innerHeight)close();else position();},true);addEventListener('resize',close);addEventListener('hashchange',close);addEventListener('beforeprint',close);
+ addEventListener('scroll',()=>{if(!active)return;const r=active.getBoundingClientRect();if(r.bottom<0||r.top>innerHeight){
+  // Focus-induced scrolling can temporarily leave the focused term offscreen.
+  // Keep its association so subsequent scroll events can restore the bubble.
+  if(document.activeElement===active){tooltip.hidden=true;return;}
+  close();
+ }else{tooltip.hidden=false;position();}},true);addEventListener('resize',close);addEventListener('hashchange',close);addEventListener('beforeprint',close);
  window.closeAcademyTooltip=close;
 })();

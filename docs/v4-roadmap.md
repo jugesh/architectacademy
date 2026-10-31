@@ -30,3 +30,19 @@ The first pass establishes usable material at every requested priority, in order
 - Databases: section-level derivations for access patterns, business identity, model ownership, composite index access/plans, transaction properties, conditional mutations, storage model selection, replica freshness and projection backfill. Added a concurrent last-item timeline plus two interview follow-ups. Preserved the worked design’s existing verification checklist.
 - Existing lesson IDs, navigation, definitions, structured examples and V3 curriculum remain intact. No new topics or labs.
 - Next section-level pair: Caching and Messaging; then Consistency and Microservice Boundaries.
+
+
+## Remaining lesson explanation pass — 31 October 2026
+
+Completed the section-level pass through all remaining core lessons, in roadmap order:
+
+| Group | Lessons | Section-level work |
+|---|---|---|
+| Copies and delivery | Caching; Messaging | Freshness and refill races; layered copies; bounded fallback; producer/consumer commit gaps; remote-effect reconciliation; replay and quarantine |
+| Distributed decisions | Consistency; Microservice Boundaries; Rate Limiting; Replication/Partitioning | Observation versus atomicity; ownership and extraction; rate/quota/concurrency; quorum/fencing; key skew and migration |
+| Operations | Reliability; Deployment/Runtime; Disaster Recovery; Observability | Deadlines/retry ownership; mixed versions and drain; restore/reconcile/failback; signal boundaries and durable evidence |
+| Projections and practice | Search/Pipelines; End-to-End Design Practice | Baseline/CDC handoff; event versus processing time; source authority; scenario-by-scenario design reasoning |
+
+Added 24 topic-specific interview follow-ups, a cache-race table and a five-window message recovery table. Existing routes, formal definitions, structured examples and V3 curriculum remain intact. No new topics or labs.
+
+This completes an authored section-level teaching pass across all 17 V4 core lessons. It is not a claim that every implementation is exhaustive or production-ready. The next depth priority is to expand the decision guides and production cases with more fully evaluated alternatives, then estimation/runtime, interview, migration and revision material in the original priority order.
