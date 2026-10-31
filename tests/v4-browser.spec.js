@@ -210,3 +210,41 @@ test('V4 search covers every page and related links resolve to existing sections
   for(const href of links){const [target,fragment]=href.split('#');const response=await page.request.get('/v4/'+target);expect(response.status()).toBe(200);if(fragment)expect(await response.text()).toContain(`id="${fragment}"`);}
  }
 });
+
+const coreDepthAnchors={
+ databases:['sql-checkout','query-diagnosis','isolation-schedule','spring-commit'],
+ messaging:['relay-protocol','consumer-transaction','partition-recovery','backlog-workbook'],
+ reliability:['deadline-budget','retry-composition','payment-recovery','resilience-drill'],
+ observability:['trace-journey','java-propagation','slo-workbook','incident-workbook']
+};
+for(const [slug,anchors]of Object.entries(coreDepthAnchors))test(`V4 ${slug} deep dives: navigation, mobile code and print answers`,async({page})=>{
+ await page.goto(`/v4/${slug}.html`);
+ for(const anchor of anchors){
+  await page.locator(`.side a[href="#${anchor}"]`).click();await expect(page).toHaveURL(new RegExp('#'+anchor+'$'));
+  await expect(page.locator('#'+anchor+' .core-deep-dive')).toBeVisible();
+ }
+ await page.setViewportSize({width:360,height:800});
+ for(const anchor of anchors){
+  await page.goto(`/v4/${slug}.html#${anchor}`);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
+  const firstAnswer=page.locator(`#${anchor} details.qa`).first();await firstAnswer.locator('summary').click();await expect(firstAnswer.locator('.answer')).toBeVisible();
+ }
+ await page.emulateMedia({media:'print'});await page.evaluate(()=>dispatchEvent(new Event('beforeprint')));
+ await expect(page.locator('details.qa:not([open])')).toHaveCount(0);
+ await page.pdf({path:`test-results/v4-${slug}-deep-dives.pdf`,format:'A4',printBackground:true});
+});
+test('V4 search indexes the new failure-protocol explanations',async({page})=>{
+ await page.goto('/v4/lessons.html');await page.getByLabel('Search lessons and technical terms').fill('contiguous completion frontier');
+ const result=page.locator('#search-results a[href="messaging.html#partition-recovery"]');await expect(result).toBeVisible();await result.click();await expect(page).toHaveURL(/messaging.html#partition-recovery$/);
+});
+test('V4 displayed JDK timeout example compiles and builds a bounded request',async({page})=>{
+ const fs=require('node:fs'),os=require('node:os'),path=require('node:path');const {execFileSync}=require('node:child_process');
+ await page.goto('/v4/reliability.html');const blocks=await page.locator('#deadline-budget pre').allTextContents();
+ const snippet=blocks.find(s=>s.includes('HttpClient client = HttpClient.newBuilder()'));expect(snippet).toBeTruthy();
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'aa-http-example-'));
+ try{
+  const source='import java.net.URI; import java.net.http.*; import java.time.Duration; class ClientExample { public static void main(String[] args) { URI providerUri=URI.create("https://example.invalid/"); String originalProviderKey="same-intention"; String canonicalPayload="{}";\n'+snippet+'\nif(request.timeout().orElseThrow().toMillis()!=250) throw new AssertionError("timeout"); if(!request.headers().firstValue("Idempotency-Key").orElseThrow().equals(originalProviderKey)) throw new AssertionError("identity"); System.out.println("bounded request built"); }}';
+  const file=path.join(dir,'ClientExample.java');fs.writeFileSync(file,source);
+  expect(execFileSync('java',[file],{encoding:'utf8',timeout:15000})).toContain('bounded request built');
+ }finally{fs.rmSync(dir,{recursive:true,force:true});}
+});

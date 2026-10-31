@@ -16,3 +16,16 @@ Reviewed the generated 17 core lessons and seven guides for section depth, worke
 Each of the 24 pages now has two purpose-specific related-reading links, validated against actual local anchors. Section search indexes the resulting teaching text and examples, including API Design.
 
 This is a targeted improvement pass, not a claim that every section is a complete standalone chapter. Examples remain conceptual teaching designs; production implementations still require workload-specific measurements and the actual storage/provider/runtime contracts. No new labs or learning paths were introduced in this pass.
+
+## Core lesson depth pass — 1 November 2026
+
+Added 16 dedicated worked sections across Databases, Messaging, Reliability and Observability. Existing sections and anchors remain intact; each new section is in the desktop/mobile map and section-search index.
+
+| Lesson | Added teaching material |
+| --- | --- |
+| Databases | Tenant-scoped SQL reservation/idempotency protocol; query-plan and keyset-pagination diagnosis; lost-update/write-skew schedules and recovery; Spring commit/propagation failure matrix |
+| Messaging | Leased outbox relay with duplicate windows; transactional consumer receipt/effect protocol; contiguous offset frontier and ownership changes; backlog drain arithmetic and replay policy |
+| Reliability | One deadline budget across waits; explicit retry/breaker/bulkhead composition; unknown-payment state machine with expiry races; business/resource fault-drill evidence |
+| Observability | API/outbox/Kafka/database evidence journey; scoped Java propagation examples; matured-cohort completion SLO calculation; stranded-order investigation and recovery worksheet |
+
+Examples distinguish illustrative settings, conceptual application methods and actual library APIs. SQL is PostgreSQL-specific; Java orchestration excerpts are teaching outlines rather than a packaged runnable application. Checked technical claims against the primary PostgreSQL, Spring, Kafka, SQS, JDK, Resilience4j and OpenTelemetry references linked beside the material. This pass does not claim that the remaining 13 core lessons have received the same new depth.
