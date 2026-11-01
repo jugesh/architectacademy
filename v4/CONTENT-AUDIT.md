@@ -29,3 +29,16 @@ Added 16 dedicated worked sections across Databases, Messaging, Reliability and 
 | Observability | API/outbox/Kafka/database evidence journey; scoped Java propagation examples; matured-cohort completion SLO calculation; stranded-order investigation and recovery worksheet |
 
 Examples distinguish illustrative settings, conceptual application methods and actual library APIs. SQL is PostgreSQL-specific; Java orchestration excerpts are teaching outlines rather than a packaged runnable application. Checked technical claims against the primary PostgreSQL, Spring, Kafka, SQS, JDK, Resilience4j and OpenTelemetry references linked beside the material. This pass does not claim that the remaining 13 core lessons have received the same new depth.
+
+## Next core depth pass — 1 November 2026
+
+Added another 16 worked sections, preserving existing section anchors and all study tools.
+
+| Lesson | Added teaching material |
+| --- | --- |
+| Caching | Delayed-fill invalidation race; bounded refresh leases and atomic release; tenant/variant/negative-cache identity; cold-path capacity and outage admission |
+| Consistency | Read/session histories; limits of quorum arithmetic; durable saga decisions and atomic next-command intent; conditional compensation and reconciliation |
+| Replication & Partitioning | Acknowledgement/apply/failover evidence; resource-enforced fencing; hot-tenant capacity/fan-out calculation; gated shard transfer and rollback boundaries |
+| Security | Resource-level transition authorization; tenant identity through workers/caches/exports; JWT/credential rotation lifecycle; raw-byte HMAC verification and durable callback replay handling |
+
+The eight core lessons expanded across these two passes now contain 32 dedicated worked sections. Nine other core lessons have not yet received this same four-section depth treatment. Source-specific claims in this pass link to primary Redis, PostgreSQL, Spring Security, AWS, OWASP and JDK references. The callback helper demonstrates an explicitly illustrative HMAC protocol, not a provider-specific integration; CI compiles the displayed Java and tests a separately generated known tag plus rejection cases. SQL/application protocols remain teaching outlines with explicit authority/freshness assumptions, not claimed production-ready implementations.

@@ -2,8 +2,12 @@ import {databaseDepth} from './databases.mjs';
 import {messagingDepth} from './messaging.mjs';
 import {reliabilityDepth} from './reliability.mjs';
 import {observabilityDepth} from './observability.mjs';
+import {cachingDepth} from './caching.mjs';
+import {consistencyDepth} from './consistency.mjs';
+import {replicationDepth} from './replication-partitioning.mjs';
+import {securityDepth} from './security.mjs';
 export function addCoreDepth(lessons){
- const additions={databases:databaseDepth,messaging:messagingDepth,reliability:reliabilityDepth,observability:observabilityDepth};
+ const additions={databases:databaseDepth,messaging:messagingDepth,reliability:reliabilityDepth,observability:observabilityDepth,caching:cachingDepth,consistency:consistencyDepth,'replication-partitioning':replicationDepth,security:securityDepth};
  for(const [slug,sections]of Object.entries(additions)){
   const lesson=lessons.find(l=>l.slug===slug);if(!lesson)throw Error(`Missing depth lesson ${slug}`);
   for(const {after,...entry}of sections){

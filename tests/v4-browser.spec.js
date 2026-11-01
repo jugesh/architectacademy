@@ -215,7 +215,11 @@ const coreDepthAnchors={
  databases:['sql-checkout','query-diagnosis','isolation-schedule','spring-commit'],
  messaging:['relay-protocol','consumer-transaction','partition-recovery','backlog-workbook'],
  reliability:['deadline-budget','retry-composition','payment-recovery','resilience-drill'],
- observability:['trace-journey','java-propagation','slo-workbook','incident-workbook']
+ observability:['trace-journey','java-propagation','slo-workbook','incident-workbook'],
+ caching:['invalidation-race','refill-leases','representation-identity','cache-outage-budget'],
+ consistency:['read-histories','quorum-boundaries','saga-protocol','compensation-reconcile'],
+ 'replication-partitioning':['failover-evidence','fenced-ownership','hot-key-workbook','shard-cutover'],
+ security:['resource-policy','tenant-boundaries','key-rotation','webhook-replay']
 };
 for(const [slug,anchors]of Object.entries(coreDepthAnchors))test(`V4 ${slug} deep dives: navigation, mobile code and print answers`,async({page})=>{
  await page.goto(`/v4/${slug}.html`);
@@ -247,4 +251,25 @@ test('V4 displayed JDK timeout example compiles and builds a bounded request',as
   const file=path.join(dir,'ClientExample.java');fs.writeFileSync(file,source);
   expect(execFileSync('java',[file],{encoding:'utf8',timeout:15000})).toContain('bounded request built');
  }finally{fs.rmSync(dir,{recursive:true,force:true});}
+});
+test('V4 displayed callback verifier accepts a known tag and rejects altered or expired input',async({page})=>{
+ const fs=require('node:fs'),os=require('node:os'),path=require('node:path'),crypto=require('node:crypto');const {execFileSync}=require('node:child_process');
+ await page.goto('/v4/security.html');const blocks=await page.locator('#webhook-replay pre').allTextContents();const snippet=blocks.find(s=>s.includes('static boolean verifyCallback'));
+ const secret='01234567890123456789012345678901',timestamp='1700000000',body='{"eventId":"E1"}';
+ const tag=crypto.createHmac('sha256',secret).update(timestamp+'.'+body).digest('base64');
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'aa-callback-example-'));
+ try{
+  const source='class CallbackExample {\n'+snippet+'\n public static void main(String[] args) throws Exception { byte[] key='+JSON.stringify(secret)+'.getBytes(java.nio.charset.StandardCharsets.UTF_8); byte[] body='+JSON.stringify(body)+'.getBytes(java.nio.charset.StandardCharsets.UTF_8); String ts='+JSON.stringify(timestamp)+'; String tag='+JSON.stringify(tag)+'; long now=1700000000L;\n'+
+  'if(!verifyCallback(key,ts,body,tag,now))throw new AssertionError("valid");\n'+
+  'if(verifyCallback(key,ts,new byte[]{1},tag,now))throw new AssertionError("tampered");\n'+
+  'if(verifyCallback(key,ts,body,tag,now+301))throw new AssertionError("old");\n'+
+  'if(verifyCallback(key,ts,body,tag,now-31))throw new AssertionError("future");\n'+
+  'if(verifyCallback(key,ts,body,"!",now))throw new AssertionError("encoding");\n'+
+  'if(verifyCallback(key,"999999999999999999999999",body,tag,now))throw new AssertionError("timestamp");\n'+
+  'System.out.println("callback checks passed"); }}';
+  const file=path.join(dir,'CallbackExample.java');fs.writeFileSync(file,source);expect(execFileSync('java',[file],{encoding:'utf8',timeout:15000})).toContain('callback checks passed');
+ }finally{fs.rmSync(dir,{recursive:true,force:true});}
+});
+test('V4 search finds the version-aware invalidation protocol',async({page})=>{
+ await page.goto('/v4/lessons.html');await page.getByLabel('Search lessons and technical terms').fill('invalidationFloor');const result=page.locator('#search-results a[href="caching.html#invalidation-race"]');await expect(result).toBeVisible();await result.click();await expect(page).toHaveURL(/caching.html#invalidation-race$/);
 });
