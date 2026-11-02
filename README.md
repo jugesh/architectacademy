@@ -1,5 +1,7 @@
 # Architect Academy
 
+[Current categorized lesson library](https://jugesh.github.io/architectacademy/v4/lessons.html) — the main website now opens the V4 library, with six core subject groups, three study-guide groups, search, progress and resume. [V2 chapter editions](https://jugesh.github.io/architectacademy/v2/) and V3 remain directly accessible.
+
 [V3 system design notes](https://jugesh.github.io/architectacademy/v3/) — the exact 7-section, 23-subsection, 121-topic System Design School navigation, with original notes, personal study tools and a guided idempotency walkthrough. [V3 details](v3/README.md).
 
 **A free, interactive architecture textbook and practice environment.**
