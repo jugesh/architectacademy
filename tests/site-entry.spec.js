@@ -16,7 +16,7 @@ test('root search opens the matching V4 section',async({page})=>{
  await page.goto('/');await page.getByLabel('Search lessons and technical terms').fill('invalidationFloor');const result=page.locator('#search-results a[href="v4/caching.html#invalidation-race"]');await expect(result).toBeVisible();await result.click();await expect(page).toHaveURL(/\/v4\/caching.html#invalidation-race$/);
 });
 test('root resume, progress and mobile printing use the same lessons',async({page})=>{
- await page.goto('/v4/caching.html');await page.getByLabel('Lesson progress',{exact:true}).selectOption('reviewed');await page.goto('/v4/caching.html#write-pattern');await page.goto('/');
+ await page.goto('/v4/caching.html');await page.getByLabel('Lesson progress',{exact:true}).selectOption('reviewed');await page.goto('/v4/caching.html#write-pattern');await expect.poll(()=>page.evaluate(()=>JSON.parse(localStorage.getItem('aa-v4-study-v1')).last.section)).toBe('write-pattern');await page.goto('/');
  await expect(page.locator('#resume-learning a')).toHaveAttribute('href','v4/caching.html#write-pattern');await expect(page.locator('#study-summary')).toContainText('1 reviewed');
  await page.setViewportSize({width:360,height:800});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
  await page.getByLabel('Show',{exact:true}).selectOption('reviewed');await expect(page.locator('.card:visible')).toHaveCount(1);await page.emulateMedia({media:'print'});await expect(page.locator('.card:visible')).toHaveCount(24);
