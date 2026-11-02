@@ -52,3 +52,7 @@ The `aa-v4-study-v1` localStorage record contains only allowlisted lesson slugs,
 ## Core worked depth
 
 `depth/index.mjs` inserts four dedicated sections into each of eight core lessons: Databases, Messaging, Reliability, Observability, Caching, Consistency, Replication & Partitioning, and Security. The per-lesson modules own original worked protocols, code outlines, concurrency/failure schedules, calculations, answered questions and primary references. Insertion validates target anchors and rejects duplicate IDs; the generator automatically updates both page maps and the search index. Existing section URLs remain stable. Browser coverage checks the new deep links, narrow-screen code/layout, expanded print answers and full-section search.
+
+## Public home page
+
+The build generates the root `index.html` as the categorized library itself, without a redirect or base-URL override. Static lesson/asset links are rooted beneath `v4/`; category fragments remain on the home page. A `data-lesson-prefix` lets the shared search and resume code resolve the same lesson URLs from either home or `v4/lessons.html`, using the same saved study state. Current home/library/API/lesson navigation has no links back to V2 or V3. CI checks reproducibility for the root index as well as V4 output.
