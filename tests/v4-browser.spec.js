@@ -273,3 +273,22 @@ test('V4 displayed callback verifier accepts a known tag and rejects altered or 
 test('V4 search finds the version-aware invalidation protocol',async({page})=>{
  await page.goto('/v4/lessons.html');await page.getByLabel('Search lessons and technical terms').fill('invalidationFloor');const result=page.locator('#search-results a[href="caching.html#invalidation-race"]');await expect(result).toBeVisible();await result.click();await expect(page).toHaveURL(/caching.html#invalidation-race$/);
 });
+test('V4 messaging teaches the basics before the protocols and indexes the guided sections',async({page})=>{
+ await page.goto('/v4/messaging.html');
+ const order=await page.locator('main>section[id]').evaluateAll(es=>es.map(e=>e.id));
+ expect(order.indexOf('message-basics')).toBeLessThan(order.indexOf('reasoning-path'));expect(order.indexOf('walkthrough')).toBeLessThan(order.indexOf('outbox'));
+ await expect(page.locator('#message-basics')).toContainText('Producer');await expect(page.locator('#message-basics')).toContainText('Consumer');await expect(page.locator('#walkthrough')).toContainText('E91');
+ const records=await(await page.request.get('/v4/search-index.json')).json();
+ for(const id of ['message-basics','queue-log-worked','schema-evolution','retry-workbook'])expect(records.some(r=>r.url==='messaging.html#'+id)).toBeTruthy();
+ await expect(page.locator('#relay-protocol .callout').first()).toContainText('In plain language.');
+});
+test('V4 guided messaging navigation, answers and diagrams work on mobile and print',async({page})=>{
+ await page.setViewportSize({width:360,height:800});await page.goto('/v4/messaging.html');await page.locator('.mobile-map summary').click();
+ for(const id of ['message-basics','queue-log-worked','schema-evolution','retry-workbook']){
+  await page.locator(`.mobile-map a[href="#${id}"]`).click();await expect(page).toHaveURL(new RegExp('#'+id+'$'));
+  const qa=page.locator('#'+id+' details.qa').first();await qa.locator('summary').click();await expect(qa.locator('.answer')).toBeVisible();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
+ }
+ await page.emulateMedia({media:'print'});await page.evaluate(()=>dispatchEvent(new Event('beforeprint')));await expect(page.locator('details.qa:not([open])')).toHaveCount(0);await expect(page.locator('#message-basics .diagram')).toBeVisible();
+ await page.pdf({path:'test-results/v4-messaging-guided.pdf',format:'A4',printBackground:true});
+});

@@ -56,3 +56,5 @@ The `aa-v4-study-v1` localStorage record contains only allowlisted lesson slugs,
 ## Public home page
 
 The build generates the root `index.html` as the categorized library itself, without a redirect or base-URL override. Static lesson/asset links are rooted beneath `v4/`; category fragments remain on the home page. A `data-lesson-prefix` lets the shared search and resume code resolve the same lesson URLs from either home or `v4/lessons.html`, using the same saved study state. Current home/library/API/lesson navigation has no links back to V2 or V3. CI checks reproducibility for the root index as well as V4 output.
+
+`messaging-guide.mjs` applies the final teaching pass for Messaging after the existing depth modules: a beginner-friendly O7/E91 narrative, term-first explanations, a two-pass reading route, four new guided sections and plain-language bridges before advanced SQL/recovery. Existing section IDs and advanced protocols remain available; generated navigation and search include the new material.
