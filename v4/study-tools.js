@@ -1,5 +1,32 @@
 /* Browser-local learning state. No account, analytics or network writes. */
 (()=>{'use strict';
+// Enhance the existing navigation; its original links remain the no-JS fallback.
+const header=document.querySelector('.top'),desktopNav=header?.querySelector(':scope > nav');
+if(header&&desktopNav){
+ const toggle=document.createElement('button');toggle.className='mobile-menu-toggle';toggle.type='button';
+ toggle.setAttribute('aria-label','Navigation menu');toggle.setAttribute('aria-expanded','false');toggle.setAttribute('aria-controls','mobile-navigation');
+ toggle.innerHTML='<span class="hamburger-icon" aria-hidden="true"><span></span><span></span><span></span></span><span>Menu</span>';
+ const panel=document.createElement('div');panel.id='mobile-navigation';panel.className='mobile-navigation';panel.hidden=true;
+ const site=document.createElement('nav');site.setAttribute('aria-label','Mobile site navigation');
+ for(const link of desktopNav.querySelectorAll('a'))site.append(link.cloneNode(true));
+ const library=site.querySelector('a[href*="lessons.html"],a[href="index.html"]');
+ if(library&&![...site.querySelectorAll('a')].some(a=>a.hash==='#practice')){
+  const guides=document.createElement('a');guides.href=library.getAttribute('href').split('#')[0]+'#practice';guides.textContent='Study guides';site.append(guides);
+ }
+ const printButton=document.createElement('button');printButton.type='button';printButton.textContent='Print / PDF';
+ printButton.addEventListener('click',()=>{closeMenu();window.print();});site.append(printButton);panel.append(site);
+ const sidebar=document.querySelector('.side');
+ if(sidebar){const heading=document.createElement('p');heading.className='mobile-navigation-heading';heading.textContent=sidebar.querySelector('h2')?.textContent||'On this page';panel.append(heading);const sections=document.createElement('nav');sections.setAttribute('aria-label','Mobile page navigation');for(const link of sidebar.querySelectorAll('a'))sections.append(link.cloneNode(true));panel.append(sections);}
+ function closeMenu(restoreFocus=false){panel.hidden=true;toggle.setAttribute('aria-expanded','false');if(restoreFocus)toggle.focus();}
+ toggle.addEventListener('click',()=>{const opening=panel.hidden;panel.hidden=!opening;toggle.setAttribute('aria-expanded',String(opening));});
+ panel.addEventListener('click',e=>{if(e.target.closest('a'))closeMenu();});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!panel.hidden){e.preventDefault();closeMenu(true);}});
+ document.addEventListener('click',e=>{if(!panel.hidden&&!panel.contains(e.target)&&!toggle.contains(e.target))closeMenu();});
+ header.addEventListener('focusout',e=>{if(e.relatedTarget&&!header.contains(e.relatedTarget))closeMenu();});
+ const mobile=matchMedia('(max-width:700px)');mobile.addEventListener('change',()=>{if(!mobile.matches)closeMenu();});
+ addEventListener('beforeprint',()=>closeMenu());
+ header.append(toggle,panel);header.classList.add('has-mobile-navigation');
+}
 const lessonPrefix=document.body.dataset.lessonPrefix||'';
 const key='aa-v4-study-v1',statuses=['not-started','in-progress','reviewed'];
 const names={'not-started':'Not started','in-progress':'In progress',reviewed:'Reviewed'};
