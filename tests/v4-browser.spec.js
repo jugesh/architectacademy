@@ -319,7 +319,7 @@ for(const url of ['/index.html','/v4/lessons.html','/v4/index.html','/v4/bdd.htm
  await expect(panel.getByRole('link',{name:'All lessons',exact:true})).toBeVisible();
  await expect(panel.getByRole('link',{name:'Study guides',exact:true})).toHaveCount(1);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
- await page.keyboard.press('Tab');expect(await panel.locator('a').first().evaluate(e=>e===document.activeElement)).toBeTruthy();
+ await page.keyboard.press('Tab');await expect(panel.locator('a').first()).toBeFocused();
  await page.keyboard.press('Escape');await expect(panel).toBeHidden();await expect(toggle).toBeFocused();
  await toggle.click();await page.mouse.click(5,5);await expect(panel).toBeHidden();
  await toggle.click();await page.setViewportSize({width:1000,height:800});await expect(toggle).toBeHidden();await expect(panel).toBeHidden();

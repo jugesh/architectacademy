@@ -22,7 +22,7 @@ if(header&&desktopNav){
  panel.addEventListener('click',e=>{if(e.target.closest('a'))closeMenu();});
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!panel.hidden){e.preventDefault();closeMenu(true);}});
  document.addEventListener('click',e=>{if(!panel.hidden&&!panel.contains(e.target)&&!toggle.contains(e.target))closeMenu();});
- header.addEventListener('focusout',()=>{queueMicrotask(()=>{if(!header.contains(document.activeElement))closeMenu();});});
+ header.addEventListener('focusout',e=>{if(e.relatedTarget&&!header.contains(e.relatedTarget))closeMenu();});
  const mobile=matchMedia('(max-width:700px)');mobile.addEventListener('change',()=>{if(!mobile.matches)closeMenu();});
  addEventListener('beforeprint',()=>closeMenu());
  header.append(toggle,panel);header.classList.add('has-mobile-navigation');
