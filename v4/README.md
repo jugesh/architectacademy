@@ -64,3 +64,7 @@ The build generates the root `index.html` as the categorized library itself, wit
 `testing-lessons.mjs` adds two dedicated lessons after the older content passes. They share an order-cancellation story, with separate discovery/acceptance and red–green–refactor explanations. The Testing & Quality group contains both; the library now has 19 core lessons and seven guides. Counts in the library description come from the content collections.
 
 The Java 17+/JUnit 5.13.1 examples in `examples/testing` are embedded from source by the builder. Run `mvn -B -f v4/examples/testing/pom.xml test`; CI executes the seven policy/acceptance checks. The acceptance fixture is deliberately in-memory and covers domain behavior only. Cucumber adapter code is illustrative; HTTP, authorization, database commits, concurrency and delivery semantics require the additional boundary checks described in the lessons.
+
+## Mobile navigation
+
+`study-tools.js` enhances each current root/V4 header with a hamburger disclosure at widths up to 700px. It reuses existing site links and sidebar section/category links, exposes expanded state, closes on Escape (returning focus), link selection, outside click, focus leaving the header, desktop resize and printing. The scrollable panel preserves reading space and uses 44px touch targets. Desktop navigation and the original no-JavaScript fallback remain available. Shared CSS keeps the menu out of printed pages.

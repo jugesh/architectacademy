@@ -310,3 +310,22 @@ test('V4 guided messaging navigation, answers and diagrams work on mobile and pr
  await page.emulateMedia({media:'print'});await page.evaluate(()=>dispatchEvent(new Event('beforeprint')));await expect(page.locator('details.qa:not([open])')).toHaveCount(0);await expect(page.locator('#message-basics .diagram')).toBeVisible();
  await page.pdf({path:'test-results/v4-messaging-guided.pdf',format:'A4',printBackground:true});
 });
+
+for(const url of ['/index.html','/v4/lessons.html','/v4/index.html','/v4/bdd.html'])test(`Mobile hamburger navigation works on ${url}`,async({page})=>{
+ await page.setViewportSize({width:360,height:800});await page.goto(url);
+ const toggle=page.getByRole('button',{name:'Navigation menu',exact:true});const panel=page.locator('#mobile-navigation');
+ await expect(toggle).toBeVisible();await expect(toggle).toHaveAttribute('aria-expanded','false');await expect(panel).toBeHidden();
+ await toggle.click();await expect(toggle).toHaveAttribute('aria-expanded','true');await expect(panel).toBeVisible();
+ await expect(panel.getByRole('link',{name:'All lessons',exact:true})).toBeVisible();
+ await expect(panel.getByRole('link',{name:'Study guides',exact:true})).toHaveCount(1);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
+ await page.keyboard.press('Tab');expect(await panel.locator('a').first().evaluate(e=>e===document.activeElement)).toBeTruthy();
+ await page.keyboard.press('Escape');await expect(panel).toBeHidden();await expect(toggle).toBeFocused();
+ await toggle.click();await page.mouse.click(5,5);await expect(panel).toBeHidden();
+ await toggle.click();await page.setViewportSize({width:1000,height:800});await expect(toggle).toBeHidden();await expect(panel).toBeHidden();
+ await expect(page.locator('.top>nav')).toBeVisible();
+ await page.setViewportSize({width:320,height:700});await toggle.click();
+ const target=panel.locator('nav[aria-label="Mobile page navigation"] a').first();const href=await target.getAttribute('href');
+ await target.click();await expect(panel).toBeHidden();await expect(page).toHaveURL(new RegExp(href.replace('#','\\#')+'$'));
+ await toggle.click();await page.emulateMedia({media:'print'});await expect(toggle).toBeHidden();await expect(panel).toBeHidden();
+});
