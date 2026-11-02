@@ -174,7 +174,8 @@ test('V4 search handles empty results, fast queries and retry after a load failu
 test('V4 progress persists, filters cards and prints the complete library',async({page})=>{
  await page.goto('/v4/caching.html');await page.getByLabel('Lesson progress',{exact:true}).selectOption('reviewed');
  await page.reload();await expect(page.getByLabel('Lesson progress',{exact:true})).toHaveValue('reviewed');
- await page.goto('/v4/lessons.html');await expect(page.locator('#study-summary')).toHaveText('1 reviewed · 0 in progress · 23 not started');
+ await page.goto('/v4/lessons.html');const total=await page.locator('.card').count();
+ await expect(page.locator('#study-summary')).toHaveText(`1 reviewed · 0 in progress · ${total-1} not started`);
  await page.getByLabel('Show',{exact:true}).selectOption('reviewed');
  await expect(page.locator('.card:visible')).toHaveCount(1);await expect(page.locator('.card:visible')).toContainText('Caching');
  await page.emulateMedia({media:'print'});await expect(page.locator('.card:visible')).toHaveCount(26);
