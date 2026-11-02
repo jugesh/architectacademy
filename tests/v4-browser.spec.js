@@ -1,8 +1,24 @@
 const {test,expect}=require('@playwright/test');
-const topics=['scalability','databases','caching','messaging','reliability','observability','networking','security','consistency','microservices','rate-limiting','replication-partitioning','deployment-runtime','disaster-recovery','search-pipelines','design-practice'];
+const topics=['scalability','databases','caching','messaging','reliability','observability','networking','security','consistency','microservices','rate-limiting','replication-partitioning','deployment-runtime','disaster-recovery','search-pipelines','design-practice','bdd','tdd'];
+test('BDD and TDD are discoverable from the public library and section search',async({page})=>{
+ await page.goto('/index.html');
+ for(const topic of ['bdd','tdd']) {
+  await expect(page.locator(`#category-testing-quality a[href="v4/${topic}.html"]`)).toHaveCount(1);
+ }
+ await page.getByLabel('Search lessons and technical terms').fill('gherkin');
+ const result=page.locator('#search-results a[href="v4/bdd.html#gherkin"]');
+ await expect(result).toBeVisible();await result.click();
+ await expect(page.locator('#gherkin')).toContainText('Scenario Outline');
+ await page.goto('/v4/tdd.html');
+ await expect(page.locator('#worked')).toContainText('UnsupportedOperationException');
+ await expect(page.locator('#worked')).toContainText('class CancellationPolicyTest');
+ await expect(page.locator('#references a[href="examples/testing/pom.xml"]')).toHaveCount(1);
+ const index=await (await page.request.get('/v4/search-index.json')).json();
+ for(const url of ['bdd.html#example-map','tdd.html#concurrency'])expect(index.some(r=>r.url===url)).toBeTruthy();
+});
 test('V4 library links to API design and every authored lesson',async({page})=>{
  await page.goto('/v4/lessons.html');
- await expect(page.locator('.card:not(.practice-card)')).toHaveCount(17);
+ await expect(page.locator('.card:not(.practice-card)')).toHaveCount(19);
  for(const href of await page.locator('.card a').evaluateAll(as=>as.map(a=>a.href))){
   const response=await page.request.get(href);expect(response.status()).toBe(200);
  }
@@ -68,7 +84,7 @@ test('V4 tools remain usable when browser storage is blocked',async({page})=>{
  await page.addInitScript(()=>{Object.defineProperty(window,'localStorage',{get(){throw new Error('blocked');}});});
  await page.goto('/v4/revision-toolkit.html');
  await page.getByLabel('Reviewed Databases',{exact:true}).check();
- await expect(page.locator('#review-status')).toContainText('1 of 17');
+ await expect(page.locator('#review-status')).toContainText('1 of 19');
  await expect(page.locator('#review-status')).toContainText('unavailable');
 });
 
@@ -106,16 +122,17 @@ test('V4 subject groups contain every lesson exactly once and keep the reading p
   'data-consistency':['databases','caching','consistency','replication-partitioning'],
   'messaging-pipelines':['messaging','search-pipelines'],
   'reliability-operations':['reliability','observability','deployment-runtime','disaster-recovery'],
+  'testing-quality':['bdd','tdd'],
   'design-practice':['design-practice']
  };
- await expect(page.locator('.core-group')).toHaveCount(6);
+ await expect(page.locator('.core-group')).toHaveCount(7);
  for(const [id,slugs] of Object.entries(expected))expect(await page.locator(`#category-${id} .card`).evaluateAll(cs=>cs.map(c=>c.dataset.lesson))).toEqual(slugs);
  await expect(page.locator('.guide-group')).toHaveCount(3);
- const core=await page.locator('.core-group .card').evaluateAll(cs=>cs.map(c=>c.dataset.lesson));expect(new Set(core).size).toBe(17);
+ const core=await page.locator('.core-group .card').evaluateAll(cs=>cs.map(c=>c.dataset.lesson));expect(new Set(core).size).toBe(19);
  const guides=await page.locator('.guide-group .card').evaluateAll(cs=>cs.map(c=>c.dataset.lesson));expect(new Set(guides).size).toBe(7);
  await page.locator('.reading-order summary').click();
  const path=await page.locator('.reading-order li a').evaluateAll(as=>as.map(a=>a.getAttribute('href')));
- expect(path.slice(0,3)).toEqual(['networking.html','index.html','security.html']);expect(path).toHaveLength(17);
+ expect(path.slice(0,3)).toEqual(['networking.html','index.html','security.html']);expect(path).toHaveLength(19);
  expect([...path].sort()).toEqual(core.map(s=>s+'.html').sort());
 });
 test('V4 mobile category jumps, breadcrumbs and print retain discoverable lessons',async({page})=>{
@@ -152,15 +169,16 @@ test('V4 search handles empty results, fast queries and retry after a load failu
  await expect(page.locator('#search-results a[href="search-pipelines.html#time"]')).toBeVisible();
  await input.fill('zzzznotawordzzzz');await expect(page.locator('#search-status')).toContainText('No matching');
  await input.fill('');await expect(page.locator('#search-results li')).toHaveCount(0);
- await expect(page.locator('.card')).toHaveCount(24);
+ await expect(page.locator('.card')).toHaveCount(26);
 });
 test('V4 progress persists, filters cards and prints the complete library',async({page})=>{
  await page.goto('/v4/caching.html');await page.getByLabel('Lesson progress',{exact:true}).selectOption('reviewed');
  await page.reload();await expect(page.getByLabel('Lesson progress',{exact:true})).toHaveValue('reviewed');
- await page.goto('/v4/lessons.html');await expect(page.locator('#study-summary')).toHaveText('1 reviewed · 0 in progress · 23 not started');
+ await page.goto('/v4/lessons.html');const total=await page.locator('.card').count();
+ await expect(page.locator('#study-summary')).toHaveText(`1 reviewed · 0 in progress · ${total-1} not started`);
  await page.getByLabel('Show',{exact:true}).selectOption('reviewed');
  await expect(page.locator('.card:visible')).toHaveCount(1);await expect(page.locator('.card:visible')).toContainText('Caching');
- await page.emulateMedia({media:'print'});await expect(page.locator('.card:visible')).toHaveCount(24);
+ await page.emulateMedia({media:'print'});await expect(page.locator('.card:visible')).toHaveCount(26);
  await page.emulateMedia({media:'screen'});await page.getByLabel('Show',{exact:true}).selectOption('in-progress');await expect(page.locator('#progress-empty')).toBeVisible();
  await page.goto('/v4/caching.html');await page.getByLabel('Lesson progress',{exact:true}).selectOption('not-started');await page.reload();await expect(page.getByLabel('Lesson progress',{exact:true})).toHaveValue('not-started');
 });
@@ -185,7 +203,7 @@ test('V4 study tools tolerate blocked and malformed storage without breaking rea
 });
 test('V4 corrupt study state is discarded and unrelated settings are retained',async({page})=>{
  await page.goto('/v4/lessons.html');await page.evaluate(()=>{localStorage.setItem('aa-v4-study-v1','broken-json');localStorage.setItem('unrelated-setting','keep');});
- await page.reload();await expect(page.locator('#study-summary')).toContainText('24 not started');
+ await page.reload();await expect(page.locator('#study-summary')).toContainText('26 not started');
  await page.goto('/v4/security.html');await page.getByLabel('Lesson progress',{exact:true}).selectOption('reviewed');
  expect(await page.evaluate(()=>localStorage.getItem('unrelated-setting'))).toBe('keep');
  await page.goto('/v4/lessons.html');await expect(page.locator('#study-summary')).toContainText('1 reviewed');
@@ -202,7 +220,7 @@ test('V4 study controls fit mobile and related reading connects every page',asyn
 });
 test('V4 search covers every page and related links resolve to existing sections',async({page})=>{
  const index=await (await page.request.get('/v4/search-index.json')).json();
- const urls=[...new Set(index.map(r=>r.url.split('#')[0]))];expect(urls).toHaveLength(24);
+ const urls=[...new Set(index.map(r=>r.url.split('#')[0]))];expect(urls).toHaveLength(26);
  for(const url of urls){
   const html=await (await page.request.get('/v4/'+url)).text();
   const related=html.match(/<aside class="related-reading"[\s\S]*?<\/aside>/)[0];

@@ -5,6 +5,7 @@ export const coreGroups=[
  {id:'data-consistency',title:'Data & Consistency',description:'Model authoritative facts, reusable copies, concurrent changes and data distribution.',slugs:['databases','caching','consistency','replication-partitioning']},
  {id:'messaging-pipelines',title:'Messaging & Pipelines',description:'Move durable work and derive searchable views without losing identity or progress.',slugs:['messaging','search-pipelines']},
  {id:'reliability-operations',title:'Reliability & Operations',description:'Handle failure, diagnose outcomes, deploy safely and recover usable service.',slugs:['reliability','observability','deployment-runtime','disaster-recovery']},
+ {id:'testing-quality',title:'Testing & Quality',description:'Clarify behavior through examples and develop reliable code with fast, focused feedback.',slugs:['bdd','tdd']},
  {id:'design-practice',title:'Design Practice',description:'Combine requirements, mechanisms and failure recovery in end-to-end designs.',slugs:['design-practice']}
 ];
 export const guideGroups=[
@@ -12,7 +13,7 @@ export const guideGroups=[
  {id:'production',title:'Implement & Operate',description:'Study incidents, Java/Spring behavior and controlled migrations.',slugs:['failure-case-studies','java-spring-internals','migration-modernization']},
  {id:'revision',title:'Interview & Revise',description:'Practice answers, check your reasoning and revisit weak concepts.',slugs:['interview-workbook','revision-toolkit']}
 ];
-export const recommendedOrder=['networking','index','security','scalability','databases','caching','messaging','consistency','microservices','rate-limiting','replication-partitioning','reliability','deployment-runtime','disaster-recovery','search-pipelines','observability','design-practice'];
+export const recommendedOrder=['networking','index','security','scalability','databases','caching','messaging','consistency','microservices','rate-limiting','replication-partitioning','reliability','bdd','tdd','deployment-runtime','disaster-recovery','search-pipelines','observability','design-practice'];
 export function validateGroups(groups,expected,label){
  const entries=groups.flatMap(g=>g.slugs),seen=new Set(entries);
  if(seen.size!==entries.length||entries.length!==expected.length||expected.some(s=>!seen.has(s)))throw Error(`${label}: every page must appear in exactly one group`);
