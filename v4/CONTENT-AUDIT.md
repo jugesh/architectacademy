@@ -42,3 +42,9 @@ Added another 16 worked sections, preserving existing section anchors and all st
 | Security | Resource-level transition authorization; tenant identity through workers/caches/exports; JWT/credential rotation lifecycle; raw-byte HMAC verification and durable callback replay handling |
 
 The eight core lessons expanded across these two passes now contain 32 dedicated worked sections. Nine other core lessons have not yet received this same four-section depth treatment. Source-specific claims in this pass link to primary Redis, PostgreSQL, Spring Security, AWS, OWASP and JDK references. The callback helper demonstrates an explicitly illustrative HMAC protocol, not a provider-specific integration; CI compiles the displayed Java and tests a separately generated known tag plus rejection cases. SQL/application protocols remain teaching outlines with explicit authority/freshness assumptions, not claimed production-ready implementations.
+
+## Messaging teaching progression — 2 November 2026
+
+Reworked the opening around Alice's paid order O7 and stable event E91. Explain producer/broker/consumer, delivery versus completion, commands versus events and acknowledgements before introducing outbox/inbox protocols. Replace compressed/repeated explanations in the core reader-model, acknowledgement, outbox and pitfalls sections with a five-step walkthrough, failure tables and a two-pass reading route. Preserve existing anchors and advanced relay/consumer/offset/backlog sections, adding plain-language bridges before them.
+
+Four new guided sections cover vocabulary/message identity, queue versus independent log readers, version-compatible events/rebuilds, and classified retry/quarantine/replay decisions. New browser coverage checks progression order, indexed anchors, mobile navigation, answers and print diagrams. Broker-specific claims retain linked primary Kafka/SQS references; application snippets are explicitly conceptual outlines.
