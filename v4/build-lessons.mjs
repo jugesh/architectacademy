@@ -12,6 +12,7 @@ import {deepenOperations} from './operations-explanations.mjs';
 import {deepenProjectionsAndPractice} from './projections-design-explanations.mjs';
 import {guideMessaging} from './messaging-guide.mjs';
 import {testingLessons} from './testing-lessons.mjs';
+import {developmentApproaches} from './development-approaches.mjs';
 import {addCoreDepth} from './depth/index.mjs';
 import {closeContentGaps,relatedReading} from './content-audit.mjs';
 import {practiceGuides} from './architecture-practice.mjs';
@@ -30,7 +31,7 @@ deepenProjectionsAndPractice(lessons);
 closeContentGaps(lessons);
 addCoreDepth(lessons);
 guideMessaging(lessons);
-lessons.push(...testingLessons);
+lessons.push(...testingLessons,...developmentApproaches);
 const allPages=[...lessons,...practiceGuides];
 const root=path.dirname(fileURLToPath(import.meta.url));
 const allCore=[{slug:'index',title:'API Design',intro:'Contracts, HTTP semantics, security, reliability, and three complete API design cases.'},...lessons];
@@ -61,7 +62,7 @@ const filter=document.querySelector('#glossary-filter');if(filter){const entries
 const checklist=document.querySelector('#review-checklist');if(checklist){const topics=${JSON.stringify([{slug:'index',title:'API Design'},...lessons.map(l=>({slug:l.slug,title:l.title}))])};let marks={};let storage=true;const key='aa-v4-review-v1';try{const raw=JSON.parse(localStorage.getItem(key)||'{}');if(raw&&typeof raw==='object'&&!Array.isArray(raw))marks=raw;}catch{storage=false;}const status=document.querySelector('#review-status');const report=()=>status.textContent=Object.keys(marks).filter(k=>topics.some(t=>t.slug===k)&&marks[k]===true).length+' of '+topics.length+' lesson explanations reviewed.'+(storage?' Saved in this browser.':' Browser storage unavailable; marks last only for this page session.');for(const t of topics){const label=document.createElement('label');label.className='review-item';const input=document.createElement('input');input.type='checkbox';input.checked=marks[t.slug]===true;input.setAttribute('aria-label','Reviewed '+t.title);input.addEventListener('change',()=>{marks[t.slug]=input.checked;try{localStorage.setItem(key,JSON.stringify(marks));}catch{storage=false;}report();});const link=document.createElement('a');link.href=t.slug+'.html#'+(t.slug==='index'?'api-reasoning-path':'reasoning-path');link.textContent=t.title;label.append(input,document.createTextNode('I can explain the reasoning:'),link);checklist.append(label);}document.querySelector('#reset-review').addEventListener('click',()=>{marks={};checklist.querySelectorAll('input').forEach(i=>i.checked=false);try{localStorage.removeItem(key);}catch{storage=false;}report();});report();}
 `;
 function shell(title,description,body,nav='',navLabel='Lesson map'){
-return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="${esc(description)}"><title>${esc(title)} — Architect Academy V4</title>${studyHead}<style>${styles}\n${extra}</style></head><body><header class="top"><a class="brand" href="lessons.html">architect academy<small>V4 · ARCHITECTURE LESSONS</small></a><nav><a class="library-home" href="lessons.html">All lessons</a><a href="index.html">API Design</a><a href="lessons.html#practice">Study guides</a><button onclick="print()">Print / PDF</button></nav></header><div class="wrap"><aside class="side"><h2>${esc(navLabel)}</h2>${nav}</aside><main id="top">${body}<footer class="footer">Architect Academy V4 · Original teaching examples · ${['BDD','TDD'].includes(title)?'Reviewed 2 November 2026':'Reviewed 31 October 2026'}</footer></main></div><script>${script}</script></body></html>`;
+return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="${esc(description)}"><title>${esc(title)} — Architect Academy V4</title>${studyHead}<style>${styles}\n${extra}</style></head><body><header class="top"><a class="brand" href="lessons.html">architect academy<small>V4 · ARCHITECTURE LESSONS</small></a><nav><a class="library-home" href="lessons.html">All lessons</a><a href="index.html">API Design</a><a href="lessons.html#practice">Study guides</a><button onclick="print()">Print / PDF</button></nav></header><div class="wrap"><aside class="side"><h2>${esc(navLabel)}</h2>${nav}</aside><main id="top">${body}<footer class="footer">Architect Academy V4 · Original teaching examples · ${developmentApproaches.some(l=>l.title===title)?'Reviewed 3 November 2026':['BDD','TDD'].includes(title)?'Reviewed 2 November 2026':'Reviewed 31 October 2026'}</footer></main></div><script>${script}</script></body></html>`;
 }
 const cards=[...allCore].sort((a,b)=>recommendedOrder.indexOf(a.slug)-recommendedOrder.indexOf(b.slug));
 for(const l of allPages){
