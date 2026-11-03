@@ -23,6 +23,7 @@ jobs:
       - run: mvn -B -f v2/examples/ch07/pom.xml test
       - run: java v2/examples/ch08/MigrationLab.java
       - run: mvn -B -f v4/examples/testing/pom.xml test
+      - run: mvn -B -f v4/examples/testing/pom.xml test-compile org.pitest:pitest-maven:mutationCoverage
       - run: python3 scripts/build-chapter-readers.py --check
       - run: python3 tests/chapter-structure.py
       - run: node --check v2/assets/book.js
@@ -38,3 +39,4 @@ jobs:
           path: |
             test-results/
             playwright-report/
+            v4/examples/testing/target/pit-reports/
