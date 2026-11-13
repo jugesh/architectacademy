@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Basic computer organization and the CPU. Study notes, worked examples and diagrams from Architect Academy.">
+  <title>Basic computer organization and the CPU | Architect Academy</title>
+  <link rel="stylesheet" href="../mfcs-i/notes.css">
+  <link rel="stylesheet" href="diagrams.css">
+</head>
+<body>
+  <header><nav aria-label="Course navigation"><a href="../lessons.html">Architect Academy</a> <a href="index.html">Course notes</a> <a href="unit-1.html">Unit I</a> <a href="unit-2.html">Unit II</a> <a href="unit-3.html" aria-current="page">Unit III</a> <a href="unit-4.html">Unit IV</a></nav></header>
+  <main>
+    <h1>Basic computer organization and the CPU</h1>
+    <nav class="contents" aria-label="On this page"><a href="#basic">Basic computer</a><a href="#cycle">Instruction cycle</a><a href="#design">Datapath and control</a><a href="#cpu">CPU organization</a><a href="#isa">Instruction sets</a><a href="#practice">Practice</a></nav>
+<h2 id="basic">Basic Computer model</h2>
+    <p>Mano’s Basic Computer is a teaching architecture with a 4096-word memory, 16-bit words and a single accumulator. An instruction code assigns bits to an operation and its operands or addressing information. This model’s layout is specific to the Basic Computer.</p>
+    <figure class="diagram">
+      <table><caption>16-bit instruction layout</caption><thead><tr><th scope="col">Bit 15</th><th scope="col">Bits 14–12</th><th scope="col">Bits 11–0</th></tr></thead>
+      <tbody><tr><td class="group">I</td><td class="group">Opcode</td><td class="group">Address or function bits</td></tr></tbody></table>
+      <figcaption>Opcodes 000–110 select memory-reference instructions. For them I=0 means direct and I=1 means indirect. With opcode 111, I=0 selects register-reference and I=1 selects I/O instructions. The low 12 bits then select functions.</figcaption>
+    </figure>
+    <table>
+      <thead><tr><th scope="col">Register</th><th scope="col">Width and use</th></tr></thead>
+      <tbody>
+        <tr><td>AR, PC</td><td>12 bits each. AR holds the memory address. PC holds the next instruction address.</td></tr>
+        <tr><td>IR, DR</td><td>16 bits each. IR holds the current instruction. DR holds a data operand from memory.</td></tr>
+        <tr><td>AC, TR</td><td>16 bits each. AC holds operands and ALU results. TR holds temporary data.</td></tr>
+        <tr><td>INPR, OUTR</td><td>8 bits each. INPR receives input and OUTR supplies output.</td></tr>
+        <tr><td>E, SC</td><td>E is a one-bit extension for carry and rotates. SC is a four-bit sequence counter decoded into timing steps.</td></tr>
+      </tbody>
+    </table>
+    <h2 id="cycle">Instruction cycle and timing</h2>
+    <figure class="diagram">
+      <div class="flow" aria-hidden="true"><span class="block">T₀ · Address<br>AR ← PC</span><span class="arrow">→</span><span class="block">T₁ · Fetch<br>IR ← M[AR]<br>PC ← PC+1</span><span class="arrow">→</span><span class="block">T₂ · Decode<br>AR ← IR[11:0]</span><span class="arrow">→</span><span class="block">Execute<br>then SC ← 0</span></div>
+      <figcaption>The opcode decoder identifies the instruction and the controller captures I at T₂. For indirect memory references, T₃ loads AR from the low 12 bits of M[AR]. A memory-reference instruction starts its execution steps at T₄. Register-reference and I/O functions execute at T₃ in this model.</figcaption>
+    </figure>
+    <table>
+      <thead><tr><th scope="col">Instruction</th><th scope="col">Effect after the effective address EA is known</th></tr></thead>
+      <tbody>
+        <tr><td>AND, ADD, LDA</td><td>AND combines AC with M[EA]. ADD adds M[EA] to AC and sends carry-out to E. LDA loads M[EA] into AC.</td></tr>
+        <tr><td>STA, BUN</td><td>STA stores AC into M[EA]. BUN replaces PC with EA.</td></tr>
+        <tr><td>BSA</td><td>Store the return PC in M[EA] and set PC to EA+1. An indirect BUN through the saved word returns.</td></tr>
+        <tr><td>ISZ</td><td>Increment M[EA], store it back and skip the next instruction if the result is zero.</td></tr>
+      </tbody>
+    </table>
+    <p>Register-reference examples are CLA (clear AC), CMA (complement AC), INC (increment AC) and HLT (stop). I/O instructions include INP (copy INPR into the low AC byte and clear FGI), OUT (copy the low AC byte into OUTR and clear FGO), SKI/SKO (test readiness and skip) and ION/IOF (enable or disable interrupts).</p>
+    <p>Worked indirect ADD. If IR contains 0x9020, I=1, opcode=001 and the address field is 0x020. If M[0x020]=0x0120, EA becomes 0x120 at T₃. At T₄ load DR from M[0x120]. At T₅ add DR to AC, update E with carry-out and clear SC. With AC=0xFFFF and DR=0x0002, AC becomes 0x0001 and E becomes 1.</p>
+    <h3>I/O and interrupt cycle</h3>
+    <p>FGI signals that input is available and FGO signals that output can accept a byte. With interrupts enabled by IEN, a ready flag can set the interrupt request. At the instruction boundary, the Basic Computer saves the return PC in M[0], starts the handler at address 1 and clears IEN and the interrupt request. The handler services the device, then returns via an indirect branch through M[0]. Modern processors generally save more context and may use several vectors.</p>
+    <h2 id="design">Datapath, control and accumulator logic</h2>
+    <figure class="diagram">
+      <div class="flow" aria-hidden="true"><span class="block">DR + AC<br>operand inputs</span><span class="arrow">→</span><span class="block">ALU / shifter<br>ADD · AND · rotate</span><span class="arrow">→</span><span class="block">Result select<br>and load enable</span><span class="arrow">→</span><span class="block">AC<br>16 state bits</span></div>
+      <figcaption>AC feeds back to the ALU and captures a selected result at the clock edge. A rotate uses E as an extra bit. ADD sends the carry to E. Other inputs let AC load DR, clear or receive the low input byte.</figcaption>
+    </figure>
+    <p>The complete teaching computer has memory, registers, a shared internal bus, an ALU/shifter, I/O data and flag registers, and hardwired control. A bus multiplexer selects the source. Destination enables decide which registers capture it. A controller combines the decoded opcode, timing signal, addressing mode and flags to choose bus selects, memory read/write, ALU function and register enables.</p>
+    <p>To design the controller, write the register transfers for each instruction first. For example, decoded ADD at T₄ asserts memory read and DR load. ADD at T₅ selects addition, enables AC and E updates and resets SC. Check that every instruction ends by resetting the sequence or entering the interrupt path. AC input selection and load must agree so an inactive instruction leaves AC unchanged.</p>
+    <h2 id="cpu">General registers and stacks</h2>
+    <p>A general-register organization uses a register file with read ports to supply ALU operands and a write port to capture results. A control word can select two source registers, one destination and the ALU operation. A stack organization uses a stack pointer and LIFO storage. For a downward-growing, full stack of 4-byte words, PUSH decrements SP by 4 then stores, while POP reads then increments SP. Check for underflow and overflow.</p>
+    <p>Instruction formats can include opcode, register fields, immediate values, displacement or addressing-mode bits. A three-address instruction names destination and two sources. A two-address instruction reuses one operand as the destination. An accumulator instruction implies AC, and a zero-address stack ADD pops two operands and pushes their sum.</p>
+    <table>
+      <caption>Common addressing modes</caption>
+      <thead><tr><th scope="col">Mode</th><th scope="col">Where the operand comes from</th></tr></thead>
+      <tbody>
+        <tr><td>Immediate / register</td><td>A value encoded in the instruction or a named register.</td></tr>
+        <tr><td>Direct / memory indirect</td><td>EA=A, or EA=M[A]. In both cases read the operand at EA.</td></tr>
+        <tr><td>Register indirect</td><td>EA=R, where R is the contents of the selected register.</td></tr>
+        <tr><td>Base + displacement / indexed</td><td>EA=R+signed displacement, or base+index (potentially scaled). If R=1000 and displacement is −8, EA=992.</td></tr>
+        <tr><td>PC-relative</td><td>Target is the architecture-defined PC base plus a signed displacement.</td></tr>
+        <tr><td>Implied / stack</td><td>The opcode implies an operand such as AC or the top of stack.</td></tr>
+      </tbody>
+    </table>
+    <p>Data transfer instructions move values between registers, memory or I/O. Manipulation instructions perform arithmetic, bitwise logic or shifts. Program control instructions change execution order through jumps, conditional branches, calls, returns and traps. A call saves a return address in a link register, stack or other architecture-defined location.</p>
+    <h2 id="isa">RISC and CISC</h2>
+    <p>RISC designs commonly favour load/store instructions, register-to-register arithmetic and regular instruction encodings. CISC designs commonly offer richer addressing modes, variable-length encodings and instructions that can combine memory access with computation. For example, a RISC-V sequence can load a word then add it to a register, while an x86 ADD can take a memory operand. RISC-V also has optional compressed encodings, and many x86 implementations decode instructions into internal micro-operations. The ISA defines visible behaviour. Pipeline depth, throughput and power depend on the implementation and workload.</p>
+    <h2 id="practice">Practice</h2>
+    <details><summary>What does instruction 0x302A do?</summary><p>I=0, opcode=011 and EA=0x02A. STA stores AC to M[0x02A].</p></details>
+    <details><summary>Why does BSA save the already incremented PC?</summary><p>It points at the instruction after the call, where execution should resume on return.</p></details>
+    <details><summary>What is the difference between immediate 20 and direct address 20?</summary><p>Immediate uses the value 20. Direct addressing uses the data stored at address 20.</p></details>
+    <p class="refs">Reading <a href="index.html#system-architecture">Computer System Architecture, chapters 6 and 9</a> · <a href="index.html#hardware-software">Computer Organization and Design, chapters 2 and 4</a></p>
+    <p class="next"><a href="unit-4.html">Next · Pipelines, I/O, arithmetic and memory</a></p>
+  </main>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Pipelines, I/O, arithmetic and memory. Study notes, worked examples and diagrams from Architect Academy.">
+  <title>Pipelines, I/O, arithmetic and memory | Architect Academy</title>
+  <link rel="stylesheet" href="../mfcs-i/notes.css">
+  <link rel="stylesheet" href="diagrams.css">
+</head>
+<body>
+  <header><nav aria-label="Course navigation"><a href="../lessons.html">Architect Academy</a> <a href="index.html">Course notes</a> <a href="unit-1.html">Unit I</a> <a href="unit-2.html">Unit II</a> <a href="unit-3.html">Unit III</a> <a href="unit-4.html" aria-current="page">Unit IV</a></nav></header>
+  <main>
+    <h1>Pipelines, I/O, arithmetic and memory</h1>
+    <nav class="contents" aria-label="On this page"><a href="#pipelines">Pipelines and vectors</a><a href="#io">I/O</a><a href="#arithmetic">Arithmetic</a><a href="#memory">Memory</a><a href="#practice">Practice</a></nav>
+<h2 id="pipelines">Parallel processing, pipelines and vectors</h2>
+    <p>Parallel processing overlaps work across hardware resources. Multicore processors can run independent threads (MIMD), while vector or SIMD hardware applies one instruction across multiple elements. Pipelining overlaps different stages of successive operations. If a fraction p of runtime can be sped up by a factor s, Amdahl’s law gives overall speedup 1/[(1−p)+p/s]. Accelerating 80% of runtime by 4× yields 2.5× overall.</p>
+    <p>An arithmetic pipeline for floating-point addition can align exponents and shift the smaller significand, add or subtract the significands, then normalize and round the result. Normalization can change the exponent. Pipeline registers carry intermediate values and flags forward. Once full, an ideal pipeline accepts a new independent operation each cycle.</p>
+    <figure class="diagram">
+      <table><caption>Idealized five-stage RISC instruction pipeline</caption>
+      <thead><tr><th scope="col">Instr.</th><th scope="col">1</th><th scope="col">2</th><th scope="col">3</th><th scope="col">4</th><th scope="col">5</th><th scope="col">6</th><th scope="col">7</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">I₁</th><td class="active">IF</td><td class="active">ID</td><td class="active">EX</td><td class="active">MEM</td><td class="active">WB</td><td>–</td><td>–</td></tr>
+        <tr><th scope="row">I₂</th><td>–</td><td class="active">IF</td><td class="active">ID</td><td class="active">EX</td><td class="active">MEM</td><td class="active">WB</td><td>–</td></tr>
+        <tr><th scope="row">I₃</th><td>–</td><td>–</td><td class="active">IF</td><td class="active">ID</td><td class="active">EX</td><td class="active">MEM</td><td class="active">WB</td></tr>
+      </tbody></table>
+      <figcaption>IF fetches, ID decodes and reads registers, EX computes a result or effective address, MEM accesses data memory as needed, and WB writes a register result when required. Three independent instructions complete in seven cycles.</figcaption>
+    </figure>
+    <p>For n independent operations through k stages, ideal execution takes k+n−1 cycles. With stage delays 2, 3, 4, 3 and 2 ns and 1 ns of register overhead, the pipeline clock period is 5 ns. A single instruction takes 25 ns and ten complete in 70 ns, assuming no stalls. Ideal steady-state throughput is one completion every 5 ns.</p>
+    <table>
+      <thead><tr><th scope="col">Hazard</th><th scope="col">Example and response</th></tr></thead>
+      <tbody>
+        <tr><td>Structural</td><td>Fetch and a load compete for one memory port. Stall or provide separate ports or caches.</td></tr>
+        <tr><td>Data</td><td>An ADD uses a previous result before write-back. Forward the result when it is ready. In the classic five-stage pipeline, an immediately dependent load-use pair typically needs a one-cycle bubble even with forwarding.</td></tr>
+        <tr><td>Control</td><td>A branch changes the next PC. Predict or wait. Flush incorrectly fetched instructions if the prediction fails.</td></tr>
+      </tbody>
+    </table>
+    <p>A vector add can express C[i]=A[i]+B[i] over a chunk of elements using vector loads, an add and a store. Hardware processes elements across lanes, possibly over several cycles. A mask or shorter vector length handles the tail. Memory bandwidth and noncontiguous access can limit gains.</p>
+    <h2 id="io">Input-output organization</h2>
+    <p>Peripheral devices include keyboards, displays, storage and network adapters. An I/O interface mediates between the bus and device using data, status and control registers, buffers and timing logic. With memory-mapped I/O, load/store instructions access device registers at assigned addresses. Isolated I/O uses a separate I/O address space or instructions.</p>
+    <p>Asynchronous transfer connects sides without a shared transfer clock. A strobe indicates when to sample and relies on timing assumptions. A request/acknowledge handshake lets the receiver respond when ready. In one four-phase handshake, the sender holds data stable and raises REQ, the receiver captures it and raises ACK, then the sender lowers REQ and the receiver lowers ACK. Clock-domain crossings still require suitable synchronization.</p>
+    <table>
+      <thead><tr><th scope="col">Transfer mode</th><th scope="col">CPU and device roles</th></tr></thead>
+      <tbody>
+        <tr><td>Programmed I/O</td><td>CPU polls status and copies data. Simple, with CPU time spent waiting or transferring.</td></tr>
+        <tr><td>Interrupt-driven I/O</td><td>Device signals readiness. The handler performs or schedules work. Interrupt handling has per-event overhead.</td></tr>
+        <tr><td>DMA</td><td>CPU configures a device or DMA engine with addresses, direction and length. The engine transfers between device and memory and typically signals completion.</td></tr>
+        <tr><td>I/O processor (IOP)</td><td>A dedicated processor can execute an I/O command sequence, manage devices and report status to the CPU. Its control role extends beyond moving a configured block.</td></tr>
+      </tbody>
+    </table>
+    <figure class="diagram">
+      <div class="flow" aria-hidden="true"><span class="block">Device</span><span class="arrow">↔</span><span class="block">DMA engine</span><span class="arrow">↔</span><span class="block">Main memory</span></div>
+      <div class="flow" aria-hidden="true"><span class="block">CPU sets up transfer</span><span class="arrow">→</span><span class="block">DMA engine signals completion</span></div>
+      <figcaption>DMA moves the payload without a CPU load/store loop. The engine competes for bus or memory bandwidth and may transfer in bursts or interleave transfers. DMA buffers require platform-appropriate cache coherence or synchronization.</figcaption>
+    </figure>
+    <figure class="diagram">
+      <table><caption>Four-phase asynchronous handshake</caption>
+      <thead><tr><th scope="col">Event</th><th scope="col">REQ</th><th scope="col">ACK</th><th scope="col">Data</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Idle</th><td>0</td><td>0</td><td>May change</td></tr>
+        <tr><th scope="row">Offer</th><td class="active">1</td><td>0</td><td>Stable</td></tr>
+        <tr><th scope="row">Capture</th><td class="active">1</td><td class="active">1</td><td>Stable</td></tr>
+        <tr><th scope="row">Release</th><td>0</td><td class="active">1</td><td>Captured</td></tr>
+        <tr><th scope="row">Ready</th><td>0</td><td>0</td><td>Next transfer</td></tr>
+      </tbody></table>
+      <figcaption>Each side waits for the other’s transition before proceeding. The sender makes data stable before asserting REQ, and the receiver asserts ACK only after capture.</figcaption>
+    </figure>
+    <p>A priority interrupt controller arbitrates among simultaneous requests and can mask selected inputs. In a fixed-priority daisy chain, the first requesting device in acknowledgement order wins. A parallel priority encoder can select from multiple request lines and identify a vector. Pending lower-priority work may starve if higher-priority requests keep arriving.</p>
+    <h2 id="arithmetic">Arithmetic algorithms</h2>
+    <h3>Unsigned shift-and-add multiplication</h3>
+    <p>Read the multiplier from least significant bit upward. If bit i is 1, add the multiplicand shifted left by i. Use a 2n-bit product for two n-bit operands. For 1011₂ × 0110₂, bits 1 and 2 are set. Add 00010110₂ + 00101100₂ = 01000010₂ = 66₁₀.</p>
+    <h3>Booth’s signed multiplication</h3>
+    <p>In radix-2 Booth, start with accumulator A=0, multiplier Q and an extra bit q₋₁=0. Inspect (Q₀,q₋₁). On 01 add the sign-extended multiplicand M to A. On 10 subtract M. On 00 or 11 hold. Then arithmetic-right-shift the joined (A,Q,q₋₁), extending the sign of A. Repeat n times for an n-bit multiplier. Use n+1 bits for A and sign-extended M to handle the most-negative n-bit multiplicand. Read the low 2n bits of (A,Q) as the product.</p>
+    <figure class="diagram">
+      <table><caption>Four-bit Booth example · (−3) × 2, M=11101</caption>
+      <thead><tr><th scope="col">Step</th><th scope="col">Pair</th><th scope="col">Operation</th><th scope="col">A after shift</th><th scope="col">Q after shift</th><th scope="col">q₋₁</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Start</th><td>–</td><td>–</td><td>00000</td><td>0010</td><td>0</td></tr>
+        <tr><th scope="row">1</th><td>00</td><td>Hold</td><td>00000</td><td>0001</td><td>0</td></tr>
+        <tr><th scope="row">2</th><td>10</td><td>A−M</td><td>00001</td><td>1000</td><td>1</td></tr>
+        <tr><th scope="row">3</th><td>01</td><td>A+M</td><td>11111</td><td>0100</td><td>0</td></tr>
+        <tr><th scope="row">4</th><td>00</td><td>Hold</td><td>11111</td><td>1010</td><td>0</td></tr>
+      </tbody></table>
+      <figcaption>The low eight bits are 11111010, representing −6 in two’s complement.</figcaption>
+    </figure>
+    <h3>Integer division</h3>
+    <p>Restoring division starts with remainder 0 and reads dividend bits from most to least significant. Shift the remainder left and bring down the next bit. Subtract the positive divisor. If the result is negative, restore by adding the divisor back and emit quotient bit 0. Otherwise keep the result and emit 1. For 1101₂ ÷ 0011₂, the remainder after each processed bit is 1, 0, 0, 1, with quotient bits 0, 1, 0, 0. The result is 4 remainder 1. In non-restoring division, shift in the next bit and subtract the divisor if the old remainder was nonnegative. Add it if the old remainder was negative. Emit 1 when the new remainder is nonnegative and 0 otherwise. After the last bit, add the divisor once if the remainder is negative. Reject division by zero. For signed division, check the ISA’s rounding and remainder conventions.</p>
+    <h3>Floating-point representation</h3>
+    <p>IEEE 754 binary32 uses 1 sign bit, 8 exponent bits with bias 127 and 23 fraction bits. Binary64 uses 1, 11 and 52, with bias 1023. A normal number is (−1)<sup>s</sup> × (1+fraction) × 2<sup>E−bias</sup>. An exponent field of zero represents signed zero or subnormals, with a leading 0 and exponent 1−bias. An all-ones exponent represents infinity with a zero fraction and NaN with a nonzero fraction.</p>
+    <p>For 5.75₁₀, 101.11₂ = 1.0111₂ × 2². The binary32 sign is 0, the biased exponent is 129 or 10000001₂, and the fraction begins 0111 with trailing zeros. Many decimal fractions require rounding, including 0.1 in binary.</p>
+    <h2 id="memory">Memory organization</h2>
+    <figure class="diagram">
+      <div class="flow" aria-hidden="true"><span class="block">Registers</span><span class="arrow">→</span><span class="block">SRAM caches<br>L1 / L2 / last level</span><span class="arrow">→</span><span class="block">DRAM<br>main memory</span><span class="arrow">→</span><span class="block">SSD / HDD<br>auxiliary storage</span></div>
+      <figcaption>Moving down the hierarchy typically increases capacity and latency and reduces cost per bit. Temporal locality favours reuse of recently accessed data. Spatial locality favours nearby addresses. DRAM requires refresh. SSDs and disks retain data when powered off.</figcaption>
+    </figure>
+    <p>Associative memory or content-addressable memory (CAM) searches by content and returns a match or its location. A conventional memory is indexed by address. Fully associative lookup can compare tags in parallel, which is useful in small structures but costs hardware and power.</p>
+    <p>A cache holds copies in lines. A direct-mapped cache gives each block one possible line. A set-associative cache gives it a set of possible ways. A fully associative cache lets a block go anywhere. Lookup checks the tag and valid bit. A write-through policy updates the next level on every write. Write-back marks a line dirty and writes it later, such as on eviction. Write allocation on a miss is a separate policy.</p>
+    <p>Worked mapping. In a 1 KiB direct-mapped cache with 16-byte lines and 32-bit byte addresses, there are 64 lines, so the address has 4 offset bits, 6 index bits and 22 tag bits. For 0x1234, the offset is 4, the index is 35 and the tag is 4. If hit time is 1 ns, miss rate is 5% and extra miss penalty is 60 ns, average access time is 1+0.05·60=4 ns.</p>
+    <figure class="diagram">
+      <div class="flow" aria-hidden="true"><span class="block">Virtual address<br>VPN + offset</span><span class="arrow">→</span><span class="block">MMU<br>TLB / page table</span><span class="arrow">→</span><span class="block">Physical address<br>PFN + same offset</span></div>
+      <figcaption>The memory management unit translates a virtual page number (VPN) to a physical frame number (PFN) and checks permissions. The TLB caches translations. The offset stays the same for a fixed page size.</figcaption>
+    </figure>
+    <p>Virtual memory gives processes address spaces and enforces isolation and protection. On a TLB miss, a hardware or software page-table walk may find a present mapping and refill the TLB. Missing or forbidden mappings cause faults. The operating system can resolve a valid demand fault by allocating or loading a page. An invalid or forbidden access may terminate the process. With 4 KiB pages, virtual address 0x1234 has VPN 1 and offset 0x234. If page 1 maps to frame 0xA, the physical address is 0xA234.</p>
+    <h2 id="practice">Practice</h2>
+    <details><summary>How many cycles do 20 independent instructions need on an ideal five-stage pipeline?</summary><p>5+20−1=24 cycles.</p></details>
+    <details><summary>Does a TLB miss necessarily cause a page fault?</summary><p>No. A present, permitted mapping can be loaded from the page table and put into the TLB.</p></details>
+    <details><summary>What is the quotient and remainder for 10111₂ ÷ 100₂?</summary><p>101₂ remainder 11₂, since 23=5·4+3.</p></details>
+    <details><summary>Why use DMA for a large storage read?</summary><p>The controller transfers the block into memory while the CPU can do other work. Setup and completion still involve the CPU.</p></details>
+    <p class="refs">Reading <a href="index.html#system-architecture">Computer System Architecture, chapters 10–13 and 15</a> · <a href="index.html#hardware-software">Computer Organization and Design, chapters 3–5</a> · <a href="index.html#mit">MIT 6.004, lectures 8 and 15–19</a></p>
+    <p class="next"><a href="index.html">Back to course notes</a></p>
+  </main>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Digital principles, K-maps and number systems. Study notes, worked examples and diagrams from Architect Academy.">
+  <title>Digital principles, K-maps and number systems | Architect Academy</title>
+  <link rel="stylesheet" href="../mfcs-i/notes.css">
+  <link rel="stylesheet" href="diagrams.css">
+</head>
+<body>
+  <header><nav aria-label="Course navigation"><a href="../lessons.html">Architect Academy</a> <a href="index.html">Course notes</a> <a href="unit-1.html" aria-current="page">Unit I</a> <a href="unit-2.html">Unit II</a> <a href="unit-3.html">Unit III</a> <a href="unit-4.html">Unit IV</a></nav></header>
+  <main>
+    <h1>Digital principles, K-maps and number systems</h1>
+    <nav class="contents" aria-label="On this page"><a href="#principles">Digital principles</a><a href="#boolean">Boolean algebra</a><a href="#kmap">K-maps</a><a href="#numbers">Number systems</a><a href="#codes">Binary codes</a><a href="#practice">Practice</a></nav>
+<h2 id="principles">Digital principles</h2>
+    <p>A digital signal represents values from a discrete set. In binary circuits, voltage ranges represent logic 0 and 1. Physical voltage still changes continuously. Valid input thresholds and timing let gates interpret signals reliably. Digital logic implements Boolean functions, and a digital computer combines logic, state and control to execute instructions over encoded data.</p>
+    <figure class="diagram">
+      <div class="flow" aria-hidden="true"><span class="block">Input / output</span><span class="arrow">↔</span><span class="block">CPU<br>Control · ALU · registers</span><span class="arrow">↔</span><span class="block">Main memory<br>Instructions + data</span></div>
+      <figcaption>Von Neumann stored-program model. The CPU fetches instructions and accesses data in the same memory address space. Shared bandwidth can limit throughput. Separate instruction and data caches can coexist with a unified main memory.</figcaption>
+    </figure>
+    <h2 id="boolean">Boolean algebra and gates</h2>
+    <p>Use + for OR, adjacency for AND, ¬ for NOT and ⊕ for XOR. XOR is 1 when its two inputs differ. NAND and NOR negate AND and OR respectively and are each functionally complete. For example, tying the inputs of a NAND together produces NOT.</p>
+    <table>
+      <thead><tr><th scope="col">Law</th><th scope="col">Forms</th></tr></thead>
+      <tbody>
+        <tr><td>Identity and domination</td><td>A+0=A, A·1=A, A+1=1, A·0=0</td></tr>
+        <tr><td>Idempotence and complement</td><td>A+A=A, AA=A, A+¬A=1, A¬A=0, ¬(¬A)=A</td></tr>
+        <tr><td>Commutativity and associativity</td><td>OR and AND can reorder or regroup their operands.</td></tr>
+        <tr><td>Distributivity</td><td>A(B+C)=AB+AC and A+BC=(A+B)(A+C)</td></tr>
+        <tr><td>Absorption</td><td>A+AB=A and A(A+B)=A</td></tr>
+        <tr><td>De Morgan’s theorems</td><td>¬(A+B)=¬A·¬B and ¬(AB)=¬A+¬B</td></tr>
+      </tbody>
+    </table>
+    <p>Worked simplification. AB+A¬B=A(B+¬B)=A. The principle of duality exchanges OR with AND and 0 with 1 to derive another valid identity.</p>
+    <h2 id="kmap">Truth tables and Karnaugh maps</h2>
+    <p>Number rows by their binary input with the leftmost variable as the most significant bit. For canonical sum of products (SOP), OR the minterms of rows where F=1. A minterm ANDs all variables, complementing a variable whose input is 0. For canonical product of sums (POS), AND the maxterms of rows where F=0. A maxterm ORs all variables, complementing a variable whose input is 1.</p>
+    <p>Copy each row’s F value into its matching map cell. Arrange two-bit axes as 00, 01, 11, 10, so neighbours differ in one bit. Group 1s for SOP or 0s for POS in rectangles of power-of-two size. Opposite edges wrap, overlaps are allowed and diagonals are separate. Include an X (don’t care) only where it improves a group. Cover every required cell. A variable that changes inside a group disappears. In SOP a fixed 1 gives the plain literal, and in POS a fixed 0 gives the plain literal.</p>
+    <figure class="diagram">
+      <table><caption>Two variables · F = Σm(1,3)</caption><thead><tr><th scope="col">A / B</th><th scope="col">0</th><th scope="col">1</th></tr></thead>
+      <tbody><tr><th scope="row">0</th><td>0</td><td class="group">1</td></tr><tr><th scope="row">1</th><td>0</td><td class="group">1</td></tr></tbody></table>
+      <figcaption>The truth table gives outputs 0, 1, 0, 1 for 00, 01, 10, 11. The highlighted column gives F=B. Grouping the zero column gives the same result in POS.</figcaption>
+    </figure>
+    <figure class="diagram">
+      <table><caption>Three variables · F = Σm(0,2,4,6)</caption><thead><tr><th scope="col">A / BC</th><th scope="col">00</th><th scope="col">01</th><th scope="col">11</th><th scope="col">10</th></tr></thead>
+      <tbody><tr><th scope="row">0</th><td class="group">1</td><td>0</td><td>0</td><td class="group">1</td></tr><tr><th scope="row">1</th><td class="group">1</td><td>0</td><td>0</td><td class="group">1</td></tr></tbody></table>
+      <figcaption>Wrap the first and last columns into a group of four. Only C stays fixed, giving F=¬C.</figcaption>
+    </figure>
+    <figure class="diagram">
+      <table><caption>Four variables · F = Σm(0,2,8), d(10)</caption><thead><tr><th scope="col">AB / CD</th><th scope="col">00</th><th scope="col">01</th><th scope="col">11</th><th scope="col">10</th></tr></thead>
+      <tbody><tr><th scope="row">00</th><td class="group">1</td><td>0</td><td>0</td><td class="group">1</td></tr>
+      <tr><th scope="row">01</th><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><th scope="row">11</th><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><th scope="row">10</th><td class="group">1</td><td>0</td><td>0</td><td class="group">X</td></tr></tbody></table>
+      <figcaption>The four corners meet by wrapping both axes. Treat X as 1 to obtain F=¬B¬D. In POS, cover the zeros with two groups of eight, B=1 and D=1, producing (¬B)(¬D).</figcaption>
+    </figure>
+    <p>Worked POS with two sum terms. For F(A,B,C) with zeros at 000, 001 and 010, group 000 with 001 to get (A+B), and group 000 with 010 to get (A+C). The minimized POS is (A+B)(A+C). Distributing and applying absorption gives the equivalent SOP A+BC.</p>
+    <h2 id="numbers">Number systems and arithmetic</h2>
+    <p>Base b uses digits 0 through b−1. Positions have weights b⁰, b¹, b² moving left from the units place and b⁻¹, b⁻² moving right of the point. Binary uses base 2, octal 8, decimal 10 and hexadecimal 16, with A through F representing 10 through 15.</p>
+    <ol>
+      <li><strong>To decimal.</strong> (101.101)₂ = 4+1+½+⅛ = 5.625.</li>
+      <li><strong>From decimal.</strong> Repeatedly divide the integer part by the target base and read remainders in reverse. For 45 to binary the remainders are 1,0,1,1,0,1, giving 101101₂. Multiply a fractional part by the base repeatedly and read the integer parts in order. For .625 in base 2, these are 1,0,1. Some fractions repeat.</li>
+      <li><strong>Binary to octal or hex.</strong> Group bits from the radix point outward in threes or fours and pad the outer ends if needed. 101101₂ = 55₈ = 2D₁₆.</li>
+    </ol>
+    <table>
+      <thead><tr><th scope="col">Base</th><th scope="col">Addition</th><th scope="col">Subtraction</th></tr></thead>
+      <tbody>
+        <tr><td>Binary</td><td>1011 + 0110 = 10001</td><td>10110 − 01101 = 01001</td></tr>
+        <tr><td>Octal</td><td>57 + 26 = 105</td><td>105 − 26 = 57</td></tr>
+        <tr><td>Hexadecimal</td><td>2F + 1B = 4A</td><td>4A − 1B = 2F</td></tr>
+      </tbody>
+    </table>
+    <p>Carry when the column sum reaches the base. Borrow one unit of the next place, worth b units of the current place. In 57₈ + 26₈, 7+6=13 decimal gives digit 5 and carry 1, then 5+2+1 gives digit 0 and carry 1. Binary multiplication uses shifted partial products, so 101₂ × 11₂ = 1111₂. Binary long division uses compare, subtract and shift, so 1111₂ ÷ 11₂ = 101₂.</p>
+    <p>With n bits, two’s complement represents −2<sup>n−1</sup> to 2<sup>n−1</sup>−1. To compute A−B, add A to the n-bit bitwise complement of B plus 1 and discard carry out. Signed addition overflows when equal-sign inputs produce an opposite-sign result. For example, four-bit 0111 + 0001 gives 1000, which is outside the signed sum’s representable range.</p>
+    <h2 id="codes">Binary codes</h2>
+    <table>
+      <thead><tr><th scope="col">Code</th><th scope="col">Rule and example</th></tr></thead>
+      <tbody>
+        <tr><td>8421 BCD</td><td>Encode each decimal digit separately. 59 → 0101 1001. The four-bit values 1010 through 1111 are invalid digits. In BCD addition, add 0110 to a digit result above 9 or with a carry out.</td></tr>
+        <tr><td>Excess-3</td><td>Add 3 to each decimal digit before encoding it in four bits. 59 → 1000 1100.</td></tr>
+        <tr><td>Gray</td><td>Adjacent values in reflected Gray order differ in one bit. Convert binary b to b XOR (b shifted right by 1). 1011 → 1110. Recover binary by prefix XOR from the most significant bit.</td></tr>
+        <tr><td>ASCII</td><td>Seven-bit character code. Uppercase A is hex 41. ASCII values also fit unchanged in one byte of UTF-8.</td></tr>
+        <tr><td>EBCDIC</td><td>Family of eight-bit IBM character encodings. Uppercase A is hex C1 in code page 037. Decode using the actual code page.</td></tr>
+        <tr><td>Parity and CRC</td><td>Parity detects any odd number of flips. A cyclic redundancy check uses polynomial division over GF(2) to detect error patterns determined by its generator.</td></tr>
+        <tr><td>Hamming code</td><td>Parity checks locate single-bit errors. With r parity bits for m data bits, choose 2ʳ ≥ m+r+1 so each single-bit position and the no-error case have distinct syndromes.</td></tr>
+      </tbody>
+    </table>
+    <p>Hamming(7,4) with even parity places parity at positions 1, 2 and 4, counting from the left here. Put data 1011 at 3, 5, 6 and 7. The parity groups are {1,3,5,7}, {2,3,6,7} and {4,5,6,7}. This gives 0110011. A flip at position 6 fails checks 2 and 4, so the syndrome is 6. Adding overall parity gives single-error correction and double-error detection (SECDED). In general, minimum distance d guarantees detection of up to d−1 errors or correction of up to ⌊(d−1)/2⌋ errors when used for that task.</p>
+    <h2 id="practice">Practice</h2>
+    <details><summary>Simplify Σm(1,3,5,7) for A,B,C.</summary><p>All four cells have C=1 and span both values of A and B. F=C.</p></details>
+    <details><summary>Convert 3C₁₆ to decimal and octal.</summary><p>3·16+12=60₁₀. Group 00111100₂ in threes to get 74₈.</p></details>
+    <details><summary>What changes when two bits flip under even parity?</summary><p>The total remains even, so a single parity check misses the error.</p></details>
+    <p class="refs">Reading <a href="index.html#digital-design">Digital Design, chapters 1–3</a> · <a href="index.html#mit">MIT 6.004, lectures 2–4</a></p>
+    <p class="next"><a href="unit-2.html">Next · Combinational and sequential circuits</a></p>
+  </main>
+</body>
+</html>

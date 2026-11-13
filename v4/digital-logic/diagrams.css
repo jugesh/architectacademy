@@ -1,0 +1,35 @@
+.diagram {
+  border: 1px solid var(--line);
+  border-radius: .55rem;
+  padding: .85rem;
+}
+.diagram figcaption { margin-top: .65rem; }
+.flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .45rem;
+}
+.block {
+  border: 1px solid #84b5a0;
+  background: var(--soft);
+  border-radius: .35rem;
+  padding: .3rem .55rem;
+  text-align: center;
+}
+.arrow { font-weight: 700; color: var(--green); }
+.diagram table { table-layout: fixed; }
+.diagram th, .diagram td { text-align: center; }
+.diagram .group, .diagram .active {
+  background: #dceddf;
+  color: #124938;
+  font-weight: 700;
+}
+.refs { font-size: .92rem; color: var(--muted); }
+@media (max-width: 420px) {
+  .diagram { padding: .5rem; }
+  .diagram th, .diagram td { padding-inline: .2rem; }
+}
+@media print {
+  .diagram { print-color-adjust: exact; }
+}
