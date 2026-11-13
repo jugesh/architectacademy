@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Combinational and sequential circuits. Study notes, worked examples and diagrams from Architect Academy.">
+  <title>Combinational and sequential circuits | Architect Academy</title>
+  <link rel="stylesheet" href="../mfcs-i/notes.css">
+  <link rel="stylesheet" href="diagrams.css">
+</head>
+<body>
+  <header><nav aria-label="Course navigation"><a href="../lessons.html">Architect Academy</a> <a href="index.html">Course notes</a> <a href="unit-1.html">Unit I</a> <a href="unit-2.html" aria-current="page">Unit II</a> <a href="unit-3.html">Unit III</a> <a href="unit-4.html">Unit IV</a></nav></header>
+  <main>
+    <h1>Combinational and sequential circuits</h1>
+    <nav class="contents" aria-label="On this page"><a href="#combinational">Combinational circuits</a><a href="#routing">Data routing</a><a href="#flip-flops">Flip-flops</a><a href="#registers">Registers</a><a href="#counters">Counters</a><a href="#practice">Practice</a></nav>
+<h2 id="combinational">Combinational circuits</h2>
+    <p>Outputs depend on current inputs after propagation delay. Design from a truth table, simplify each output, then implement the expressions with gates. Sequential circuits also depend on stored state.</p>
+    <table>
+      <thead><tr><th scope="col">Circuit</th><th scope="col">Inputs</th><th scope="col">Outputs</th></tr></thead>
+      <tbody>
+        <tr><td>Half adder</td><td>A, B</td><td>S=A⊕B, C=AB</td></tr>
+        <tr><td>Full adder</td><td>A, B, carry-in Cᵢ</td><td>S=A⊕B⊕Cᵢ, Cₒ=AB+Cᵢ(A⊕B)</td></tr>
+        <tr><td>Half subtractor</td><td>A, B</td><td>D=A⊕B, borrow=¬A·B</td></tr>
+        <tr><td>Full subtractor</td><td>A, B, borrow-in Bᵢ</td><td>D=A⊕B⊕Bᵢ, Bₒ=¬A·B+¬(A⊕B)·Bᵢ</td></tr>
+      </tbody>
+    </table>
+    <figure class="diagram">
+      <div class="flow" aria-hidden="true"><span class="block">A, B</span><span class="arrow">→</span><span class="block">Half adder 1<br>P=A⊕B</span><span class="arrow">→</span><span class="block">Half adder 2<br>P + carry-in</span><span class="arrow">→</span><span class="block">Sum S</span></div>
+      <div class="flow" aria-hidden="true"><span class="block">Carry 1 + carry 2<br>Boolean OR</span><span class="arrow">→</span><span class="block">Carry-out</span></div>
+      <figcaption>Full adder built from two half adders. The first produces P and AB. The second adds P and carry-in, producing S and P·Cᵢ. OR the two carry outputs.</figcaption>
+    </figure>
+    <p>For 0111 + 0001, the carry travels through the three low bits before the high bit becomes 1. A chain of full adders is therefore called a ripple-carry adder. For an adder/subtractor, XOR each B bit with SUB and set the first carry-in to SUB. SUB=0 computes A+B and SUB=1 computes A+¬B+1.</p>
+    <h2 id="routing">Decoders, encoders and routing</h2>
+    <table>
+      <thead><tr><th scope="col">Block</th><th scope="col">Behaviour</th><th scope="col">Example</th></tr></thead>
+      <tbody>
+        <tr><td>Decoder</td><td>n input bits select one of up to 2ⁿ output lines when enabled.</td><td>A 2-to-4 active-high decoder yields Y₂=A¬B when its inputs are A,B.</td></tr>
+        <tr><td>Encoder</td><td>Converts the active input line into a binary index. A priority encoder defines which line wins when several are active.</td><td>I₂ gives 10. If I₃ and I₂ are high and I₃ has priority, output 11. A valid bit distinguishes I₀ from no request.</td></tr>
+        <tr><td>Multiplexer</td><td>Selects one data input and passes it to one output.</td><td>For 2-to-1, Y=¬S·I₀+S·I₁. A 4-to-1 uses two select bits.</td></tr>
+        <tr><td>Demultiplexer</td><td>Routes one data input to a selected output, with others inactive.</td><td>For 1-to-2, Y₀=D¬S and Y₁=DS.</td></tr>
+      </tbody>
+    </table>
+    <p>Implement F(A,B)=A⊕B with a 2-to-1 MUX. Choose A as select, B as I₀ and ¬B as I₁. For A=0 the output is B. For A=1 it is ¬B.</p>
+    <h2 id="flip-flops">Sequential circuits and flip-flops</h2>
+    <p>A latch responds while its enable level is active. An edge-triggered flip-flop samples around the chosen clock edge. Meet setup and hold time around that edge and allow clock-to-Q delay before the new output settles. Violations can cause metastability, which is why an asynchronous single-bit input normally crosses into a clock domain through a synchronizer.</p>
+    <table>
+      <thead><tr><th scope="col">Type</th><th scope="col">Next state Q⁺ at the active edge</th></tr></thead>
+      <tbody>
+        <tr><td>SR, active-high convention</td><td>SR=00 hold, 01 reset, 10 set, 11 forbidden.</td></tr>
+        <tr><td>D</td><td>Q⁺=D.</td></tr>
+        <tr><td>JK</td><td>JK=00 hold, 01 reset, 10 set, 11 toggle. Q⁺=J¬Q+¬KQ.</td></tr>
+        <tr><td>T</td><td>T=0 hold, T=1 toggle. Q⁺=T⊕Q.</td></tr>
+      </tbody>
+    </table>
+    <p>To build a T flip-flop from D, feed D=T⊕Q. For a JK device, tie J and K to T. In level-sensitive JK implementations with J=K=1, a long active clock pulse can permit repeated toggles. Edge-triggered operation avoids multiple updates within the same edge.</p>
+    <h2 id="registers">Parallel load and bidirectional shift</h2>
+    <figure class="diagram">
+      <div class="flow" aria-hidden="true"><span class="block">Parallel input Pᵢ<br>or feedback Qᵢ</span><span class="arrow">→</span><span class="block">2-to-1 MUX<br>select LOAD</span><span class="arrow">→</span><span class="block">D flip-flop<br>common clock</span><span class="arrow">→</span><span class="block">Qᵢ</span></div>
+      <figcaption>One slice of a four-bit parallel-load register. Repeat the slice four times. With LOAD=0 each slice feeds back its own output. With LOAD=1 all four slices capture P₃…P₀ on the same edge.</figcaption>
+    </figure>
+    <p>A bidirectional shift register with parallel load uses a 4-to-1 MUX before each D flip-flop. Name the word Q₃Q₂Q₁Q₀ with Q₃ most significant. All updates use the previous state.</p>
+    <table>
+      <thead><tr><th scope="col">Mode</th><th scope="col">Next word</th><th scope="col">From 1010, serial input 1</th></tr></thead>
+      <tbody>
+        <tr><td>00 Hold</td><td>Q₃ Q₂ Q₁ Q₀</td><td>1010</td></tr>
+        <tr><td>01 Shift right</td><td>serial-right Q₃ Q₂ Q₁</td><td>1101</td></tr>
+        <tr><td>10 Shift left</td><td>Q₂ Q₁ Q₀ serial-left</td><td>0101</td></tr>
+        <tr><td>11 Parallel load</td><td>P₃ P₂ P₁ P₀</td><td>Exactly the four parallel input bits</td></tr>
+      </tbody>
+    </table>
+    <h2 id="counters">Four-bit binary counters</h2>
+    <p>Both up counters count 0000 through 1111 and then wrap to 0000. In a synchronous design every flip-flop shares the external clock. With T flip-flops, T₀=1, T₁=Q₀, T₂=Q₁Q₀ and T₃=Q₂Q₁Q₀. A bit toggles if all lower bits were 1 just before the edge.</p>
+    <figure class="diagram">
+      <div class="flow" aria-hidden="true"><span class="block">Clock</span><span class="arrow">→</span><span class="block">Q₀</span><span class="arrow">→</span><span class="block">Q₁</span><span class="arrow">→</span><span class="block">Q₂</span><span class="arrow">→</span><span class="block">Q₃</span></div>
+      <figcaption>Asynchronous ripple up counter with falling-edge-triggered toggle flip-flops. Each Q output clocks the next bit, so changes propagate in sequence.</figcaption>
+    </figure>
+    <figure class="diagram">
+      <table><caption>Synchronous counter on one clock edge</caption>
+      <thead><tr><th scope="col">Signal</th><th scope="col">Bit 3</th><th scope="col">Bit 2</th><th scope="col">Bit 1</th><th scope="col">Bit 0</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Old Q</th><td>0</td><td>1</td><td>1</td><td>1</td></tr>
+        <tr><th scope="row">T input</th><td class="active">1</td><td class="active">1</td><td class="active">1</td><td class="active">1</td></tr>
+        <tr><th scope="row">New Q</th><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+      </tbody></table>
+      <figcaption>All four flip-flops receive the same clock edge and evaluate their T inputs from the old state 0111.</figcaption>
+    </figure>
+    <p>In the ripple design, the transition 0111 → 1000 can briefly pass through 0110, 0100 and 0000. Decode outputs only after they settle or register the decoded result with suitable timing. In the synchronous version clock-to-Q skew can still affect combinational decoding, but there is no stage-by-stage clock ripple.</p>
+    <h2 id="practice">Practice</h2>
+    <details><summary>What does a full adder output for A=B=Cᵢ=1?</summary><p>S=1 and Cₒ=1, since decimal 3 is binary 11.</p></details>
+    <details><summary>Which synchronous counter bits toggle from 1011?</summary><p>Q₀, Q₁ and Q₂ toggle. Q₃ holds because Q₂ was 0. The next word is 1100.</p></details>
+    <details><summary>What are D and Q⁺ if a D-based T flip-flop has T=1 and Q=0?</summary><p>D=1⊕0=1, so Q⁺ becomes 1 on the active edge.</p></details>
+    <p class="refs">Reading <a href="index.html#digital-design">Digital Design, chapters 4–6</a> · <a href="index.html#nand">Nand to Tetris, projects 1–3</a></p>
+    <p class="next"><a href="unit-3.html">Next · Basic computer organization and the CPU</a></p>
+  </main>
+</body>
+</html>
