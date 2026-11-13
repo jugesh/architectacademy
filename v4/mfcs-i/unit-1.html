@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="MFCS-I Unit I covers sets, relations, Warshall’s algorithm and functions.">
+  <title>Sets, relations and functions | Architect Academy</title>
+  <link rel="stylesheet" href="notes.css">
+</head>
+<body>
+  <header>
+    <nav aria-label="MFCS-I"><a href="../lessons.html">Architect Academy</a> <a href="index.html">MFCS-I notes</a> <a href="unit-1.html" aria-current="page">Unit I</a> <a href="unit-2.html">Unit II</a> <a href="unit-3.html">Unit III</a></nav>
+  </header>
+  <main>
+<p class="unit">Unit I</p>
+    <h1>Sets, relations and functions</h1>
+    <nav class="contents" aria-label="On this page">
+      <a href="#sets">Sets</a><a href="#relations">Relations</a><a href="#closures">Closures</a><a href="#warshall">Warshall</a><a href="#functions">Functions</a><a href="#useful">Useful functions</a><a href="#practice">Practice</a>
+    </nav>
+    <h2 id="sets">Sets</h2>
+    <p>A set is a collection of distinct elements. Order and repeated occurrences do not affect equality. Write x ∈ A for membership and |A| for cardinality. Describe sets by listing elements, such as {2, 4, 6}, or by a rule, such as {x ∈ ℤ | 2 ≤ x ≤ 6 and x is even}.</p>
+    <p>A ⊆ B means every member of A belongs to B. A ⊊ B additionally requires A ≠ B. The empty set ∅ is a subset of every set. The power set ℘(A) contains all subsets of A and has 2<sup>|A|</sup> elements for finite A. For A = {1, 2}, ℘(A) = {∅, {1}, {2}, {1, 2}}. In particular, ∅ and {∅} have different sizes.</p>
+    <p>Use A = {1, 2, 3}, B = {3, 4} and U = {1, 2, 3, 4, 5} in the following examples.</p>
+    <table>
+      <thead><tr><th scope="col">Operation</th><th scope="col">Membership rule</th><th scope="col">Result</th></tr></thead>
+      <tbody>
+        <tr><td>Union A ∪ B</td><td>In either set or both</td><td>{1, 2, 3, 4}</td></tr>
+        <tr><td>Intersection A ∩ B</td><td>In both sets</td><td>{3}</td></tr>
+        <tr><td>Difference A ∖ B</td><td>In A and outside B</td><td>{1, 2}</td></tr>
+        <tr><td>Complement Aᶜ</td><td>In U and outside A</td><td>{4, 5}</td></tr>
+        <tr><td>Symmetric difference A △ B</td><td>In exactly one of the sets</td><td>{1, 2, 4}</td></tr>
+      </tbody>
+    </table>
+    <figure>
+      <div class="venn" aria-hidden="true">
+        <div class="circle left"></div><div class="circle right"></div>
+        <span class="label-a">A</span><span class="label-b">B</span>
+        <span class="region-a">1, 2</span><span class="region-ab">3</span><span class="region-b">4</span><span class="region-out">5</span>
+      </div>
+      <figcaption>The Venn diagram places 1 and 2 in A only, 3 in the overlap, 4 in B only and 5 outside both circles within U.</figcaption>
+    </figure>
+    <h3>Set laws</h3>
+    <table>
+      <thead><tr><th scope="col">Law</th><th scope="col">Identities</th></tr></thead>
+      <tbody>
+        <tr><td>Commutative</td><td>A ∪ B = B ∪ A<br>A ∩ B = B ∩ A</td></tr>
+        <tr><td>Associative</td><td>(A ∪ B) ∪ C = A ∪ (B ∪ C)<br>(A ∩ B) ∩ C = A ∩ (B ∩ C)</td></tr>
+        <tr><td>Distributive</td><td>A ∩ (B ∪ C) = (A ∩ B) ∪ (A ∩ C)<br>A ∪ (B ∩ C) = (A ∪ B) ∩ (A ∪ C)</td></tr>
+        <tr><td>Identity and domination</td><td>A ∪ ∅ = A, A ∩ U = A<br>A ∪ U = U, A ∩ ∅ = ∅</td></tr>
+        <tr><td>Idempotent</td><td>A ∪ A = A, A ∩ A = A</td></tr>
+        <tr><td>Complement</td><td>A ∪ Aᶜ = U, A ∩ Aᶜ = ∅, (Aᶜ)ᶜ = A</td></tr>
+        <tr><td>Absorption</td><td>A ∩ (A ∪ B) = A<br>A ∪ (A ∩ B) = A</td></tr>
+        <tr><td>De Morgan</td><td>(A ∪ B)ᶜ = Aᶜ ∩ Bᶜ<br>(A ∩ B)ᶜ = Aᶜ ∪ Bᶜ</td></tr>
+      </tbody>
+    </table>
+    <p>To prove a set identity, compare the membership conditions. For example, x lies outside A ∪ B exactly when it lies outside both sets, so it belongs to Aᶜ ∩ Bᶜ.</p>
+    <p>The Cartesian product A × B is the set of ordered pairs (a, b) with a ∈ A and b ∈ B. For A = {1, 2} and B = {x, y}, the product is {(1, x), (1, y), (2, x), (2, y)}. For finite sets, |A × B| = |A| · |B|. Swapping the sets swaps the pair coordinates.</p>
+    <h2 id="relations">Relations</h2>
+    <p>A binary relation from A to B is any subset of A × B. A relation <em>on</em> A is a subset of A × A. Write xRy when (x, y) ∈ R. Examples on A include the empty relation, the universal relation A × A, and the identity relation Δ = {(a, a) | a ∈ A}. The inverse relation R⁻¹ reverses every ordered pair.</p>
+    <table>
+      <thead><tr><th scope="col">Property</th><th scope="col">Test for all applicable elements</th></tr></thead>
+      <tbody>
+        <tr><td>Reflexive</td><td>Every a satisfies aRa.</td></tr>
+        <tr><td>Irreflexive</td><td>Every a lacks aRa.</td></tr>
+        <tr><td>Symmetric</td><td>aRb implies bRa.</td></tr>
+        <tr><td>Antisymmetric</td><td>aRb and bRa imply a = b.</td></tr>
+        <tr><td>Asymmetric</td><td>aRb implies (b, a) is absent, including when a = b.</td></tr>
+        <tr><td>Transitive</td><td>aRb and bRc imply aRc.</td></tr>
+      </tbody>
+    </table>
+    <p>A partial order is reflexive, antisymmetric and transitive. Set inclusion is a partial order, since some subsets can be incomparable. A total order is a partial order in which every pair is comparable, as with ≤ on integers. Equality is both symmetric and antisymmetric.</p>
+    <h3>Matrix and digraph</h3>
+    <p>On A = {1, 2, 3}, take R = {(1, 2), (2, 3)}. Use the same vertex order on both axes. Entry M[i, j] is 1 if iRj and 0 otherwise. The digraph has the arrows 1 → 2 and 2 → 3, with all three vertices present. A diagonal 1 represents a loop.</p>
+    <table>
+      <caption>Matrix for R</caption>
+      <thead><tr><th scope="col">From / to</th><th scope="col">1</th><th scope="col">2</th><th scope="col">3</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">1</th><td>0</td><td>1</td><td>0</td></tr>
+        <tr><th scope="row">2</th><td>0</td><td>0</td><td>1</td></tr>
+        <tr><th scope="row">3</th><td>0</td><td>0</td><td>0</td></tr>
+      </tbody>
+    </table>
+    <h3>Equivalence relations and partitions</h3>
+    <p>An equivalence relation is reflexive, symmetric and transitive. Its class [a] contains all x related to a. The classes form a partition. They are nonempty, pairwise disjoint and cover the set. Conversely, a partition defines an equivalence relation by placing two elements in relation when they lie in the same block.</p>
+    <p>On {0, 1, 2, 3, 4, 5, 6, 7}, define aRb when 3 divides a − b. Zero is divisible by 3, negating a multiple preserves divisibility, and adding two multiples preserves it. The three classes are {0, 3, 6}, {1, 4, 7} and {2, 5}.</p>
+    <h2 id="closures">Closures</h2>
+    <p>A closure is the smallest relation containing R that has the desired property. The reflexive closure is R ∪ Δ. The symmetric closure is R ∪ R⁻¹. The transitive closure R⁺ contains pairs connected by a directed walk of positive length. The reflexive transitive closure R* also includes length-zero walks, so R* = R⁺ ∪ Δ.</p>
+    <p>For the matrix example, add (1, 1), (2, 2), (3, 3) for the reflexive closure. Add (2, 1), (3, 2) for the symmetric closure. Add (1, 3) for the transitive closure. Compute each closure starting from the original R.</p>
+    <h2 id="warshall">Warshall’s algorithm</h2>
+    <p>Start with the Boolean adjacency matrix. After iteration k, T[i, j] is true when i reaches j via a positive-length walk whose internal vertices are among the first k vertices. A walk is preserved if already known, or discovered by joining a walk from i to k with one from k to j.</p>
+    <pre><code>T = copy of the adjacency matrix
+for k = 1 to n:
+    for i = 1 to n:
+        for j = 1 to n:
+            T[i, j] = T[i, j] OR (T[i, k] AND T[k, j])
+return T</code></pre>
+    <p>For 1 → 2 → 3, iteration k = 2 sets T[1, 3] to true. The final rows are (0, 1, 1), (0, 0, 1) and (0, 0, 0). Keep k in the outer loop. The algorithm uses O(n³) time and O(n²) matrix space. Set the diagonal to true at initialization when computing R*.</p>
+    <h2 id="functions">Functions</h2>
+    <p>A function f from A to B gives each element of its domain A exactly one value in its codomain B. Its range is f(A), the set of values it actually produces. For f(x) = x² from ℝ to ℝ, the domain and codomain are ℝ, and the range is [0, ∞).</p>
+    <table>
+      <thead><tr><th scope="col">Type</th><th scope="col">Test</th><th scope="col">Example</th></tr></thead>
+      <tbody>
+        <tr><td>Injective</td><td>Each codomain element has at most one preimage.</td><td>x ↦ 2x from ℤ to ℤ</td></tr>
+        <tr><td>Surjective</td><td>Each codomain element has at least one preimage.</td><td>x ↦ x² from ℝ to [0, ∞)</td></tr>
+        <tr><td>Bijective</td><td>Each codomain element has exactly one preimage.</td><td>x ↦ 2x + 1 from ℝ to ℝ</td></tr>
+      </tbody>
+    </table>
+    <p>Composition applies functions right to left. In symbols, (g ∘ f)(x) = g(f(x)), provided the outputs of f lie in the domain of g. If f(x) = 2x + 1 and g(x) = x², then (g ∘ f)(x) = (2x + 1)² while (f ∘ g)(x) = 2x² + 1.</p>
+    <p>A function f from A to B has a two-sided inverse f⁻¹ from B to A exactly when f is bijective. Solve y = 2x + 1 for x to get f⁻¹(y) = (y − 1)/2 over ℝ. Verify both compositions give their respective identities. An injective function can also be inverted on its range.</p>
+    <h2 id="useful">Useful functions in computer science</h2>
+    <table>
+      <thead><tr><th scope="col">Function</th><th scope="col">Meaning and use</th></tr></thead>
+      <tbody>
+        <tr><td>Exponential bˣ</td><td>Fixed base b &gt; 0, b ≠ 1. An n-bit string has 2ⁿ possibilities.</td></tr>
+        <tr><td>Logarithm log<sub>b</sub> x</td><td>Exponent y such that bʸ = x, for x &gt; 0. log₂ 32 = 5. Repeated halving motivates logarithmic search time.</td></tr>
+        <tr><td>Polynomial</td><td>A finite sum of terms with nonnegative integer powers, such as 3n² + 2n + 1. The highest nonzero power determines the growth order as n increases.</td></tr>
+        <tr><td>Floor ⌊x⌋</td><td>Greatest integer ≤ x. ⌊−2.3⌋ = −3. ⌊23/5⌋ = 4 full groups.</td></tr>
+        <tr><td>Ceiling ⌈x⌉</td><td>Least integer ≥ x. ⌈−2.3⌉ = −2. ⌈23/5⌉ = 5 pages at five records per page.</td></tr>
+      </tbody>
+    </table>
+    <p>For positive x and y, log<sub>b</sub>(xy) = log<sub>b</sub> x + log<sub>b</sub> y and log<sub>b</sub>(xʳ) = r log<sub>b</sub> x. Also, ⌈x⌉ = −⌊−x⌋. Integer division in many programming languages truncates toward zero, which differs from floor for negative noninteger quotients.</p>
+    <h2 id="practice">Practice</h2>
+    <details><summary>How many subsets of {1, 2, 3, 4} contain 1?</summary><p>8. Including 1 is fixed, and each of the three other elements has two choices.</p></details>
+    <details><summary>What is the transitive closure of {(a, b), (b, a)} on {a, b}?</summary><p>All four ordered pairs. The two-step walks a → b → a and b → a → b create the diagonal pairs.</p></details>
+    <details><summary>What changes if f(x) = x² is defined from [0, ∞) to [0, ∞)?</summary><p>It becomes bijective. Each y ≥ 0 has the unique nonnegative preimage √y, so f⁻¹(y) = √y.</p></details>
+    <p class="next"><a href="unit-2.html">Next · Counting and recurrence relations</a></p>
+  </main>
+</body>
+</html>

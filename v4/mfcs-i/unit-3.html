@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="MFCS-I Unit III covers the readable graph theory topics from the supplied syllabus.">
+  <title>Elementary graph theory | Architect Academy</title>
+  <link rel="stylesheet" href="notes.css">
+</head>
+<body>
+  <header>
+    <nav aria-label="MFCS-I"><a href="../lessons.html">Architect Academy</a> <a href="index.html">MFCS-I notes</a> <a href="unit-1.html">Unit I</a> <a href="unit-2.html">Unit II</a> <a href="unit-3.html" aria-current="page">Unit III</a></nav>
+  </header>
+  <main>
+<p class="unit">Unit III</p>
+    <h1>Elementary graph theory</h1>
+    <nav class="contents" aria-label="On this page">
+      <a href="#terms">Terminology</a><a href="#paths">Paths and cycles</a><a href="#connectivity">Connectivity</a><a href="#subgraphs">Subgraphs</a><a href="#types">Graph types</a><a href="#practice">Practice</a>
+    </nav>
+    <h2 id="terms">Basic terminology</h2>
+    <p>A graph G = (V, E) consists of vertices V and edges E. In a simple undirected graph, each edge is an unordered pair of distinct vertices, and each pair has at most one edge. A loop joins a vertex to itself. Parallel edges share the same endpoints and occur in graph models that permit them.</p>
+    <p>Vertices sharing an edge are adjacent, and an edge is incident to each endpoint. The degree deg(v) counts edge ends at v, with a loop counting twice in an undirected graph that permits loops. An isolated vertex has degree 0. Each undirected edge contributes two ends, giving the handshaking identity ∑ deg(v) = 2|E| and implying an even number of odd-degree vertices.</p>
+    <h2 id="paths">Walks, trails, paths and cycles</h2>
+    <table>
+      <thead><tr><th scope="col">Term</th><th scope="col">Meaning</th></tr></thead>
+      <tbody>
+        <tr><td>Walk</td><td>A sequence of vertices with an edge between consecutive vertices. Repetition is allowed.</td></tr>
+        <tr><td>Trail</td><td>A walk with distinct edges.</td></tr>
+        <tr><td>Path</td><td>A walk with distinct vertices. Its length is the number of edges.</td></tr>
+        <tr><td>Cycle</td><td>A closed walk with distinct vertices except for the first and last, and no repeated edges. A cycle in a simple undirected graph has at least three edges.</td></tr>
+      </tbody>
+    </table>
+    <h2 id="connectivity">Connected and disconnected graphs</h2>
+    <p>An undirected graph is connected if there is a path between every pair of vertices. A connected component is a maximal connected part of the graph. To find components, start BFS or DFS at an unvisited vertex, mark all reachable vertices, then repeat from another unvisited vertex until all are marked.</p>
+    <p>Take V = {A, B, C, D, E} with undirected edges AB, BC, CA and CD. The components are {A, B, C, D} and {E}, so the graph is disconnected. A–B–C–D is a path of length 3 and A–B–C–A is a cycle. The degrees are 2, 2, 3, 1 and 0, which sum to 8 = 2 · 4.</p>
+    <h2 id="subgraphs">Subgraphs</h2>
+    <p>A subgraph selects vertices and edges from the original graph, keeping both endpoints of every selected edge. An induced subgraph on S includes every original edge whose two endpoints lie in S. A spanning subgraph includes all original vertices and may omit edges.</p>
+    <p>In the example, the induced subgraph on {A, B, C} is the triangle. Choosing the same vertices and just AB and BC gives a subgraph. Keeping all five vertices and only AB gives a spanning subgraph.</p>
+    <h2 id="types">Complete graphs, digraphs and weighted graphs</h2>
+    <table>
+      <thead><tr><th scope="col">Type</th><th scope="col">Definition and example</th></tr></thead>
+      <tbody>
+        <tr><td>Complete graph</td><td>Kₙ is simple and undirected, with an edge for every pair of distinct vertices. It has n(n − 1)/2 edges and each vertex has degree n − 1. K₄ has 6 edges.</td></tr>
+        <tr><td>Directed graph or digraph</td><td>An edge goes from a source to a destination. Out-degree counts outgoing edges and in-degree counts incoming edges. In A → B → C, A reaches C. Strong connectivity requires directed reachability in both directions between every pair. Weak connectivity considers the graph after dropping directions.</td></tr>
+        <tr><td>Weighted graph</td><td>Each edge has a numerical weight, such as distance or cost. If AB costs 2, BC costs 3 and AC costs 7, A–B–C costs 5 even though it uses more edges than A–C.</td></tr>
+      </tbody>
+    </table>
+    <p>Graph properties can overlap. A road network can be both directed and weighted when roads have one-way restrictions and travel times.</p>
+    <h2 id="practice">Practice</h2>
+    <details><summary>What are the degrees and edge count of K₆?</summary><p>Every degree is 5. The edge count is 6 · 5/2 = 15.</p></details>
+    <details><summary>What happens to the example’s components if edge CD is removed?</summary><p>The three components are {A, B, C}, {D} and {E}.</p></details>
+    <details><summary>Is the digraph A → B → C weakly or strongly connected?</summary><p>It is weakly connected. Ignoring direction gives an undirected path, while C cannot reach A following the arrows.</p></details>
+    <p class="next"><a href="index.html">Back to MFCS-I notes</a></p>
+  </main>
+</body>
+</html>

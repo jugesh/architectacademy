@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="MFCS-I Unit II covers counting, the binomial theorem and solving recurrence relations.">
+  <title>Counting and recurrence relations | Architect Academy</title>
+  <link rel="stylesheet" href="notes.css">
+</head>
+<body>
+  <header>
+    <nav aria-label="MFCS-I"><a href="../lessons.html">Architect Academy</a> <a href="index.html">MFCS-I notes</a> <a href="unit-1.html">Unit I</a> <a href="unit-2.html" aria-current="page">Unit II</a> <a href="unit-3.html">Unit III</a></nav>
+  </header>
+  <main>
+<p class="unit">Unit II</p>
+    <h1>Counting and recurrence relations</h1>
+    <nav class="contents" aria-label="On this page">
+      <a href="#counting">Counting rules</a><a href="#pigeonhole">Pigeonhole</a><a href="#selection">Selections</a><a href="#binomial">Binomial theorem</a><a href="#modelling">Recurrences</a><a href="#roots">Characteristic roots</a><a href="#practice">Practice</a>
+    </nav>
+    <h2 id="counting">Basic counting rules</h2>
+    <table>
+      <thead><tr><th scope="col">Rule</th><th scope="col">When it applies</th><th scope="col">Example</th></tr></thead>
+      <tbody>
+        <tr><td>Sum</td><td>Add counts for disjoint alternatives.</td><td>3 bus routes or 2 train routes give 5 choices.</td></tr>
+        <tr><td>Product</td><td>Multiply counts for consecutive choices when each partial choice gives the stated number of next choices.</td><td>2 prefixes and 3 suffixes form 6 labels.</td></tr>
+        <tr><td>Inclusion–exclusion</td><td>For two overlapping sets, |A ∪ B| = |A| + |B| − |A ∩ B|.</td><td>12 know Java, 9 know Python, and 4 know both. The union has 17 people.</td></tr>
+        <tr><td>Complement</td><td>Subtract outcomes that fail the condition from the total.</td><td>2⁵ − 1 = 31 binary strings of length 5 have at least one 1.</td></tr>
+      </tbody>
+    </table>
+    <h2 id="pigeonhole">Pigeonhole principle</h2>
+    <p>If N objects are assigned to k boxes, with k &gt; 0, some box has at least ⌈N/k⌉ objects. If each box held fewer, their total capacity would be at most k(⌈N/k⌉ − 1), which is less than N. For N &gt; k this guarantees a repeated box.</p>
+    <p>Among 25 people, at least 3 share a birth month because ⌈25/12⌉ = 3. Twenty-four could be distributed two per month, so 25 is the smallest number that guarantees three.</p>
+    <h2 id="selection">Permutations and combinations</h2>
+    <p>For 0 ≤ r ≤ n, n! = n(n − 1)⋯1 with 0! = 1. The table assumes n distinct choices and, in its final row, n ≥ 1.</p>
+    <table>
+      <thead><tr><th scope="col">Selection</th><th scope="col">Count</th><th scope="col">Example</th></tr></thead>
+      <tbody>
+        <tr><td>Ordered, without replacement</td><td>P(n, r) = n!/(n − r)!</td><td>President, secretary and treasurer from 8 candidates gives 8 × 7 × 6 = 336.</td></tr>
+        <tr><td>Unordered, without replacement</td><td>C(n, r) = n!/[r!(n − r)!]</td><td>A 3-person committee from 8 gives 336/3! = 56.</td></tr>
+        <tr><td>Ordered, with replacement</td><td>nʳ</td><td>A four-digit PIN, including leading zeros, gives 10⁴ choices.</td></tr>
+        <tr><td>Unordered, with replacement</td><td>C(n + r − 1, r)</td><td>Choose 3 scoops from 4 flavours. Three scoop markers and three dividers give C(6, 3) = 20.</td></tr>
+      </tbody>
+    </table>
+    <p>Each unordered selection of r distinct items has r! orderings. This is why dividing P(n, r) by r! yields C(n, r). For arrangements of all n items with identical copies of multiplicities m₁, m₂, …, divide n! by m₁!m₂!⋯. For BANANA, 6!/(3!2!1!) = 60.</p>
+    <h2 id="binomial">Binomial coefficients and theorem</h2>
+    <p>Binomial coefficients C(n, k) count k-element subsets of an n-element set. Choosing a subset is equivalent to choosing its complement, so C(n, k) = C(n, n − k). Counting subsets that include a fixed element and those that exclude it gives Pascal’s identity C(n, k) = C(n − 1, k − 1) + C(n − 1, k) for 1 ≤ k &lt; n. The endpoint coefficients are 1.</p>
+    <p>For a nonnegative integer n, (x + y)ⁿ = ∑<sub>k=0</sub><sup>n</sup> C(n, k)x<sup>n−k</sup>y<sup>k</sup>. Each term comes from choosing y in exactly k of the n factors. In (2x − 3)⁵, the coefficient of x³ is C(5, 2) · 2³ · (−3)² = 720. Setting x = y = 1 shows that the coefficients sum to 2ⁿ.</p>
+    <h2 id="modelling">Modelling recurrence relations</h2>
+    <p>A recurrence defines later terms from earlier terms and needs initial values. Identify the size parameter, write how a problem at size n depends on smaller sizes, and specify where the recursion ends.</p>
+    <h3>Fibonacci numbers</h3>
+    <p>F₀ = 0, F₁ = 1, and Fₙ = Fₙ₋₁ + Fₙ₋₂ for n ≥ 2. This gives 0, 1, 1, 2, 3, 5, 8. To model tiling a length-n strip with tiles of length one or two, separate tilings by their first tile. The resulting recurrence is the same, but T₀ = 1 and T₁ = 1, so Tₙ = Fₙ₊₁. The empty strip has one tiling.</p>
+    <h3>Tower of Hanoi</h3>
+    <p>With three pegs, move the top n − 1 disks to the spare peg, move the largest disk once, then move the smaller disks onto it. All smaller disks must be on the spare peg immediately before the largest disk first moves, and must be assembled on it after its last move. This gives both an achievable strategy and a lower bound of two size-(n − 1) transfers plus one largest-disk move.</p>
+    <p>The minimum obeys H₀ = 0 and Hₙ = 2Hₙ₋₁ + 1. Iteration gives Hₙ = 1 + 2 + ⋯ + 2<sup>n−1</sup> = 2ⁿ − 1. Three disks require seven moves.</p>
+    <h2 id="roots">Characteristic equation and roots</h2>
+    <p>For a homogeneous second-order recurrence aₙ = p aₙ₋₁ + q aₙ₋₂ with constant p and q and q ≠ 0, substitute aₙ = rⁿ to obtain r² − pr − q = 0. Use one constant per independent solution and determine them from a₀ and a₁.</p>
+    <table>
+      <thead><tr><th scope="col">Roots</th><th scope="col">General homogeneous solution</th></tr></thead>
+      <tbody>
+        <tr><td>Distinct r₁ and r₂</td><td>aₙ = A r₁ⁿ + B r₂ⁿ</td></tr>
+        <tr><td>Repeated root r</td><td>aₙ = (A + Bn)rⁿ</td></tr>
+      </tbody>
+    </table>
+    <p>For higher order recurrences the same idea applies. A nonzero root r of multiplicity m contributes rⁿ, nrⁿ, …, n<sup>m−1</sup>rⁿ. Complex conjugate roots can be combined into a real expression for real initial values.</p>
+    <h3>Worked example with distinct roots</h3>
+    <p>Solve aₙ = 5aₙ₋₁ − 6aₙ₋₂ with a₀ = 2 and a₁ = 5. Factor r² − 5r + 6 = (r − 2)(r − 3). Then A + B = 2 and 2A + 3B = 5, so A = B = 1. Thus aₙ = 2ⁿ + 3ⁿ. At n = 2, the formula gives 13, matching 5 · 5 − 6 · 2.</p>
+    <h3>Worked example with a repeated root</h3>
+    <p>Solve aₙ = 4aₙ₋₁ − 4aₙ₋₂ with a₀ = 1 and a₁ = 6. The polynomial is (r − 2)². With aₙ = (A + Bn)2ⁿ, the initial values give A = 1 and 2(A + B) = 6, so B = 2. Therefore aₙ = (1 + 2n)2ⁿ.</p>
+    <h3>Nonhomogeneous example</h3>
+    <p>When the recurrence includes an extra term, add a particular solution to the homogeneous solution before fitting the initial values. For Hₙ = 2Hₙ₋₁ + 1, a constant K satisfies K = 2K + 1, giving K = −1. The homogeneous solution is A · 2ⁿ. Using H₀ = 0 gives A = 1 and Hₙ = 2ⁿ − 1.</p>
+    <h2 id="practice">Practice</h2>
+    <details><summary>How many five-character strings use exactly two digits and three uppercase letters, with repetition allowed?</summary><p>C(5, 2) · 10² · 26³ = 17,576,000. First choose the two digit positions.</p></details>
+    <details><summary>How many integers guarantee two with the same remainder modulo 7?</summary><p>8. Seven remainder classes are the boxes. The values 0 through 6 show that seven integers can all have different remainders.</p></details>
+    <details><summary>Solve aₙ = 2aₙ₋₁ + 3aₙ₋₂ with a₀ = 2 and a₁ = 2.</summary><p>The roots of r² − 2r − 3 are 3 and −1. Both constants equal 1, so aₙ = 3ⁿ + (−1)ⁿ.</p></details>
+    <p class="next"><a href="unit-3.html">Next · Elementary graph theory</a></p>
+  </main>
+</body>
+</html>
