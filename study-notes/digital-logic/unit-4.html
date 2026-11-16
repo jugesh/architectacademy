@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Pipelines, I/O, arithmetic and memory. Study notes, worked examples and diagrams.">
   <title>Pipelines, I/O, arithmetic and memory | Study Notes</title>
-  <link rel="stylesheet" href="../notes.css">
+  <link rel="stylesheet" href="../notes.css?v=watermark-2">
   <link rel="stylesheet" href="diagrams.css">
 </head>
 <body>
   <header><nav aria-label="Course navigation"><a href="../">Study Notes</a> <a href="index.html">Course notes</a> <a href="unit-1.html">Unit I</a> <a href="unit-2.html">Unit II</a> <a href="unit-3.html">Unit III</a> <a href="unit-4.html" aria-current="page">Unit IV</a></nav></header>
   <main>
     <h1>Pipelines, I/O, arithmetic and memory</h1>
+    <p class="watermark-label">Lakshita Bindal</p>
     <nav class="contents" aria-label="On this page"><a href="#pipelines">Pipelines and vectors</a><a href="#io">I/O</a><a href="#arithmetic">Arithmetic</a><a href="#memory">Memory</a><a href="#practice">Practice</a></nav>
 <h2 id="pipelines">Parallel processing, pipelines and vectors</h2>
     <p>Parallel processing overlaps work across hardware resources. Multicore processors can run independent threads (MIMD), while vector or SIMD hardware applies one instruction across multiple elements. Pipelining overlaps different stages of successive operations. If a fraction p of runtime can be sped up by a factor s, Amdahl’s law gives overall speedup 1/[(1−p)+p/s]. Accelerating 80% of runtime by 4× yields 2.5× overall.</p>
