@@ -1,0 +1,89 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "Cancellation teaching contract",
+    "version": "1.0.0",
+    "description": "Illustrative contract. Replay scope, retention, ownership and commit semantics require the accompanying lesson; no endpoint implementation is provided."
+  },
+  "paths": {
+    "/orders/{orderId}/cancellations": {
+      "post": {
+        "summary": "Cancel an unclaimed order",
+        "operationId": "cancelOrder",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A durable cancellation or replayed cancellation result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "orderId",
+                    "outcome"
+                  ],
+                  "properties": {
+                    "orderId": {
+                      "type": "string"
+                    },
+                    "outcome": {
+                      "type": "string",
+                      "enum": [
+                        "CANCELLED",
+                        "ALREADY_CANCELLED"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Warehouse claim prevents cancellation"
+          },
+          "401": {
+            "description": "Missing or invalid authentication"
+          },
+          "403": {
+            "description": "Caller is not permitted by the resource policy"
+          },
+          "404": {
+            "description": "Order is not visible under the agreed disclosure policy"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

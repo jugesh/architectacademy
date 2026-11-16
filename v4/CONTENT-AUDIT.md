@@ -52,3 +52,9 @@ Four new guided sections cover vocabulary/message identity, queue versus indepen
 ## 2 November 2026 — BDD / TDD
 
 Added dedicated BDD and TDD lessons with a shared cancellation story, vocabulary, examples, diagrams, failure boundaries, six answered questions each and primary references. BDD covers discovery, example mapping, Gherkin, adapter scope, asynchronous outcomes and specification maintenance. TDD covers an explicit red/green progression, the final policy, doubles, Spring/database test boundaries, deterministic time/races, legacy adoption and CI. Seven executable JUnit examples validate the final policy and in-memory acceptance flow; they do not claim HTTP, persistence or concurrency coverage. Both lessons are categorized, indexed, included in progress/revision, and covered by the existing navigation/mobile/print tests plus a discovery/search check.
+
+## 3 November 2026 — six development approaches
+
+Added ATDD, DDD, contract-first development, consumer-driven contract testing, property-based testing and mutation testing. Each has ten authored sections, six answered questions, a worked example, failure/verification limits and primary references. Integration includes both categorized libraries, reading sequence, breadcrumbs, search, progress, revision and the shared mobile menu.
+
+Executable evidence: Inventory acceptance checks plus two bounded fixed-seed QuickTheories properties, and a scoped PIT analysis retained by CI. OpenAPI is a downloadable teaching artifact; Pact interactions are explicitly conceptual and not a claim of a running provider/Broker. These lessons do not claim that in-memory checks prove database concurrency, ownership, remote delivery or complete production correctness.

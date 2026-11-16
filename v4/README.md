@@ -17,7 +17,7 @@ The existing API lesson remains independently authored at its original URL. New 
 
 `architecture-practice.mjs` contains seven companion guides, ordered after the existing lesson explanations: decision guides; fictional production failure case studies; capacity/cost estimation; Java/Spring internals; a tiered interview workbook; migration/modernization; and revision tools. The original 17-lesson learning path remains intact and the V3 reference curriculum is untouched. Generated guide HTML is committed alongside lesson HTML.
 
-Revision uses the browser-local key `aa-v4-review-v1`. It reports unavailable storage, supports filtering with an empty-result count, and resets only its own marks. All 19 core lessons are included. These marks are self-reported recall, not exam scores or synced learning records. Printing shows all glossary entries, even with a filter active, and expands interview answers while preserving original disclosure state after repeated print events.
+Revision uses the browser-local key `aa-v4-review-v1`. It reports unavailable storage, supports filtering with an empty-result count, and resets only its own marks. All 25 core lessons are included. These marks are self-reported recall, not exam scores or synced learning records. Printing shows all glossary entries, even with a filter active, and expands interview answers while preserving original disclosure state after repeated print events.
 
 Numeric examples use explicit illustrative assumptions. AWS pricing is a unit model with a link to current quotes, not an assertion of current prices. Code fragments are explanatory; no runnable labs were added. Primary references should be checked against the actual deployed product/version before applying implementation details.
 
@@ -43,7 +43,7 @@ The remaining section-level explanation modules are `copies-delivery-explanation
 
 ## Search and browser-local study state
 
-`study-tools.js` and `study-tools.css` provide section search, explicit progress and resume for all 26 lesson/guide pages. `build-lessons.mjs` builds `search-index.json` from the final generated sections, including the independently authored API page. Search is case-insensitive and requires all query words within one section; title/heading matches rank first. Results link to the section and show a text excerpt. The index is loaded only when searching; failed loads can be retried by typing again. Serve over HTTP, as with GitHub Pages.
+`study-tools.js` and `study-tools.css` provide section search, explicit progress and resume for all 32 lesson/guide pages. `build-lessons.mjs` builds `search-index.json` from the final generated sections, including the independently authored API page. Search is case-insensitive and requires all query words within one section; title/heading matches rank first. Results link to the section and show a text excerpt. The index is loaded only when searching; failed loads can be retried by typing again. Serve over HTTP, as with GitHub Pages.
 
 The `aa-v4-study-v1` localStorage record contains only allowlisted lesson slugs, three progress states and the last reading section. Opening an unmarked page starts it; an explicitly chosen Not started or Reviewed state is retained. Scroll position is stored as a section anchor, not pixel coordinates. Progress filters affect browsing, while print includes all cards. State is specific to this browser/origin, does not sync between devices and is lost if browser site data is cleared. When storage is unavailable, controls work for the current page and report the limitation. Existing `aa-v4-review-v1` explanation checklist marks remain independent.
 
@@ -63,8 +63,16 @@ The build generates the root `index.html` as the categorized library itself, wit
 
 `testing-lessons.mjs` adds two dedicated lessons after the older content passes. They share an order-cancellation story, with separate discovery/acceptance and red–green–refactor explanations. The Testing & Quality group contains both; the library now has 19 core lessons and seven guides. Counts in the library description come from the content collections.
 
-The Java 17+/JUnit 5.13.1 examples in `examples/testing` are embedded from source by the builder. Run `mvn -B -f v4/examples/testing/pom.xml test`; CI executes the seven policy/acceptance checks. The acceptance fixture is deliberately in-memory and covers domain behavior only. Cucumber adapter code is illustrative; HTTP, authorization, database commits, concurrency and delivery semantics require the additional boundary checks described in the lessons.
+The Java 17+/JUnit 5.13.1 examples in `examples/testing` are embedded from source by the builder. Run `mvn -B -f v4/examples/testing/pom.xml test`; CI executes the policy, acceptance and generated-property checks. The acceptance fixture is deliberately in-memory and covers domain behavior only. Cucumber adapter code is illustrative; HTTP, authorization, database commits, concurrency and delivery semantics require the additional boundary checks described in the lessons.
 
 ## Mobile navigation
 
 `study-tools.js` enhances each current root/V4 header with a hamburger disclosure at widths up to 700px. It reuses existing site links and sidebar section/category links, exposes expanded state, closes on Escape (returning focus), link selection, outside click, focus leaving the header, desktop resize and printing. The scrollable panel preserves reading space and uses 44px touch targets. Desktop navigation and the original no-JavaScript fallback remain available. Shared CSS keeps the menu out of printed pages.
+
+## Additional development approaches
+
+`development-approaches.mjs` adds six dedicated lessons: ATDD, DDD, contract-first development, consumer-driven contract testing, property-based testing and mutation testing. They are appended after the older teaching passes, with topic-specific examples, diagrams, six answered questions each, scope limits and primary references. The current library has 25 core lessons and seven study guides. DDD/contract-first sit in Design Practice; the other four join BDD/TDD in Testing & Quality.
+
+`examples/testing` now contains Inventory, its acceptance examples and two QuickTheories 0.26 properties (1,000 sampled cases each, fixed seeds). The Maven configuration pins PIT 1.18.2 / JUnit plugin 1.2.2 and scopes mutation analysis to Inventory plus InventoryExamplesTest. CI runs ordinary tests and mutation analysis and retains the report; no universal mutation-score threshold is claimed. Both lessons embed the actual Java sources.
+
+`examples/contracts/cancellation.openapi.json` is an illustrative OpenAPI 3.1.1 document. It is a contract artifact, not a running endpoint. The consumer-contract lesson explains Pact-style interaction/provider/deployment evidence without claiming a bundled Pact Broker or verified live provider. Browser coverage includes every new page and search/discovery.
