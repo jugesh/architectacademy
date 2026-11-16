@@ -8,6 +8,23 @@
 }
 * { box-sizing: border-box; }
 body { margin: 0; color: var(--ink); background: white; font: 1rem/1.65 system-ui, sans-serif; }
+body::before {
+  content: "Lakshita Bindal";
+  content: "Lakshita Bindal" / "";
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  transform: translate(-50%, -50%) rotate(-25deg);
+  color: #176b50;
+  opacity: .12;
+  font-size: clamp(1.9rem, 8vw, 5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
 a { color: var(--green); text-underline-offset: .18em; }
 :focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
 header { border-bottom: 1px solid var(--line); background: var(--soft); }
@@ -54,6 +71,7 @@ details p { margin-block: .5rem 0; }
   header, .contents, .next { display: none; }
   main { width: 100%; padding: 0; }
   body { font-size: 10.5pt; }
+  body::before { color: #333; font-size: 42pt; }
   h2, h3, summary { break-after: avoid; }
   tr, figure { break-inside: avoid; }
   details > :not(summary) { display: block; }
