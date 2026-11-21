@@ -1,0 +1,24 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Unit II · Structured Programming and C Fundamentals | Lakshita's Study Notes</title><link rel="stylesheet" href="../notes.css?v=watermark-2"></head><body><header><nav><a href="../">Study Notes</a> · <a href="index.html">Problem Solving & C</a> · <a href="unit-1.html">I</a> · <a href="unit-2.html">II</a> · <a href="unit-3.html">III</a> · <a href="unit-4.html">IV</a></nav></header><main><h1>Unit II · Structured Programming and C Fundamentals</h1><p class="watermark-label">Lakshita Bindal</p><h2>1. Control structures</h2><p><strong>Sequence:</strong> statements run in order (input, assignment, output). <strong>Selection:</strong> if / if–else chooses a path. <strong>Repetition:</strong> for, while and do–while repeat steps. <strong>Stacking</strong> places structures consecutively; <strong>nesting</strong> places one inside another.</p><pre>read n
+if n % 2 == 0: print "even"
+else: print "odd"
+for i = 1 to n: print i</pre><table><tr><th>Loop kind</th><th>Meaning</th></tr><tr><td>Entry-controlled</td><td>while/for tests before body; may execute zero times</td></tr><tr><td>Exit-controlled</td><td>do–while tests after body; executes at least once</td></tr><tr><td>Counter-controlled / definite</td><td>Known count, often for</td></tr><tr><td>Indefinite</td><td>Count not known in advance</td></tr><tr><td>Sentinel-controlled</td><td>Special value ends input, e.g., -1</td></tr></table><h2>2. Pseudocode and flowcharts</h2><p>Pseudocode uses language-independent steps; flowcharts use an oval for start/end, parallelogram for input/output, rectangle for processing, diamond for decisions and arrows for control flow.</p><figure><pre> (START)
+    ↓
+ [Read n]
+    ↓
+  ◇ n>0? ◇──No──→[Print nonpositive]
+    │Yes
+    ↓
+[Print positive] → (END)</pre><figcaption>Decision flow (both branches terminate).</figcaption></figure><h2>3. Iteration exercises</h2><pre>// right triangle, n=3
+*
+**
+***
+// nested loops: row 1..n; print row stars</pre><p><strong>AP:</strong> a, a+d, a+2d; nth term a+(n−1)d. <strong>GP:</strong> a, ar, ar²; nth term arⁿ⁻¹. <strong>Fibonacci:</strong> 0,1,1,2,3,5; update (a,b) ← (b,a+b). Use nested loops for number pyramids, hollow rectangles and multiplication tables.</p><p><strong>Taylor approximation</strong> (radians): sin x = Σ(-1)ⁿx²ⁿ⁺¹/(2n+1)!; cos x = Σ(-1)ⁿx²ⁿ/(2n)!; π/4 = 1−1/3+1/5−… (slow convergence). Stop after N terms or when the next term is below a tolerance. Use term recurrence rather than recomputing powers and factorials.</p><h2>4. How computers represent data</h2><p>Memory stores bits. Integers, real numbers, characters and text are interpreted according to type and encoding. For 8 bits, +5=00000101. Sign-magnitude −5=10000101; one's complement −5=11111010; two's complement −5=11111011. Sign-magnitude and one's complement have two zeros; two's complement has one zero and range −128..127 for 8 bits.</p><p><strong>IEEE 754 binary32:</strong> 1 sign bit, 8 exponent bits (bias 127), 23 fraction bits; normalized value (−1)^s × (1.fraction) × 2^(exponent−127). For example 1.5 has sign 0, exponent 127 and fraction bits 1000… . Subnormals, ±∞, NaN and rounding require care. <strong>ASCII</strong> maps 0–127 to characters/control codes; <strong>Unicode</strong> assigns code points, encoded as UTF-8/UTF-16 etc. Unicode is not identical to UTF-8.</p><h2>5. C essentials</h2><p>Programming languages evolved from machine code (1GL), assembly (2GL), high-level languages (3GL), domain-oriented declarative languages (often called 4GL) to AI/constraint-oriented systems (sometimes called 5GL). C was developed at Bell Labs by Dennis Ritchie in the early 1970s. C is statically typed; “typeless” commonly refers to languages with weak/no explicit static type declarations, not a rigorous single category.</p><pre>#include &lt;stdio.h&gt;
+int main(void) { return 0; } // minimal program</pre><pre>#include &lt;stdio.h&gt;
+int main(void) {
+    int n;
+    if (scanf("%d", &amp;n) != 1) return 1;
+    if (n &gt; 0) printf("Positive\n");
+    else printf("Not positive\n");
+    for (int i=0; i&lt;n; ++i) printf("%d ", i);
+    return 0;
+}</pre><p>Common types: char, int, float, double, plus signed/unsigned and size modifiers. <code>=</code> assigns; <code>== != &lt; &gt; &lt;= &gt;=</code> compare; <code>+ - * / %</code> perform arithmetic; <code>&amp;&amp; || !</code> implement logic. Integer division truncates toward zero; division by zero is invalid. <code>while</code> tests first; <code>do { ... } while(condition);</code> tests last. Translate pseudocode stepwise, compile with warnings (<code>gcc -std=c11 -Wall -Wextra</code>), test after each small change. Use descriptive names, braces, consistent indentation and boundary tests.</p></main></body></html>
