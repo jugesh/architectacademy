@@ -1,0 +1,27 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Unit III · Numbers, Statistics and C Decisions | Lakshita's Study Notes</title><link rel="stylesheet" href="../notes.css?v=watermark-2"></head><body><header><nav><a href="../">Study Notes</a> · <a href="index.html">Problem Solving & C</a> · <a href="unit-1.html">I</a> · <a href="unit-2.html">II</a> · <a href="unit-3.html">III</a> · <a href="unit-4.html">IV</a></nav></header><main><h1>Unit III · Numbers, Statistics and C Decisions</h1><p class="watermark-label">Lakshita Bindal</p><h2>1. Digits and number properties</h2><p>For a nonnegative integer n, <code>n % 10</code> extracts the rightmost digit and <code>n /= 10</code> removes it. To read left-to-right, find the largest power of ten ≤ n, then divide by it and reduce the divisor. Treat zero separately.</p><table><tr><th>Problem</th><th>Method / example</th></tr><tr><td>Palindrome</td><td>Reverse digits; compare with original (121 yes)</td></tr><tr><td>Prime</td><td>n ≥ 2; no divisor from 2 through floor(√n)</td></tr><tr><td>Prime factors</td><td>Repeatedly divide by each factor; 84=2²×3×7</td></tr><tr><td>Perfect</td><td>Sum of proper positive divisors equals n; 6=1+2+3</td></tr><tr><td>Amicable</td><td>Distinct a,b with proper-divisor sums s(a)=b and s(b)=a; 220,284</td></tr><tr><td>Armstrong</td><td>Sum of digits each raised to digit count equals n; 153=1³+5³+3³</td></tr><tr><td>Factorial</td><td>n!=1×2×…×n, 0!=1; watch overflow</td></tr><tr><td>Base conversion</td><td>Repeated division and reverse remainders; 26₁₀=11010₂</td></tr></table><h2>2. Worked C example: prime</h2><pre>#include &lt;stdio.h&gt;
+int main(void) {
+    int n, prime = 1;
+    if (scanf("%d", &amp;n) != 1) return 1;
+    if (n &lt; 2) prime = 0;
+    for (int d = 2; d &lt;= n / d; ++d)
+        if (n % d == 0) { prime = 0; break; }
+    printf("%s\n", prime ? "Prime" : "Not prime");
+    return 0;
+}</pre><p>The bound <code>d &lt;= n/d</code> avoids overflow from <code>d*d</code>. Runtime O(√n), auxiliary space O(1).</p><h2>3. Streaming statistics with a sentinel</h2><pre>count ← 0; sum ← 0
+read x
+while x != -1:
+    if count == 0: min ← x; max ← x
+    else:
+        if x &lt; min: min ← x
+        if x &gt; max: max ← x
+    sum ← sum + x; count ← count + 1
+    read x
+if count &gt; 0: average ← sum / count
+else: print "No data"</pre><p>Use only count, sum, min, max and current input: O(1) space. Sentinel -1 must not be a valid data value; choose another termination scheme if it is. Use a sufficiently wide sum type.</p><h2>4. C branching and loop control</h2><pre>if (score &gt;= 90) grade = 'A';
+else if (score &gt;= 75) grade = 'B';
+else grade = 'C';
+switch (grade) {
+  case 'A': puts("Excellent"); break;
+  case 'B': puts("Good"); break;
+  default: puts("Keep practising");
+}</pre><p><code>++i</code> increments before yielding a value; <code>i++</code> yields the old value then increments (likewise <code>--</code>). <code>break</code> exits the nearest loop/switch; <code>continue</code> skips to the next loop iteration. Avoid modifying the same scalar multiple times without sequencing.</p><h2>Practice</h2><p>Test prime for 1, 2, 49; palindrome for 0 and 120; Armstrong for 153; streaming statistics for an empty input and all-negative values.</p></main></body></html>
